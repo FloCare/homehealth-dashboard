@@ -113,12 +113,9 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  * @returns {Object} Data Provider response
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
-    console.log(type);
     const { headers, json } = response;
-    console.log(resource);
     switch (type) {
     case GET_LIST:
-        console.log(json.users);
         if(resource === 'users/') {
             return {
                 data: json.users.map(x => x),
