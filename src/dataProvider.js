@@ -31,14 +31,16 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // filter: JSON.stringify(params.filter),
         };
         const options = {};
-        options.headers = new Headers({Authorization: 'Token 8a4e3fc6bdf9fea3064580432a4380122d8a75ae'});
+        options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
         if(resource === 'users/') {
-            return { url: `${API_URL}/${resource}v1.0/orgaccess?${stringify(query)}`, options};
+            return { url: `${API_URL}/${resource}v1.0/org-access?${stringify(query)}`, options};
         }
         return { url: `${API_URL}/${resource}v1.0/patients?${stringify(query)}`, options};
     }
     case GET_ONE:
-        return { url: `${API_URL}/${resource}v1.0/my-patients-details/${params.id}` };
+        const options = {};
+        options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
+        return { url: `${API_URL}/${resource}v1.0/patients/${params.id}`, options };
     case GET_MANY: {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
@@ -56,9 +58,12 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         return { url: `${API_URL}/${resource}?${stringify(query)}` };
     }
     case UPDATE:
+        console.log('updating');
+        var request = {};
+        request.users=params.data.users;
         return {
-            url: `${API_URL}/${resource}/${params.id}`,
-            options: { method: 'PUT', body: JSON.stringify(params.data) },
+            url: `${API_URL}/${resource}v1.0/patients/${params.id}/`,
+            options: { method: 'PUT', body: JSON.stringify(request), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
         };
     case CREATE:
         var request = {};
@@ -88,7 +93,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         
         return {
             url: `${API_URL}/${resource}v1.0/patients/?format=json`,
-            options: { method: 'POST', headers: new Headers({Authorization: 'Token 8a4e3fc6bdf9fea3064580432a4380122d8a75ae'}), body: JSON.stringify(request) },
+            options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
         };
     case DELETE:
         return {
@@ -108,15 +113,32 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  * @returns {Object} Data Provider response
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
+    console.log(type);
     const { headers, json } = response;
+    console.log(resource);
     switch (type) {
     case GET_LIST:
+        console.log(json.users);
+        if(resource === 'users/') {
+            return {
+                data: json.users.map(x => x),
+                total: 20
+            }
+        }
         return {
             data: json.map(x => x),
             total: 20,
         };
     case CREATE:
         return { data: { ...params.data, id: json.id } };
+    case GET_ONE:
+        console.log(json);
+        var response = {};
+        response.patient = {};
+        response.users=[1];
+        response.patient.address = json.patient.address;
+        console.log(response);
+        return { data: response};
     default:
         return { data: json };
     }

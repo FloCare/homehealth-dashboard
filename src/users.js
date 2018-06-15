@@ -5,8 +5,8 @@ export const UserList = (props) => (
     <List title="All users" {...props}>
         <Datagrid>
             <TextField source="id" />
-            <TextField source="title" />
-            <TextField source="username" />
+            <TextField source="first_name" />
+            <TextField source="last_name" />
             <EmailField source="email" />
             <TextField source="contact_no" />
         </Datagrid>

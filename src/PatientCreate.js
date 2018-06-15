@@ -26,12 +26,17 @@ class PatientCreate extends React.Component {
     }
 
     async fetchUsers() {
-        const res = await fetch('http://app-9707.on-aptible.com/users/v1.0/view?format=json').then((resp) => {
+        const request = new Request('http://app-9707.on-aptible.com/users/v1.0/org-access/?format=json', {
+            headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
+            }),
+        })
+        const res = await fetch(request).then((resp) => {
             return resp.json();
         }).then((resp) => {
             var list = [];
-            for (var i = 0; i < resp.length; i++) {
-                list.push({ id: resp[i].id, name: resp[i].username });
+            var users = resp.users;
+            for (var i = 0; i < users.length; i++) {
+                list.push({ id: users[i].id, name: users[i].username });
             }
             this.setState({ 
                 users: [...this.state.users, ...list]
@@ -57,22 +62,39 @@ class PatientCreate extends React.Component {
         const validateAddress = [required()];
         const validateFirstName = [required(), maxLength(5)];
         const validateUsers = [required(), maxLength(1)];
+
+        const validateUserCreation = (values) => {
+            const errors = {};
+            if (!values.firstName) {
+                errors.firstName = ['FirstName is required'];
+            }
+            if (!values.lastName) {
+                errors.lastName = ['LastName is required'];
+            }
+            if (!values.primaryContact) {
+                errors.primaryContact = ['PrimaryContact is required'];
+            }
+            if (!values.address) {
+                errors.apartment_no = ['The street address has to be selected from the dropdown'];
+            }
+            return errors
+        };
         return (
             <Create location={this.props.location}
             match={this.props.match}
             resource={this.props.resource}
             title="Create Patient">
-                <SimpleForm>
+                <SimpleForm validate={validateUserCreation}>
                         <Labeled label="Basic Details"  />
-                        <TextInput source="firstName" />
-                        <TextInput source="lastName"  />
+                        <TextInput source="firstName" formClassName={{display: 'inline-flex', fontSize: 34, color: 'black', fontWeight: 'bold'}} />
+                        <TextInput source="lastName"  formClassName={{display: 'inline-flex', fontSize: 34, color: 'black', fontWeight: 'bold'}}/>
                         <TextInput source="primaryContact"  />
                         <TextInput source="secondaryContact"  />
                         <Labeled label="Caregivers"  />
                         <SelectArrayInput label="Users" source="users" choices={this.state.users}/>
                         <Labeled label="Address Details"  />
                         <TextInput source="apartment_no" />
-                        <Labeled label="Street Address"  />
+                        <Labeled label="Street Address" formClassName={{fontSize: 34, color: 'black', fontWeight: 'bold'}} />
                         <Field source="address" name="address" component={SearchBar} />
 
                 </SimpleForm>

@@ -3,7 +3,7 @@ import { fetchUtils, Admin, Resource } from 'react-admin';
 import PatientIcon from '@material-ui/icons/Book';
 import UserIcon from '@material-ui/icons/Group';
 import { PatientList, PatientEdit } from './patients';
-import PatientCreate from './PatientCreate';
+import PatientInput from './PatientCreate';
 import { UserList } from './users';
 import Dashboard from './dashboard';
 import authProvider from './authProvider';
@@ -25,7 +25,7 @@ const App = () => (
     authProvider={authProvider}
     dataProvider={dataProvider}
     >
-        <Resource name="phi/" options={{ label: 'Patients' }} list={PatientList} edit={PatientEdit} create={PatientCreate} icon={PatientIcon} />
+        <Resource name="phi/" options={{ label: 'Patients' }} list={PatientList} edit={PatientEdit} create={PatientInput} icon={PatientIcon} />
         <Resource name="users/" options={{ label: 'Users' }} list={UserList} icon={UserIcon} />
     </Admin>
 );

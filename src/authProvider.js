@@ -20,7 +20,6 @@ export default (type, params) => {
                 return response.json();
             })
             .then(({ token }) => {
-                console.log(token);
                 localStorage.setItem('access_token', token);
             });
         // accept all username/password combinations

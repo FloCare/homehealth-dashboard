@@ -1,5 +1,6 @@
 import React from 'react';
-import { List, Edit, Create, Datagrid, TextField, EditButton, ReferenceInput, SelectInput, SimpleForm, TextInput, Filter, TabbedForm, FormTab, SelectArrayInput, Labeled} from 'react-admin';
+import { List, Edit, Create, Datagrid, TextField, EditButton, ReferenceInput, SelectInput, SimpleForm, 
+    TextInput, Filter, TabbedForm, FormTab, SelectArrayInput, Labeled, DisabledInput} from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {FetchUsers} from './connectionUtils';
 import LocationSearchInput from './LocationSearchInput';
@@ -22,7 +23,6 @@ export const PatientList = (props) => (
             <TextField source="firstName" />
             <TextField source="lastName" />
             <TextField source="primaryContact" />
-            <TextField source="address.streetAddress" />
             <EditButton />
         </Datagrid>
     </List>
@@ -32,28 +32,28 @@ const PatientTitle = ({ record }) => {
     return <span>Patient {record ? `"${record.title}"` : ''}</span>;
 };
 
-export const PatientEdit = (props) => (
-    <Edit title="Edit Patient" {...props}>
-        <SimpleForm>
-                        <Labeled label="Basic Details"  />
-                        <TextInput source="firstName" />
-                        <TextInput source="lastName"  />
-                        <TextInput source="primaryContact"  />
-                        <TextInput source="secondaryContact"  />
-                        <Labeled label="Address Details"  />
-                        <TextInput source="apartment_no" />
-                        <Labeled label="Street Address"  />
-                        <Field source="address" name="address" component={SearchBar} />
-
-                </SimpleForm>
-    </Edit>
-);
-
 const styles = {
     inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
-    textStyle: { fontSize: 26, color: 'black',
-    fontWeight: 'bold'}
+    textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'}
 };
+
+export const PatientEdit = withStyles(styles)(({ classes, ...props, ...rest }) => (
+    <Edit title="Edit Patient" {...props}>
+        <SimpleForm>
+                        <Labeled label="Basic Details" formClassName={classes.textStyle} />
+                        <DisabledInput source="firstName" />
+                        <DisabledInput source="lastName"  />
+                        <DisabledInput source="primaryContact"  />
+                        <DisabledInput source="secondaryContact"  />
+                        <Labeled label="Caregivers" formClassName={classes.textStyle} />
+                        <SelectArrayInput label="Users" source="users" choices={[
+                                    { id: '1', name: 'pymd' },
+                                    { id: '2', name: 'harshal' }
+                                ]}/>
+                </SimpleForm>
+    </Edit>
+));
+
 
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create {...props} title="Create Patient">

@@ -76,7 +76,7 @@ class SearchBar extends React.Component {
       >
         {({ getInputProps, suggestions, getSuggestionItemProps }) => (
           <div>
-            <input size='50'
+            <input size='50' pattern="[a-zA-Z]{5,}" title="Minimum 5 letters" required
               {...getInputProps({
                 placeholder: '302 Massachusetts Avenue, Arlington, MA, USA',
                 className: 'location-search-input'
