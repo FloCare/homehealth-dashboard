@@ -22,7 +22,6 @@ const API_URL = 'http://app-9707.on-aptible.com';
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
     switch (type) {
     case GET_LIST: {
-        console.log('INSIDE REQ');
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
         const query = {
@@ -31,10 +30,15 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
             // filter: JSON.stringify(params.filter),
         };
-        return { url: `${API_URL}/${resource}v1.0/all?${stringify(query)}` };
+        const options = {};
+        options.headers = new Headers({Authorization: 'Token 8a4e3fc6bdf9fea3064580432a4380122d8a75ae'});
+        if(resource === 'users/') {
+            return { url: `${API_URL}/${resource}v1.0/orgaccess?${stringify(query)}`, options};
+        }
+        return { url: `${API_URL}/${resource}v1.0/patients?${stringify(query)}`, options};
     }
     case GET_ONE:
-        return { url: `${API_URL}/${resource}v1.0/all/${params.id}` };
+        return { url: `${API_URL}/${resource}v1.0/my-patients-details/${params.id}` };
     case GET_MANY: {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
@@ -52,16 +56,39 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         return { url: `${API_URL}/${resource}?${stringify(query)}` };
     }
     case UPDATE:
-    console.log('INSIDE UPDAATE');
         return {
             url: `${API_URL}/${resource}/${params.id}`,
             options: { method: 'PUT', body: JSON.stringify(params.data) },
         };
     case CREATE:
-        console.log(params.data);
+        var request = {};
+        params.data.address={"apartment_no": params.data.apartment_no,
+            "streetAddress": params.data.address,
+            "zipCode": localStorage.getItem('postalCode'),
+            "city": localStorage.getItem('cityName'),
+            "state": localStorage.getItem('stateName'),
+            "country": localStorage.getItem('countryName'),
+            "latitude": localStorage.getItem('latitude'),
+            "longitude": localStorage.getItem('longitude') };
+
+            request.patient = {};
+            request.patient.address = params.data.address;
+            request.patient.firstName = params.data.firstName;
+            request.patient.lastName = params.data.lastName;
+            request.patient.primaryContact = params.data.primaryContact;
+            request.patient.emergencyContact = params.data.secondaryContact;
+            request.users = params.data.users;
+            console.log(JSON.stringify(request));
+            localStorage.removeItem('postalCode');
+            localStorage.removeItem('cityName');
+            localStorage.removeItem('stateName');
+            localStorage.removeItem('countryName');
+            localStorage.removeItem('latitude');
+            localStorage.removeItem('longitude');
+        
         return {
-            url: `${API_URL}/${resource}`,
-            options: { method: 'POST', body: JSON.stringify(params.data) },
+            url: `${API_URL}/${resource}v1.0/patients/?format=json`,
+            options: { method: 'POST', headers: new Headers({Authorization: 'Token 8a4e3fc6bdf9fea3064580432a4380122d8a75ae'}), body: JSON.stringify(request) },
         };
     case DELETE:
         return {
@@ -84,10 +111,9 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
     const { headers, json } = response;
     switch (type) {
     case GET_LIST:
-        console.log('CONVERT HTTP to Data');
         return {
             data: json.map(x => x),
-            total: 10,
+            total: 20,
         };
     case CREATE:
         return { data: { ...params.data, id: json.id } };

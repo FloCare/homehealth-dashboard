@@ -1,7 +1,5 @@
 import React from 'react';
 import { fetchUtils, Admin, Resource } from 'react-admin';
-import jsonServerProvider from 'ra-data-json-server';
-import simpleRestProvider from 'ra-data-simple-rest';
 import PatientIcon from '@material-ui/icons/Book';
 import UserIcon from '@material-ui/icons/Group';
 import { PatientList, PatientEdit } from './patients';

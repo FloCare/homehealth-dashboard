@@ -20,10 +20,10 @@ export default (type, params) => {
                 return response.json();
             })
             .then(({ token }) => {
+                console.log(token);
                 localStorage.setItem('access_token', token);
             });
         // accept all username/password combinations
-        return Promise.resolve();
     }
     // called when the user clicks on the logout button
     if (type === AUTH_LOGOUT) {

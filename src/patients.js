@@ -1,9 +1,10 @@
 import React from 'react';
-import { List, Edit, Create, Datagrid, ReferenceField, TextField, EditButton, DisabledInput, 
-	LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput, Filter, TabbedForm, FormTab, SelectArrayInput, Labeled} from 'react-admin';
+import { List, Edit, Create, Datagrid, TextField, EditButton, ReferenceInput, SelectInput, SimpleForm, TextInput, Filter, TabbedForm, FormTab, SelectArrayInput, Labeled} from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {FetchUsers} from './connectionUtils';
 import LocationSearchInput from './LocationSearchInput';
+import SearchBar from './SearchBar';
+import { Field } from 'redux-form';
 
 const PatientFilter = (props) => (
     <Filter {...props}>
@@ -18,9 +19,10 @@ export const PatientList = (props) => (
     <List {...props} title="List of patients">
         <Datagrid>
             <TextField source="id" />
-            <TextField source="name" />
-            <TextField source="primary_contact" />
-            <TextField source="secondary_contact" />
+            <TextField source="firstName" />
+            <TextField source="lastName" />
+            <TextField source="primaryContact" />
+            <TextField source="address.streetAddress" />
             <EditButton />
         </Datagrid>
     </List>
@@ -32,26 +34,18 @@ const PatientTitle = ({ record }) => {
 
 export const PatientEdit = (props) => (
     <Edit title="Edit Patient" {...props}>
-<TabbedForm>
-            <FormTab label="details">
-                <TextInput source="id" />
-                <TextInput source="name" />
-                <TextInput source="primary_contact" />
-                <TextInput source="secondary_contact" />
-            </FormTab>
-            <FormTab label="address">
-                <TextInput source="id" />
-                <TextInput source="name" />
-                <TextInput source="primary_contact" />
-                <TextInput source="secondary_contact" />
-            </FormTab>
-            <FormTab label="users">
-                <TextInput source="id" />
-                <TextInput source="name" />
-                <TextInput source="primary_contact" />
-                <TextInput source="secondary_contact" />
-            </FormTab>
-        </TabbedForm>
+        <SimpleForm>
+                        <Labeled label="Basic Details"  />
+                        <TextInput source="firstName" />
+                        <TextInput source="lastName"  />
+                        <TextInput source="primaryContact"  />
+                        <TextInput source="secondaryContact"  />
+                        <Labeled label="Address Details"  />
+                        <TextInput source="apartment_no" />
+                        <Labeled label="Street Address"  />
+                        <Field source="address" name="address" component={SearchBar} />
+
+                </SimpleForm>
     </Edit>
 );
 
@@ -61,39 +55,6 @@ const styles = {
     fontWeight: 'bold'}
 };
 
-const choices = [
-                    { id: 'music', name: 'Music' },
-                    { id: 'photography', name: 'Photo' },
-                    { id: 'programming', name: 'Code' },
-                    { id: 'tech', name: 'Technology' },
-                    { id: 'sport', name: 'Sport' },
-                    { id: 'music', name: 'Music' },
-                    { id: 'photography', name: 'Photo' },
-                    { id: 'programming', name: 'Code' },
-                    { id: 'tech', name: 'Technology' },
-                    { id: 'sport', name: 'Sport' },
-                    { id: 'music', name: 'Music' },
-                    { id: 'photography', name: 'Photo' },
-                    { id: 'programming', name: 'Code' },
-                    { id: 'tech', name: 'Technology' },
-                    { id: 'sport', name: 'Sport' },
-                    { id: 'music', name: 'Music' },
-                    { id: 'photography', name: 'Photo' },
-                    { id: 'programming', name: 'Code' },
-                    { id: 'tech', name: 'Technology' },
-                    { id: 'sport', name: 'Sport' },
-                    { id: 'music', name: 'Music' },
-                    { id: 'photography', name: 'Photo' },
-                    { id: 'programming', name: 'Code' },
-                    { id: 'tech', name: 'Technology' },
-                    { id: 'sport', name: 'Sport' },
-                    { id: 'music', name: 'Music' },
-                    { id: 'photography', name: 'Photo' },
-                    { id: 'programming', name: 'Code' },
-                    { id: 'tech', name: 'Technology' },
-                    { id: 'sport', name: 'Sport' },
-                ];
-
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create {...props} title="Create Patient">
     <SimpleForm>
@@ -101,7 +62,6 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="last_name" formClassName={classes.inlineBlock} />
             <TextInput source="primary_contact" formClassName={classes.inlineBlock} />
             <TextInput source="secondary_contact" formClassName={classes.inlineBlock} />
-            <SelectArrayInput label="Users" source="users" choices={choices} />
             <TextInput source="house_number" />
             <Labeled label="Street Address" formClassName={classes.textStyle} />
             <LocationSearchInput source="address"/>

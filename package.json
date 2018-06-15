@@ -17,6 +17,7 @@
     "ra-data-json-server": "^2.0.2",
     "react-admin": "^2.0.2",
     "ra-data-simple-rest": "~2.0.0",
-    "react-places-autocomplete": "7.1.2"
+    "react-places-autocomplete": "7.1.2",
+    "redux-form": "7.4.0"
   }
 }
