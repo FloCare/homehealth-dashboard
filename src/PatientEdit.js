@@ -1,6 +1,6 @@
 import React from 'react';
 import { List, Edit, Create, Datagrid, ReferenceField, TextField, EditButton, DisabledInput, 
-    LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput, Filter, TabbedForm, FormTab, SelectArrayInput, Labeled} from 'react-admin';
+    LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput, Filter, TabbedForm, FormTab, SelectArrayInput, Labeled, ChipField} from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {FetchUsers} from './connectionUtils';
 import LocationSearchInput from './LocationSearchInput';
@@ -46,21 +46,25 @@ class PatientEdit extends React.Component {
     }
 
 
-    render(props, {...rest}) {
-        console.log(this.props);
-        console.log(this.rest);
+    render(props) {
         return (
             <Edit location={this.props.location}
             match={this.props.match}
             resource={this.props.resource}
             title="Edit Patient">
                 <SimpleForm>
+                        <div>
                         <h4> Basic Details </h4>
+                        </div>
                         <DisabledInput source="firstName" />
                         <DisabledInput source="lastName"  />
                         <DisabledInput source="primaryContact"  />
+                        <div>
                         <h4> Care Givers </h4>
-                        <SelectArrayInput label="Users" source="users" choices={this.state.users}/>
+                        </div>
+                        <SelectArrayInput label="Users" source="users" choices={this.state.users}>
+                            <ChipField source="name" />
+                        </SelectArrayInput>
 
                 </SimpleForm>
             </Edit>

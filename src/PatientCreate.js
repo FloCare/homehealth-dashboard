@@ -85,7 +85,7 @@ class PatientCreate extends React.Component<classes> {
             if (!values.primaryContact) {
                 errors.primaryContact = ['PrimaryContact is required'];
             }
-            if (!values.address) {
+            if (!values.address || values.address.length < 6) {
                 errors.address = ['The street address has to be selected from the dropdown'];
             }
             return errors
@@ -105,6 +105,9 @@ class PatientCreate extends React.Component<classes> {
                         <TextInput source="apartment_no" />
                         <h4> Care Givers </h4>
                         <SelectArrayInput label="Users" source="users" choices={this.state.users}/>
+                        <div style={{width: '100%', marginTop: 30}}>
+                            <font size="2" color="red">Note: Do select the street address from the suggestions</font> 
+                        </div>
                 </SimpleForm>
             </Create>
         );

@@ -40,7 +40,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
     case GET_ONE:
         const options = {};
         options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
-        return { url: `${API_URL}/${resource}v1.0/patients/${params.id}/`, options };
+        return { url: `${API_URL}/${resource}v1.0/patients/${params.id}`, options };
     case GET_MANY: {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
@@ -58,9 +58,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         return { url: `${API_URL}/${resource}?${stringify(query)}` };
     }
     case UPDATE:
-        console.log('updating');
         var request = {};
         request.users=params.data.users;
+        request.firstName=params.data.firstName;
+        request.lastName=params.data.lastName;
+        request.id=params.data.id;
+        request.primaryContact=params.data.primaryContact;
+        console.log(request);
         return {
             url: `${API_URL}/${resource}v1.0/patients/${params.id}/`,
             options: { method: 'PUT', body: JSON.stringify(request), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
@@ -114,44 +118,30 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
     const { headers, json } = response;
+        console.log(json);
     switch (type) {
-    case GET_LIST:
-        if(resource === 'users/') {
-            return {
-                data: json.users.map(x => x),
-                total: 20
+        case GET_LIST:
+            if(resource === 'users/') {
+                return {
+                    data: json.users.map(x => x),
+                    total: 20
+                }
             }
-        }
-        return {
-            data: json.map(x => x),
-            total: 20,
-        };
-    case CREATE:
-        return { data: { ...params.data, id: json.id } };
-    default:
-        console.log(JSON.stringify(json));
-        return { data: {
-    "patient": {
-        "id": 29,
-        "firstName": "Narendra",
-        "lastName": "Modi",
-        "primaryContact": "9912345677",
-        "emergencyContact": "9123123413",
-        "timestamp": "2018-06-15T13:18:51.513841Z",
-        "address": {
-            "id": 38,
-            "apartment_no": "123",
-            "streetAddress": "San Francisco Airport (SFO), San Francisco, CA, USA",
-            "zipCode": "94128",
-            "city": "San Francisco",
-            "state": "California",
-            "country": "United States",
-            "latitude": 37.6213129,
-            "longitude": -122.3789554
-        }
-    },
-    "users": [4]
-} };
+            return {
+                data: json.map(x => x),
+                total: 20,
+            };
+        case CREATE:
+            return { data: { ...params.data, id: json.id } };
+        case GET_ONE:
+            return { data: {
+                "id": json.id,
+                "firstName": json.patient.firstName,
+                "lastName": json.patient.lastName,
+                "primaryContact": json.patient.primaryContact
+            }  };
+        default:
+            return { data: json};
     }
 };
 
