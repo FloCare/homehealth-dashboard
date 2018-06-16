@@ -20,6 +20,7 @@ export const PatientList = (props) => (
     <List {...props} title="List of patients">
         <Datagrid>
             <TextField source="id" />
+            <TextField source="firstName" />
             <TextField source="lastName" />
             <TextField source="primaryContact" />
             <EditButton />
