@@ -86,7 +86,7 @@ class PatientCreate extends React.Component<classes> {
                 errors.primaryContact = ['PrimaryContact is required'];
             }
             if (!values.address) {
-                errors.apartment_no = ['The street address has to be selected from the dropdown'];
+                errors.address = ['The street address has to be selected from the dropdown'];
             }
             return errors
         };

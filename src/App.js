@@ -8,6 +8,13 @@ import PatientEdit from './PatientEdit';
 import { UserList } from './users';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
+import { createMuiTheme } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark', // Switching the dark mode on is a single property value change.
+  },
+});
 
 // const httpClient = (url, options = {}) => {
 //     if (!options.headers) {
@@ -20,7 +27,7 @@ import dataProvider from './dataProvider';
 
 const App = () => (
     <Admin 
-    title="Team Version"
+    title="FloCare Team Version"
     authProvider={authProvider}
     dataProvider={dataProvider}
     >

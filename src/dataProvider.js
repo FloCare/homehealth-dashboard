@@ -40,7 +40,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
     case GET_ONE:
         const options = {};
         options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
-        return { url: `${API_URL}/${resource}v1.0/patients/${params.id}`, options };
+        return { url: `${API_URL}/${resource}v1.0/patients/${params.id}/`, options };
     case GET_MANY: {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
