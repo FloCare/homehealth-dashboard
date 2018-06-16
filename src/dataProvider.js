@@ -97,8 +97,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         };
     case DELETE:
         return {
-            url: `${API_URL}/${resource}/${params.id}`,
-            options: { method: 'DELETE' },
+            url: `${API_URL}/${resource}v1.0/patients/${params.id}`,
+            options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
         };
     default:
         throw new Error(`Unsupported fetch action type ${type}`);
@@ -128,16 +128,30 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         };
     case CREATE:
         return { data: { ...params.data, id: json.id } };
-    case GET_ONE:
-        console.log(json);
-        var response = {};
-        response.patient = {};
-        response.users=[1];
-        response.patient.address = json.patient.address;
-        console.log(response);
-        return { data: response};
     default:
-        return { data: json };
+        console.log(JSON.stringify(json));
+        return { data: {
+    "patient": {
+        "id": 29,
+        "firstName": "Narendra",
+        "lastName": "Modi",
+        "primaryContact": "9912345677",
+        "emergencyContact": "9123123413",
+        "timestamp": "2018-06-15T13:18:51.513841Z",
+        "address": {
+            "id": 38,
+            "apartment_no": "123",
+            "streetAddress": "San Francisco Airport (SFO), San Francisco, CA, USA",
+            "zipCode": "94128",
+            "city": "San Francisco",
+            "state": "California",
+            "country": "United States",
+            "latitude": 37.6213129,
+            "longitude": -122.3789554
+        }
+    },
+    "users": [4]
+} };
     }
 };
 

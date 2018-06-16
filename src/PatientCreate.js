@@ -5,7 +5,17 @@ import {FetchUsers} from './connectionUtils';
 import SearchBar from './SearchBar';
 import { Field } from 'redux-form';
 
-class PatientCreate extends React.Component {
+const styles = {
+    main: {
+        marginTop: 48,
+        padding: 10,
+    },
+    foo: {
+        margin: 0,
+    },
+};
+
+class PatientCreate extends React.Component<classes> {
     constructor(props) {
         super(props);
         this.handleInput=this.handleInput.bind(this); 
@@ -47,6 +57,7 @@ class PatientCreate extends React.Component {
 
 
     render(props) {
+
         const required = (message = 'Required') =>
             value => value ? undefined : message;
         const maxLength = (max, message = 'Too short') =>
@@ -85,18 +96,15 @@ class PatientCreate extends React.Component {
             resource={this.props.resource}
             title="Create Patient">
                 <SimpleForm validate={validateUserCreation}>
-                        <Labeled label="Basic Details"  />
+                        <h4> Basic Details </h4>
                         <TextInput source="firstName" formClassName={{display: 'inline-flex', fontSize: 34, color: 'black', fontWeight: 'bold'}} />
                         <TextInput source="lastName"  formClassName={{display: 'inline-flex', fontSize: 34, color: 'black', fontWeight: 'bold'}}/>
                         <TextInput source="primaryContact"  />
-                        <TextInput source="secondaryContact"  />
-                        <Labeled label="Caregivers"  />
-                        <SelectArrayInput label="Users" source="users" choices={this.state.users}/>
-                        <Labeled label="Address Details"  />
-                        <TextInput source="apartment_no" />
-                        <Labeled label="Street Address" formClassName={{fontSize: 34, color: 'black', fontWeight: 'bold'}} />
+                        <h4> Address Details </h4>
                         <Field source="address" name="address" component={SearchBar} />
-
+                        <TextInput source="apartment_no" />
+                        <h4> Care Givers </h4>
+                        <SelectArrayInput label="Users" source="users" choices={this.state.users}/>
                 </SimpleForm>
             </Create>
         );
