@@ -1,16 +1,6 @@
 const ParseGooglePlacesAPIResponse = (details) => {
 
-    const address = details[0].address_components;
-
-    let zip = null;
-    let city = null;
-    let state = null;
-    let country = null;
-    let lat = null;
-    let long = null;
-
     let streetAddress = details[0].address_components;
-
     for (var i = 0; i < streetAddress.length; i++) {
                 var addr = streetAddress[i];
                 var countryName;
@@ -39,16 +29,11 @@ const ParseGooglePlacesAPIResponse = (details) => {
     if (details[0].geometry) {
         const location = details[0].geometry.location;
         if (location) {
-            lat = location.lat;
-            long = location.lng;
+            localStorage.setItem('latitude', location.lat);
+            localStorage.setItem('longitude', location.long);
         }
     }
 
-    // const response = {
-    //     zip, city, stateName: state, country, streetAddress, lat, long
-    // };
-
-    // return response;
 };
 
 export {ParseGooglePlacesAPIResponse};
