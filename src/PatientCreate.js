@@ -1,37 +1,33 @@
 import React, {Component} from 'react';
-import {Create, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput} from 'react-admin';
+import {Create, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput} from 'react-admin';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
 
-// const required = (message = 'Required') =>
-//     value => value ? undefined : message;
-// const maxLength = (max, message = 'Too short') =>
-//     value => value && value.length < max ? message : undefined;
-// const number = (message = 'Must be a number') =>
-//     value => value && isNaN(Number(value)) ? message : undefined;
-// const minValue = (min, message = 'Too small') =>
-//     value => value && value < min ? message : undefined;
-// const phoneLength = (max, message = 'Phone number should be of size 10') =>
-//     value => value && value.length < max ? message : undefined;
 
-// const phoneNumberValidation = [required(), phoneLength(10)];
-// const validateAddress = [required()];
-// const validateFirstName = [required(), maxLength(5)];
-// const validateUsers = [required(), maxLength(1)];
 
-const validateUserCreation = (values) => {
+const validatePatientCreation = (values) => {
     const errors = {};
     if (!values.firstName) {
-        errors.firstName = ['FirstName is required'];
+        errors.firstName = ['Required'];
     }
     if (!values.lastName) {
-        errors.lastName = ['LastName is required'];
-    }
-    if (!values.primaryContact) {
-        errors.primaryContact = ['PrimaryContact is required'];
+        errors.lastName = ['Required'];
     }
     if (!values.address || values.address.length < 6) {
         errors.address = ['The street address has to be selected from the dropdown'];
+    }
+    const primaryContact = values.primaryContact;
+    if (!values.primaryContact) {
+        errors.primaryContact = ['Required'];
+    }
+    else if (!primaryContact ||  isNaN(primaryContact)) {
+        errors.primaryContact = ['Contact Number can only contain numerics'];
+    }
+    else if (!primaryContact || primaryContact.length < 10) {
+        errors.primaryContact = ['Contact Number incomplete'];
+    }
+    else if (!primaryContact || primaryContact.length > 10) {
+        errors.primaryContact = ['Contact Number too long'];
     }
     return errors
 };
@@ -48,16 +44,15 @@ const Heading = props => {
 class PatientCreate extends Component {
     render() {
         const props = {...this.props};
-        // console.log('Props:',props);
         return (
             <Create
                 {...props}
                 title="Create Patient"
             >
-                <SimpleForm validate={validateUserCreation}>
+                <SimpleForm validate={validatePatientCreation}>
                     <Heading text="Basic Details"/>
-                    <TextInput source="firstName" formClassName={{display: 'inline-flex', fontSize: 34, color: 'black', fontWeight: 'bold'}} />
-                    <TextInput source="lastName"  formClassName={{display: 'inline-flex', fontSize: 34, color: 'black', fontWeight: 'bold'}}/>
+                    <LongTextInput source="firstName" style={{ width: 250, display: 'inline-block' }} />
+                    <LongTextInput source="lastName"  style={{ width: 250, display: 'inline-block' }}/>
                     <TextInput source="primaryContact"  />
                     <Heading text="Address Details"/>
                     <Field source="address" name="address" component={SearchBar} />
