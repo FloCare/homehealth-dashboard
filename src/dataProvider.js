@@ -20,7 +20,11 @@ const API_URL = 'http://app-9707.on-aptible.com';
  * @returns {Object} { url, options } The HTTP request parameters
  */
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
-    // console.log('params:', params);
+    // console.log('Converting Data Provider Call to HTTP Request on:');
+    // console.log('Type:', type);
+    // console.log('Resource:', resource);
+    // console.log('Params:', params);
+
     switch (type) {
         case GET_LIST: {
             // console.log('Running GET LIST for:', resource);
@@ -36,9 +40,9 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'users':
-                    return { url: `${API_URL}/${resource}/v1.0/org-access?${stringify(query)}`, options};
+                    return { url: `${API_URL}/${resource}/v1.0/org-access/?${stringify(query)}`, options};
                 case 'phi':
-                    return { url: `${API_URL}/${resource}/v1.0/patients?${stringify(query)}`, options};
+                    return { url: `${API_URL}/${resource}/v1.0/patients/?${stringify(query)}`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -171,6 +175,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  * @returns {Object} Data Provider response
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
+    // console.log('Converting API Response to Data Provider:', params);
     const {json} = response;
     switch (type) {
 
