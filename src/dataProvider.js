@@ -154,7 +154,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         case DELETE:
             // console.log('Running DELETE for:', resource);
             return {
-                url: `${API_URL}/${resource}v1.0/patients/${params.id}`,
+                url: `${API_URL}/${resource}/v1.0/patients/${params.id}`,
                 options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
             };
 
