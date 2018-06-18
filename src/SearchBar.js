@@ -60,23 +60,29 @@ class SearchBar extends React.Component {
 
   render() {
     const { input: { value, onChange } } = this.props
+    console.log(this.props);
     const myStyles = {
-    root: { position: 'absolute' },
-    input: { width: '100%' },
-    autocompleteContainer: { backgroundColor: 'green' },
-    autocompleteItem: { color: 'black' },
-    autocompleteItemActive: { color: 'blue' }
-  }
+      root: { position: 'absolute' },
+      input: { width: '100%' },
+      autocompleteContainer: { backgroundColor: 'green' },
+      autocompleteItem: { color: 'black' },
+      autocompleteItemActive: { color: 'blue' }
+    }
+    const searchOptions = {
+      types: ['address'],
+      componentRestrictions: {country: "us"}
+    }
     return (
       <PlacesAutocomplete
         value={this.state.address}
         onChange={this.handleChange}
+        searchOptions={searchOptions}
         onSelect={this.handleSelect}
         styles={myStyles}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps }) => (
           <div>
-            <input size='42' pattern="[a-zA-Z]{5,}" title="Minimum 5 letters" required
+            <input size='42' padding='16px' pattern="[a-zA-Z]{5,}" title="Minimum 5 letters" required
               {...getInputProps({
                 placeholder: '2340 1st Avenue, New York, NY, USA',
                 className: 'location-search-input'
