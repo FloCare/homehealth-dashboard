@@ -1,6 +1,6 @@
 import React from 'react';
 import {List, Datagrid, TextField, EditButton} from 'react-admin';
-import {Create, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput, TabbedForm, FormTab} from 'react-admin';
+import {Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput, TabbedForm, FormTab, DisabledInput} from 'react-admin';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -84,24 +84,34 @@ const styles = {
     textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'}
 };
 
-// export const PatientEdit = withStyles(styles)(({ classes, ...props, ...rest }) => (
-//     <Edit title="Edit Patient" {...props}>
-//         <SimpleForm>
-//                         <Labeled label="Basic Details" formClassName={classes.textStyle} />
-//                         <DisabledInput source="firstName" />
-//                         <DisabledInput source="lastName"  />
-//                         <DisabledInput source="primaryContact"  />
-//                         <DisabledInput source="secondaryContact"  />
-//                         <Labeled label="Caregivers" formClassName={classes.textStyle} />
-//                         <SelectArrayInput label="Users" source="users" choices={[
-//                                     { id: '1', name: 'pymd' },
-//                                     { id: '2', name: 'harshal' }
-//                                 ]}/>
-//                 </SimpleForm>
-//     </Edit>
-// ));
-//
-//
+// const PatientEditActions = ({ basePath, data, resource }) => (
+//     <CardActions>
+//         <ShowButton basePath={basePath} record={data} />
+//         <ListButton basePath={basePath} />
+//         <DeleteButton basePath={basePath} record={data} resource={resource} />
+//         <RefreshButton />
+//         {/* Add your custom actions */}
+//         {/*<Button color="primary" onClick={customAction}>Custom Action</Button>*/}
+//     </CardActions>
+// );
+
+
+export const PatientEdit = withStyles(styles)(({ classes, ...props, ...rest }) => (
+    <Edit title="Edit Patient" {...props}>
+        <SimpleForm>
+            <Heading text="Basic Details"/>
+            <DisabledInput source="firstName" formClassName={classes.inlineBlock} />
+            <DisabledInput source="lastName" formClassName={classes.inlineBlock} />
+            <DisabledInput source="primaryContact" label="Phone Number" />
+            <Heading text="Care Team"/>
+            <ReferenceArrayInput label="Users" source="userIds" reference="users">
+                <SelectArrayInput optionText="username" optionValue="id" />
+            </ReferenceArrayInput>
+        </SimpleForm>
+    </Edit>
+));
+
+
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create {...props} title="Create Patient">
         <SimpleForm validate={validatePatientCreation} redirect="list">
