@@ -11,8 +11,8 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 
-// const API_URL = 'http://app-9707.on-aptible.com';
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://app-9707.on-aptible.com';
+// const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
