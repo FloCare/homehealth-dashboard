@@ -1,8 +1,13 @@
 import React, {Component} from 'react';
-import {Create, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput} from 'react-admin';
+import {Create, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput,
+//     CardActions,
+//     ListButton,
+//     ShowButton,
+//     DeleteButton,
+//     RefreshButton,
+} from 'react-admin';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
-
 
 
 const validatePatientCreation = (values) => {
@@ -41,6 +46,17 @@ const Heading = props => {
     );
 };
 
+// const PatientCreateActions = ({ basePath, data, resource }) => (
+//     <CardActions>
+//         {/*<ShowButton basePath={basePath} record={data} />*/}
+//         <ListButton basePath={basePath} />
+//         {/*<DeleteButton basePath={basePath} record={data} resource={resource} />*/}
+//         <RefreshButton />
+//         {/* Add your custom actions */}
+//         {/*<Button color="primary" onClick={customAction}>Custom Action</Button>*/}
+//     </CardActions>
+// );
+
 class PatientCreate extends Component {
     render() {
         const props = {...this.props};
@@ -48,8 +64,12 @@ class PatientCreate extends Component {
             <Create
                 {...props}
                 title="Create Patient"
+                // actions={<PatientCreateActions/>}
             >
-                <SimpleForm validate={validatePatientCreation}>
+                <SimpleForm
+                    validate={validatePatientCreation}
+                    redirect="list"
+                >
                     <Heading text="Basic Details"/>
                     <LongTextInput source="firstName" style={{ width: 250, display: 'inline-block' }} />
                     <LongTextInput source="lastName"  style={{ width: 250, display: 'inline-block' }}/>

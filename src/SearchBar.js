@@ -1,6 +1,5 @@
 import React from 'react';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { Field } from 'redux-form';
 import {ParseGooglePlacesAPIResponse} from './parsingUtils';
 
 class SearchBar extends React.Component {

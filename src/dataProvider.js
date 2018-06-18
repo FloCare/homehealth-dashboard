@@ -11,7 +11,8 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 
-const API_URL = 'http://app-9707.on-aptible.com';
+// const API_URL = 'http://app-9707.on-aptible.com';
+const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -20,16 +21,16 @@ const API_URL = 'http://app-9707.on-aptible.com';
  * @returns {Object} { url, options } The HTTP request parameters
  */
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
-    // console.log('Converting Data Provider Call to HTTP Request on:');
-    // console.log('Type:', type);
-    // console.log('Resource:', resource);
-    // console.log('Params:', params);
+    console.log('');
+    console.log('Converting Data Provider Call to HTTP Request on:');
+    console.log('This called:', type, resource, params);
+    console.log('');
 
     switch (type) {
         case GET_LIST: {
             // console.log('Running GET LIST for:', resource);
-            const {page, perPage} = params.pagination;
-            const {field, order} = params.sort;
+            // const {page, perPage} = params.pagination;
+            // const {field, order} = params.sort;
             const query = {
                 format: 'json',
                 // sort: JSON.stringify([field, order]),
@@ -54,25 +55,24 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'phi':
-                    return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}`, options };
+                    return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
 
-        // Todo: Check if this is being used
         case GET_MANY: {
             // console.log('Running GET MANY for:', resource);
-            const users = params.ids;
-            const ids = [];
-            for(let i in users){
-                ids.push(users[i].id);
-            }
+            // const users = params.ids;
+            // const ids = [];
+            // for(let i in users){
+            //     ids.push(users[i].id);
+            // }
             // console.log('ids:',ids);
             const query = {
                 format: 'json',
                 // sort: JSON.stringify([field, order]),
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-                ids: ids.toString(),
+                // ids: ids.toString(),
             };
             // console.log('Query params:', stringify(query));
             const options = {};
@@ -82,10 +82,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'users':
                     return { url: `${API_URL}/${resource}/v1.0/org-access/?${stringify(query)}`, options};
                 default:
-                    const query = {
-                        filter: JSON.stringify({ id: params.ids }),
-                    };
-                    return { url: `${API_URL}/${resource}/?${stringify(query)}` };
+                    // const query = {
+                    //     filter: JSON.stringify({ id: params.ids }),
+                    // };
+                    // return { url: `${API_URL}/${resource}/?${stringify(query)}` };
+                    throw new Error(`Unsupported fetch action type ${type}`);
             }
         }
 
@@ -106,12 +107,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             switch(resource) {
                 case 'phi':
                     // console.log('params:', params);
-                    var request = {};
-                    request.id=params.data.id;
-                    request.users=params.data.users;
+                    var body = {};
+                    body.id=params.data.id;
+                    body.users=params.data.userIds;
+                    // console.log('Sending request with body:', body);
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
-                        options: { method: 'PUT', body: JSON.stringify(request), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                        options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     };
                 default:
                     console.log('ERROR! Edit called on invalid resources.');
@@ -183,8 +185,24 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             // console.log('EXECUTED GET_LIST for:', resource);
             switch(resource) {
                 case 'users':
+                    // console.log('Users are:', json.users);
                     return {
                         data: json.users.map(x => x),
+                        total: 20
+                    };
+                case 'phi':
+                    const data = json.map(item => {
+                        return ({
+                            id: item.patient.id,
+                            firstName: item.patient.firstName,
+                            lastName: item.patient.lastName,
+                            primaryContact: item.patient.primaryContact,
+                            userIds: item.userIds
+                        });
+                    });
+                    return {
+                        //data: json.map(x => x),
+                        data: data,
                         total: 20
                     };
                 default:
@@ -197,6 +215,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             // console.log('EXECUTED GET_MANY for:', resource);
             switch(resource) {
                 case 'users':
+                    // console.log('Users are:', json.users);
                     return {
                         data: json.users.map(x => x),
                         total: 20
@@ -209,30 +228,26 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             }
 
 
-        case CREATE:
-            // console.log('Type:', type);
-            // console.log('resource:', resource);
-            // console.log('params.data:', params.data);
-            return { data: { ...params.data, id: json.id } };
+        // case CREATE:
+        //     // console.log('Type:', type);
+        //     // console.log('resource:', resource);
+        //     // console.log('params.data:', params.data);
+        //     console.log('Params:', params);
+        //     console.log('id:', json.id);
+        //     return { data: { ...params.data} };
 
         case GET_ONE:
             switch (resource) {
                 case 'phi':
-                    const users = json.users;
-                    // console.log('Users are:', users);
-                    let usersData = [];
-                    if (users.length > 0) {
-                        usersData = users.map(user => {return {id: user.id, username: user.username} });
-                    }
-                    // console.log('userData being sent is:', usersData);
+                    // console.log('Data from GET_ONE:', json);
+
                     return {
                         data: {
                             "id": json.id,
                             "firstName": json.patient.firstName,
                             "lastName": json.patient.lastName,
                             "primaryContact": json.patient.primaryContact,
-                            "address": json.patient.address.streetAddress,
-                            "users": usersData
+                            "userIds": json.userIds
                         }
                     };
                 default:
@@ -240,7 +255,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             }
 
         default:
-            return { data: json};
+            return {data: json};
     }
 };
 
@@ -252,7 +267,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
  */
 export default (type, resource, params) => {
     const { fetchJson } = fetchUtils;
-    const { url, options } = convertDataProviderRequestToHTTP(type, resource, params);
+    const {url, options} = convertDataProviderRequestToHTTP(type, resource, params);
     return fetchJson(url, options)
         .then(response => convertHTTPResponseToDataProvider(response, type, resource, params));
 };

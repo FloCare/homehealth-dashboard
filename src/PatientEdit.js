@@ -1,5 +1,11 @@
 import React from 'react';
-import {Edit, DisabledInput, ReferenceArrayInput, SimpleForm, SelectArrayInput, ChipField, ArrayInput, SimpleFormIterator, TextInput} from 'react-admin';
+import {Edit, DisabledInput, ReferenceArrayInput, SimpleForm, SelectArrayInput, ChipField, ArrayInput, SimpleFormIterator, TextInput,
+    // CardActions,
+    // ListButton,
+    // ShowButton,
+    // DeleteButton,
+    // RefreshButton,
+} from 'react-admin';
 
 const Heading = props => {
     const {text} = props;
@@ -10,24 +16,40 @@ const Heading = props => {
     );
 };
 
+const PatientTitle = ({ record }) => {
+    return <span>{record ? `${record.firstName}` : 'Patient'}</span>;
+};
+
+// const PatientEditActions = ({ basePath, data, resource }) => (
+//     <CardActions>
+//         <ShowButton basePath={basePath} record={data} />
+//         <ListButton basePath={basePath} />
+//         <DeleteButton basePath={basePath} record={data} resource={resource} />
+//         <RefreshButton />
+//         {/* Add your custom actions */}
+//         {/*<Button color="primary" onClick={customAction}>Custom Action</Button>*/}
+//     </CardActions>
+// );
+
+
 class PatientEdit extends React.Component {
     render() {
         const props = {...this.props};
-        // console.log('Props:',props);
+        // console.log('Props inside of PatientEdit are:',props);
         return (
             <Edit
                 {...props}
-                title="Edit Patient"
+                title={<PatientTitle />}
+                // actions={<PatientEditActions/>}
             >
                 <SimpleForm>
                     <Heading text="Basic Details" />
                     <DisabledInput source="firstName" />
                     <DisabledInput source="lastName" />
                     <DisabledInput source="primaryContact" />
-                    <DisabledInput source="address" />
                     <Heading text="Care Givers"/>
-                    <ReferenceArrayInput label="Users" source="users" reference="users">
-                        <SelectArrayInput optionText="username" />
+                    <ReferenceArrayInput label="Users" source="userIds" reference="users">
+                        <SelectArrayInput optionText="username" optionValue="id" />
                     </ReferenceArrayInput>
                 </SimpleForm>
             </Edit>
