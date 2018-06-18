@@ -11,7 +11,7 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 
-const API_URL = 'http://app-9707.on-aptible.com';
+const API_URL = 'https://app-9707.on-aptible.com';
 // const API_URL = 'http://localhost:8000';
 
 /**
