@@ -2,8 +2,7 @@ import React from 'react';
 import { Admin, Resource } from 'react-admin';
 import PatientIcon from '@material-ui/icons/Book';
 import UserIcon from '@material-ui/icons/Group';
-import { PatientList } from './patients';
-import PatientCreate from './PatientCreate';
+import { PatientList, PatientCreate } from './patients';
 import PatientEdit from './PatientEdit';
 import { UserList } from './users';
 import authProvider from './authProvider';
@@ -23,7 +22,7 @@ const App = () => (
         dataProvider={dataProvider}
     >
         <Resource name="phi" options={{label: 'Patients'}} list={PatientList} edit={PatientEdit} create={PatientCreate} icon={PatientIcon} />
-        <Resource name="users" options={{label: 'Users'}} list={UserList} icon={UserIcon} />
+        <Resource name="users" options={{label: 'Staff'}} list={UserList} icon={UserIcon} />
     </Admin>
 );
 

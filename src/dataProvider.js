@@ -126,7 +126,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'phi':
                     var request = {};
                     params.data.address={"apartment_no": params.data.apartment_no,
-                        "streetAddress": params.data.address,
+                        "streetAddress": localStorage.getItem('streetAddress'),
                         "zipCode": localStorage.getItem('postalCode'),
                         "city": localStorage.getItem('cityName'),
                         "state": localStorage.getItem('stateName'),
