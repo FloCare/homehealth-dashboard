@@ -50,7 +50,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         }
 
         case GET_ONE:
-            // console.log('Running GET ONE for:', resource);
+            console.log('Running GET ONE for:', resource);
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
@@ -239,11 +239,11 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         case GET_ONE:
             switch (resource) {
                 case 'phi':
-                    // console.log('Data from GET_ONE:', json);
+                    console.log('Data from GET_ONE:', json);
 
                     return {
                         data: {
-                            "id": json.id,
+                            "id": json.patient.id,
                             "firstName": json.patient.firstName,
                             "lastName": json.patient.lastName,
                             "primaryContact": json.patient.primaryContact,
