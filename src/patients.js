@@ -94,8 +94,8 @@ const styles = {
 //
 //
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
-    <Create {...props} title="Create Patient">
-    <SimpleForm validate={validatePatientCreation}>
+    <Create {...props} title="Create Patient"> 
+    <SimpleForm validate={validatePatientCreation} redirect="list">
                     <Heading text="Basic Details"/>
                     <TextInput source="firstName" formClassName={classes.inlineBlock} />
                     <TextInput source="lastName" formClassName={classes.inlineBlock} />
