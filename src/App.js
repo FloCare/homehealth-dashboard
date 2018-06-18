@@ -22,7 +22,7 @@ const App = () => (
         dataProvider={dataProvider}
     >
         <Resource name="phi" options={{label: 'Patients'}} list={PatientList} edit={PatientEdit} create={PatientCreate} icon={PatientIcon} />
-        <Resource name="users" options={{label: 'Users'}} list={UserList} icon={UserIcon} />
+        <Resource name="users" options={{label: 'Staff'}} list={UserList} icon={UserIcon} />
     </Admin>
 );
 
