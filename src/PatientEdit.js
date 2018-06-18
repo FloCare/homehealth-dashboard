@@ -16,6 +16,15 @@ const Heading = props => {
     );
 };
 
+const Info = props => {
+    const {text, style} = props;
+    return (
+        <div style={style}>
+            <font size="2" color="red">{text}</font>
+        </div>
+    );
+};
+
 const PatientTitle = ({ record }) => {
     return <span>{record ? `${record.firstName}` : 'Patient'}</span>;
 };
@@ -39,15 +48,16 @@ class PatientEdit extends React.Component {
         return (
             <Edit
                 {...props}
-                title={<PatientTitle />}
+                // title={<PatientTitle />}
+                title="Edit Patient"
                 // actions={<PatientEditActions/>}
             >
                 <SimpleForm>
                     <Heading text="Basic Details" />
-                    <DisabledInput source="firstName" />
-                    <DisabledInput source="lastName" />
+                    <DisabledInput source="firstName" style={{ width: 250, display: 'inline-block' }} />
+                    <DisabledInput source="lastName"  style={{ width: 250, display: 'inline-block' }}/>
                     <DisabledInput source="primaryContact" />
-                    <Heading text="Care Givers"/>
+                    <Heading text="Care Team"/>
                     <ReferenceArrayInput label="Users" source="userIds" reference="users">
                         <SelectArrayInput optionText="username" optionValue="id" />
                     </ReferenceArrayInput>

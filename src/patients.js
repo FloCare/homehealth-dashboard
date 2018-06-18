@@ -70,6 +70,15 @@ const Heading = props => {
     );
 };
 
+const Info = props => {
+    const {text, style, textColor} = props;
+    return (
+        <div style={style}>
+            <font size="2" color={textColor}>{text}</font>
+        </div>
+    );
+};
+
 const styles = {
     inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
     textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'}
@@ -94,27 +103,21 @@ const styles = {
 //
 //
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
-    <Create {...props} title="Create Patient"> 
-    <SimpleForm validate={validatePatientCreation} redirect="list">
-                    <Heading text="Basic Details"/>
-                    <TextInput source="firstName" formClassName={classes.inlineBlock} />
-                    <TextInput source="lastName" formClassName={classes.inlineBlock} />
-                    <TextInput source="primaryContact" label="Phone Number" />
-                    <Heading text="Address Details"/>
-                    <TextInput source="apartment_no" label="Apartment, suite, unit, floor etc" styles={{marginBottom: 10}}/>
-                    <div style={{width: '100%', marginTop: 30, marginBottom: 10}}>
-                        <font size="2" color="black">Street Address</font>
-                    </div>
-                    <Field source="address" name="address" component={SearchBar} />
-                    <Heading text="Care Team"/>
-                    <ReferenceArrayInput label="Staff" source="users" reference="users">
-                        <SelectArrayInput optionText="username" optionValue="id" />
-                    </ReferenceArrayInput>
-                    <div style={{width: '100%', marginTop: 30}}>
-                        <font size="2" color="black">Note: Do select the street address from the suggestions</font>
-                    </div>
-
-    </SimpleForm>
-
+    <Create {...props} title="Create Patient">
+        <SimpleForm validate={validatePatientCreation} redirect="list">
+            <Heading text="Basic Details"/>
+            <TextInput source="firstName" formClassName={classes.inlineBlock} />
+            <TextInput source="lastName" formClassName={classes.inlineBlock} />
+            <TextInput source="primaryContact" label="Phone Number" />
+            <Heading text="Address Details"/>
+            <TextInput source="apartment_no" label="Apartment, suite, unit, floor etc" styles={{marginBottom: 10}}/>
+            <Info style={{width: '100%', marginTop: 30, marginBottom: 10}} text="Street Address" textColor="black" />
+            <Field source="address" name="address" component={SearchBar} />
+            <Heading text="Care Team"/>
+            <ReferenceArrayInput label="Staff" source="users" reference="users">
+                <SelectArrayInput optionText="username" optionValue="id" />
+            </ReferenceArrayInput>
+            <Info style={{width: '100%', marginTop: 30}} text="Note: Do select the street address from the suggestions" textColor="black" />
+        </SimpleForm>
     </Create>
 ));
