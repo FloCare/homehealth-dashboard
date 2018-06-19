@@ -12,10 +12,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 export const PatientList = (props) => (
     <List {...props} title="List of patients">
         <Datagrid>
-            <TextField source="id" />
             <TextField source="firstName" />
             <TextField source="lastName" />
-            <TextField source="primaryContact" />
             <EditButton />
         </Datagrid>
     </List>
@@ -102,10 +100,11 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props, ...rest }) =
             <Heading text="Basic Details"/>
             <DisabledInput source="firstName" formClassName={classes.inlineBlock} />
             <DisabledInput source="lastName" formClassName={classes.inlineBlock} />
-            <DisabledInput source="primaryContact" label="Phone Number" />
+            <Heading text="Address Details"/>
+            <DisabledInput source="streetAddress" formClassName={classes.inlineBlock} />
             <Heading text="Care Team"/>
             <ReferenceArrayInput label="Users" source="userIds" reference="users">
-                <SelectArrayInput optionText="username" optionValue="id" />
+                <SelectArrayInput optionText="displayname" optionValue="id" />
             </ReferenceArrayInput>
         </SimpleForm>
     </Edit>
@@ -120,12 +119,12 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
             <TextInput source="primaryContact" label="Phone Number" />
             <Heading text="Address Details"/>
-            <TextInput source="apartment_no" label="Apartment, suite, unit, floor etc" styles={{marginBottom: 10}}/>
             <Info style={{width: '100%', marginTop: 30, marginBottom: 10}} text="Street Address" textColor="black" />
             <Field source="address" name="address" component={SearchBar} />
+            <TextInput source="apartment_no" label="Apartment, suite, unit, floor etc" styles={{marginBottom: 10}}/>
             <Heading text="Care Team"/>
             <ReferenceArrayInput label="Staff" source="users" reference="users">
-                <SelectArrayInput optionText="username" optionValue="id" />
+                <SelectArrayInput optionText="displayname" optionValue="id" />
             </ReferenceArrayInput>
             <Info style={{width: '100%', marginTop: 30}} text="Note: Do select the street address from the suggestions" textColor="black" />
         </SimpleForm>

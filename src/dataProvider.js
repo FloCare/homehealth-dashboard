@@ -29,14 +29,14 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
     switch (type) {
         case GET_LIST: {
             // console.log('Running GET LIST for:', resource);
-            // const {page, perPage} = params.pagination;
-            // const {field, order} = params.sort;
+            const {page, perPage} = params.pagination;
+            const {field, order} = params.sort;
+            console.log(page);
             const query = {
                 format: 'json',
-                // sort: JSON.stringify([field, order]),
-                // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-                // filter: JSON.stringify(params.filter),
+                range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
+            console.log(query.range);
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
@@ -177,17 +177,28 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  * @returns {Object} Data Provider response
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
-    // console.log('Converting API Response to Data Provider:', params);
-    const {json} = response;
+    console.log('Converting API Response to Data Provider:', params);
+    const {json, headers} = response;
     switch (type) {
 
         case GET_LIST:
             // console.log('EXECUTED GET_LIST for:', resource);
             switch(resource) {
                 case 'users':
-                    // console.log('Users are:', json.users);
+                    console.log('Users are:', json.users);
+                    const usersData = json.users.map(user => {
+                        return ({
+                            id: user.id,
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            email: user.email,
+                            contact_no: user.contact_no,
+                            username: user.username,
+                            displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
+                        });
+                    });
                     return {
-                        data: json.users.map(x => x),
+                        data: usersData,
                         total: 20
                     };
                 case 'phi':
@@ -216,8 +227,19 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             switch(resource) {
                 case 'users':
                     // console.log('Users are:', json.users);
+                    const usersData = json.users.map(user => {
+                        return ({
+                            id: user.id,
+                            first_name: user.first_name,
+                            last_name: user.last_name,
+                            email: user.email,
+                            contact_no: user.contact_no,
+                            username: user.username,
+                            displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
+                        });
+                    });
                     return {
-                        data: json.users.map(x => x),
+                        data: usersData,
                         total: 20
                     };
                 default:
@@ -247,6 +269,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "firstName": json.patient.firstName,
                             "lastName": json.patient.lastName,
                             "primaryContact": json.patient.primaryContact,
+                            "streetAddress": json.patient.address.streetAddress,
                             "userIds": json.userIds
                         }
                     };
