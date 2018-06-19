@@ -199,7 +199,13 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     });
                     return {
                         data: usersData,
-                        total: 20
+                        total: parseInt(
+                            headers
+                                .get('content-range')
+                                .split('/')
+                                .pop(),
+                            10
+                        ),
                     };
                 case 'phi':
                     const data = json.map(item => {
@@ -214,7 +220,13 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     return {
                         //data: json.map(x => x),
                         data: data,
-                        total: 20
+                        total: parseInt(
+                            headers
+                                .get('content-range')
+                                .split('/')
+                                .pop(),
+                            10
+                        ),
                     };
                 default:
                     return {
