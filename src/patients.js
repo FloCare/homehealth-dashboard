@@ -10,8 +10,14 @@ import withStyles from '@material-ui/core/styles/withStyles';
 // import SearchBar from './SearchBar';
 // import { Field } from 'redux-form';
 
+const PatientPagination = () => {
+    return (
+        false
+    );
+}
+
 export const PatientList = (props) => (
-    <List {...props} title="List of patients">
+    <List {...props} title="List of patients" pagination={<PatientPagination />}>
         <Datagrid>
             <TextField source="firstName" />
             <TextField source="lastName" />
