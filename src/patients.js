@@ -107,6 +107,7 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props, ...rest }) =
             <Heading text="Basic Details"/>
             <DisabledInput source="firstName" formClassName={classes.inlineBlock} />
             <DisabledInput source="lastName" formClassName={classes.inlineBlock} />
+            <DisabledInput source="primaryContact" label="Phone Number" />
             <Heading text="Address Details"/>
             <DisabledInput source="streetAddress" formClassName={classes.inlineBlock} />
             <Heading text="Care Team"/>
