@@ -24,7 +24,7 @@ export const PatientList = (props) => (
             <ReferenceArrayField
                         label="Staff" reference="users" source="userIds">
                         <SingleFieldList>
-                            <ChipField source="username" />
+                            <ChipField source="displayname" />
                         </SingleFieldList>
                     </ReferenceArrayField>
             <EditButton />
