@@ -16,7 +16,7 @@ export const PatientList = (props) => (
             <TextField source="firstName" />
             <TextField source="lastName" />
             <ReferenceArrayField
-                        label="Users" reference="users" source="userIds">
+                        label="Staff" reference="users" source="userIds">
                         <SingleFieldList>
                             <ChipField source="username" />
                         </SingleFieldList>
