@@ -1,6 +1,7 @@
 import React from 'react';
 import {List, Datagrid, TextField, EditButton} from 'react-admin';
-import {Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput, TabbedForm, FormTab, DisabledInput} from 'react-admin';
+import {Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput, TabbedForm, FormTab, DisabledInput,
+            ReferenceArrayField, SingleFieldList, ChipField} from 'react-admin';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -14,6 +15,12 @@ export const PatientList = (props) => (
         <Datagrid>
             <TextField source="firstName" />
             <TextField source="lastName" />
+            <ReferenceArrayField
+                        label="Users" reference="users" source="userIds">
+                        <SingleFieldList>
+                            <ChipField source="username" />
+                        </SingleFieldList>
+                    </ReferenceArrayField>
             <EditButton />
         </Datagrid>
     </List>
