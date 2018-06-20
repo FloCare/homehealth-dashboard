@@ -193,19 +193,14 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             last_name: user.last_name,
                             email: user.email,
                             contact_no: user.contact_no,
+                            user_role: user.user_role,
                             username: user.username,
                             displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
                         });
                     });
                     return {
                         data: usersData,
-                        total: parseInt(
-                            headers
-                                .get('content-range')
-                                .split('/')
-                                .pop(),
-                            10
-                        ),
+                        total: 20,
                     };
                 case 'phi':
                     const data = json.map(item => {
@@ -220,13 +215,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     return {
                         //data: json.map(x => x),
                         data: data,
-                        total: parseInt(
-                            headers
-                                .get('content-range')
-                                .split('/')
-                                .pop(),
-                            10
-                        ),
+                        total: 20
                     };
                 default:
                     return {
