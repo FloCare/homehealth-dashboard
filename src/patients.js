@@ -110,7 +110,7 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props, ...rest }) =
             <Heading text="Address Details"/>
             <DisabledInput source="streetAddress" formClassName={classes.inlineBlock} />
             <Heading text="Care Team"/>
-            <ReferenceArrayInput label="Users" source="userIds" reference="users">
+            <ReferenceArrayInput label="Staff" source="userIds" reference="users">
                 <SelectArrayInput optionText="displayname" optionValue="id" />
             </ReferenceArrayInput>
         </SimpleForm>
