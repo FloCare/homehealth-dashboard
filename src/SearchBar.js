@@ -1,6 +1,7 @@
 import React from 'react';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import {ParseGooglePlacesAPIResponse} from './parsingUtils';
+import TextField from '@material-ui/core/TextField';
 
 class SearchBar extends React.Component {
   constructor(props) {
@@ -60,13 +61,6 @@ class SearchBar extends React.Component {
   render() {
     const { input: { value, onChange } } = this.props
     console.log(this.props);
-    const myStyles = {
-      root: { position: 'absolute' },
-      input: { width: '100%' },
-      autocompleteContainer: { backgroundColor: 'green' },
-      autocompleteItem: { color: 'black' },
-      autocompleteItemActive: { color: 'blue' }
-    }
     const searchOptions = {
       types: ['address'],
       componentRestrictions: {country: "us"}
@@ -77,16 +71,20 @@ class SearchBar extends React.Component {
         onChange={this.handleChange}
         searchOptions={searchOptions}
         onSelect={this.handleSelect}
-        styles={myStyles}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps }) => (
           <div>
-            <input size='42' padding='16px' pattern="[a-zA-Z]{5,}" title="Minimum 5 letters" required
-              {...getInputProps({
-                placeholder: '2340 1st Avenue, New York, NY, USA',
+          <TextField
+          required={true}
+          id="required"
+          placeholder="2340 1st Avenue, New York, NY, USA"
+          margin="normal"
+          style = {{width: 350}}
+          minCharacters={10}
+          {...getInputProps({
                 className: 'location-search-input'
               })}
-            />
+          />
             <div className="autocomplete-dropdown-container">
               {suggestions.map(suggestion => {
                 const className = suggestion.active ? 'suggestion-item--active' : 'suggestion-item';

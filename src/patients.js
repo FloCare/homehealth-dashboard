@@ -133,9 +133,8 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
             <TextInput source="primaryContact" label="Phone Number" />
             <Heading text="Address Details"/>
-            <Info style={{width: '100%', marginTop: 30, marginBottom: 10}} text="Street Address" textColor="black" />
             <Field source="address" name="address" component={SearchBar} />
-            <TextInput source="apartment_no" label="Apartment, suite, unit, floor (Optional)" styles={{marginBottom: 10}}/>
+            <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}}/>
             <Heading text="Care Team"/>
             <ReferenceArrayInput label="Staff" source="users" reference="users">
                 <SelectArrayInput optionText="displayname" optionValue="id" />
