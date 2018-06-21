@@ -29,15 +29,16 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
     switch (type) {
         case GET_LIST: {
             // console.log('Running GET LIST for:', resource);
-            const {page, perPage} = params.pagination;
+            // const {page, perPage} = params.pagination;
             const {field, order} = params.sort;
-            console.log(page);
+            // console.log(page);
             const query = {
                 format: 'json',
-                sort: JSON.stringify([field, order]),
-                range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
+                sort: field,
+                order: order,
+                // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
-            console.log(query.range);
+            // console.log(query.range);
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
