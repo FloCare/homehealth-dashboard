@@ -34,6 +34,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             console.log(page);
             const query = {
                 format: 'json',
+                sort: JSON.stringify([field, order]),
                 range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
             console.log(query.range);
