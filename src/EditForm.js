@@ -76,6 +76,10 @@ class EditForm extends Component {
                 <TextInput source="firstName"  validate={required()} onChange={this.onChange} />
                 <TextInput source="lastName"  validate={required()} onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
+                <Heading text="Emergency Contact Details"/>
+                <TextInput source="emergencyContactName" onChange={this.onChange} />
+                <TextInput source="emergencyContactNumber" onChange={this.onChange}/>
+                <TextInput source="emergencyContactRelationship" label="Relationship" onChange={this.onChange}/>
                 <Heading text="Address Details" />
                 <DisabledInput source="streetAddress"  validate={required()} onChange={this.onChange} />
                 {/*<Field source="streetAddress" name="address" component={SearchBar} />*/}

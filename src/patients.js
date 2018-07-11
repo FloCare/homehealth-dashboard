@@ -3,7 +3,7 @@ import {List, Datagrid, TextField, EditButton} from 'react-admin';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
-    SingleFieldList, ChipField
+    SingleFieldList, ChipField, DateInput
 } from 'react-admin';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
@@ -125,10 +125,14 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create {...props} title="Create Patient">
         <SimpleForm validate={validatePatientCreation} redirect="list">
-            <Heading text="Basic Details"/>
             <TextInput source="firstName" formClassName={classes.inlineBlock} />
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
-            <TextInput source="primaryContact" label="Phone Number" />
+            <DateInput source="dateOfBirth"  />
+            <TextInput source="primaryContact" label="Phone Number" formClassName={classes.inlineBlock} />
+            <Heading text="Emergency Contact Details"/>
+            <TextInput source="emergencyContactName" formClassName={classes.inlineBlock} />
+            <TextInput source="emergencyContactNumber" label="Emergency Phone Number" formClassName={classes.inlineBlock}/>
+            <TextInput source="emergencyContactRelationship" label="Relationship" />
             <Heading text="Address Details"/>
             <Field source="address" name="address" component={SearchBar} />
             <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} />
