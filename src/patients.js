@@ -1,10 +1,15 @@
 import React from 'react';
 import {List, Datagrid, TextField, EditButton} from 'react-admin';
-import {Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput, LongTextInput, TabbedForm, FormTab, DisabledInput,
-            ReferenceArrayField, SingleFieldList, ChipField} from 'react-admin';
+import {
+    Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
+    LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
+    SingleFieldList, ChipField
+} from 'react-admin';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
+import EditForm from './EditForm';
+
 // import {FetchUsers} from './connectionUtils';
 // import LocationSearchInput from './LocationSearchInput';
 // import SearchBar from './SearchBar';
@@ -14,7 +19,7 @@ const PatientPagination = () => {
     return (
         false
     );
-}
+};
 
 export const PatientList = (props) => (
     <List {...props} title="List of patients" pagination={<PatientPagination />}>
@@ -107,22 +112,14 @@ const styles = {
 // );
 
 
-export const PatientEdit = withStyles(styles)(({ classes, ...props, ...rest }) => (
-    <Edit title="Edit Patient" {...props}>
-        <SimpleForm>
-            <Heading text="Basic Details"/>
-            <DisabledInput source="firstName" formClassName={classes.inlineBlock} />
-            <DisabledInput source="lastName" formClassName={classes.inlineBlock} />
-            <DisabledInput source="primaryContact" label="Phone Number" />
-            <Heading text="Address Details"/>
-            <DisabledInput source="streetAddress" formClassName={classes.inlineBlock} />
-            <Heading text="Care Team"/>
-            <ReferenceArrayInput label="Staff" source="userIds" reference="users">
-                <SelectArrayInput optionText="displayname" optionValue="id" />
-            </ReferenceArrayInput>
-        </SimpleForm>
-    </Edit>
-));
+export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
+    console.log('Props inside of PatientEdit are:', props);
+    return (
+        <Edit title="Edit Patient" {...props}>
+            <EditForm {...props} />
+        </Edit>
+    );
+});
 
 
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
@@ -134,8 +131,8 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="primaryContact" label="Phone Number" />
             <Heading text="Address Details"/>
             <Field source="address" name="address" component={SearchBar} />
-            <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}}/>
-            <Heading text="Care Team"/>
+            <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} />
+            <Heading text="Care Team" />
             <ReferenceArrayInput label="Staff" source="users" reference="users">
                 <SelectArrayInput optionText="displayname" optionValue="id" />
             </ReferenceArrayInput>

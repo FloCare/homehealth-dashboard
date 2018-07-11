@@ -110,6 +110,26 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'phi':
                     // console.log('params:', params);
                     var body = {};
+                    body.patient = {};
+                    const updatedFields = params.data.updatedFields;
+                    // console.log('updatedFields = ', updatedFields);
+                    for (let i=0; i<updatedFields.length; i++){
+                        const field = updatedFields[i];
+                        body.patient[field] = params.data[field];
+                    }
+                    // if (updatedFields.indexOf('streetAddress') > -1) {
+                    //     params.data.address = {
+                    //         "apartment_no": params.data.apartment_no,
+                    //         "streetAddress": localStorage.getItem('streetAddress'),
+                    //         "zipCode": localStorage.getItem('postalCode'),
+                    //         "city": localStorage.getItem('cityName'),
+                    //         "state": localStorage.getItem('stateName'),
+                    //         "country": localStorage.getItem('countryName'),
+                    //         "latitude": localStorage.getItem('latitude'),
+                    //         "longitude": localStorage.getItem('longitude')
+                    //     };
+                    //     body.data.address = params.data.address;
+                    // }
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     // console.log('Sending request with body:', body);
@@ -127,14 +147,16 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             switch(resource) {
                 case 'phi':
                     var request = {};
-                    params.data.address={"apartment_no": params.data.apartment_no,
+                    params.data.address = {
+                        "apartment_no": params.data.apartment_no,
                         "streetAddress": localStorage.getItem('streetAddress'),
                         "zipCode": localStorage.getItem('postalCode'),
                         "city": localStorage.getItem('cityName'),
                         "state": localStorage.getItem('stateName'),
                         "country": localStorage.getItem('countryName'),
                         "latitude": localStorage.getItem('latitude'),
-                        "longitude": localStorage.getItem('longitude') };
+                        "longitude": localStorage.getItem('longitude')
+                    };
 
                     request.patient = {};
                     request.patient.address = params.data.address;
@@ -211,6 +233,14 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             firstName: item.patient.firstName,
                             lastName: item.patient.lastName,
                             primaryContact: item.patient.primaryContact,
+                            streetAddress: item.patient.address.streetAddress,
+                            apartmentNo: item.patient.address.apartmentNo,
+                            zipCode: item.patient.address.zipCode,
+                            city: item.patient.address.city,
+                            state: item.patient.address.state,
+                            country: item.patient.address.country,
+                            latitude: item.patient.address.latitude,
+                            longitude: item.patient.address.longitude,
                             userIds: item.userIds
                         });
                     });
@@ -273,6 +303,13 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "lastName": json.patient.lastName,
                             "primaryContact": json.patient.primaryContact,
                             "streetAddress": json.patient.address.streetAddress,
+                            "apartmentNo": json.patient.address.apartment_no,
+                            "latitude": json.patient.address.latitude,
+                            "longitude": json.patient.address.longitude,
+                            "city": json.patient.address.city,
+                            "state": json.patient.address.state,
+                            "country": json.patient.address.country,
+                            "zipCode": json.patient.address.zipCode,
                             "userIds": json.userIds
                         }
                     };
