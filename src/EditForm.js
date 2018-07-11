@@ -79,7 +79,7 @@ class EditForm extends Component {
                 <Heading text="Address Details" />
                 <DisabledInput source="streetAddress"  validate={required()} onChange={this.onChange} />
                 {/*<Field source="streetAddress" name="address" component={SearchBar} />*/}
-                <TextInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
+                <DisabledInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
                 <Heading text="Care Team" />
                 <ReferenceArrayInput label="Staff" source="userIds" reference="users">
                     <SelectArrayInput optionText="displayname" optionValue="id" />
