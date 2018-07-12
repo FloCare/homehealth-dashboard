@@ -12,7 +12,7 @@ import {
 import {stringify} from 'query-string';
 
 const API_URL = 'https://app-9781.on-aptible.com';
-// const API_URL = 'http://localhost:8000';
+//const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -110,6 +110,26 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'phi':
                     // console.log('params:', params);
                     var body = {};
+                    body.patient = {};
+                    const updatedFields = params.data.updatedFields;
+                    // console.log('updatedFields = ', updatedFields);
+                    for (let i=0; i<updatedFields.length; i++){
+                        const field = updatedFields[i];
+                        body.patient[field] = params.data[field];
+                    }
+                    // if (updatedFields.indexOf('streetAddress') > -1) {
+                    //     params.data.address = {
+                    //         "apartment_no": params.data.apartment_no,
+                    //         "streetAddress": localStorage.getItem('streetAddress'),
+                    //         "zipCode": localStorage.getItem('postalCode'),
+                    //         "city": localStorage.getItem('cityName'),
+                    //         "state": localStorage.getItem('stateName'),
+                    //         "country": localStorage.getItem('countryName'),
+                    //         "latitude": localStorage.getItem('latitude'),
+                    //         "longitude": localStorage.getItem('longitude')
+                    //     };
+                    //     body.data.address = params.data.address;
+                    // }
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     // console.log('Sending request with body:', body);
@@ -127,21 +147,26 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             switch(resource) {
                 case 'phi':
                     var request = {};
-                    params.data.address={"apartment_no": params.data.apartment_no,
+                    params.data.address = {
+                        "apartment_no": params.data.apartment_no,
                         "streetAddress": localStorage.getItem('streetAddress'),
                         "zipCode": localStorage.getItem('postalCode'),
                         "city": localStorage.getItem('cityName'),
                         "state": localStorage.getItem('stateName'),
                         "country": localStorage.getItem('countryName'),
                         "latitude": localStorage.getItem('latitude'),
-                        "longitude": localStorage.getItem('longitude') };
+                        "longitude": localStorage.getItem('longitude')
+                    };
 
                     request.patient = {};
                     request.patient.address = params.data.address;
                     request.patient.firstName = params.data.firstName;
                     request.patient.lastName = params.data.lastName;
                     request.patient.primaryContact = params.data.primaryContact;
-                    request.patient.emergencyContact = params.data.secondaryContact;
+                    request.patient.emergencyContactName = params.data.emergencyContactName;
+                    request.patient.emergencyContactNumber = params.data.emergencyContactNumber;
+                    request.patient.emergencyContactRelationship = params.data.emergencyContactRelationship;
+                    request.patient.dob = params.data.dateOfBirth;
                     request.users = params.data.users;
                     localStorage.removeItem('postalCode');
                     localStorage.removeItem('cityName');
@@ -162,7 +187,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         case DELETE:
             // console.log('Running DELETE for:', resource);
             return {
-                url: `${API_URL}/${resource}/v1.0/patients/${params.id}`,
+                url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                 options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
             };
 
@@ -211,6 +236,14 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             firstName: item.patient.firstName,
                             lastName: item.patient.lastName,
                             primaryContact: item.patient.primaryContact,
+                            streetAddress: item.patient.address.streetAddress,
+                            apartmentNo: item.patient.address.apartmentNo,
+                            zipCode: item.patient.address.zipCode,
+                            city: item.patient.address.city,
+                            state: item.patient.address.state,
+                            country: item.patient.address.country,
+                            latitude: item.patient.address.latitude,
+                            longitude: item.patient.address.longitude,
                             userIds: item.userIds
                         });
                     });
@@ -272,7 +305,18 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "firstName": json.patient.firstName,
                             "lastName": json.patient.lastName,
                             "primaryContact": json.patient.primaryContact,
+                            "dob": json.patient.dob,
+                            "emergencyContactName": json.patient.emergencyContactName,
+                            "emergencyContactNumber": json.patient.emergencyContactNumber,
+                            "emergencyContactRelationship": json.patient.emergencyContactRelationship,
                             "streetAddress": json.patient.address.streetAddress,
+                            "apartmentNo": json.patient.address.apartment_no,
+                            "latitude": json.patient.address.latitude,
+                            "longitude": json.patient.address.longitude,
+                            "city": json.patient.address.city,
+                            "state": json.patient.address.state,
+                            "country": json.patient.address.country,
+                            "zipCode": json.patient.address.zipCode,
                             "userIds": json.userIds
                         }
                     };

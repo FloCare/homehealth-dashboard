@@ -1,7 +1,7 @@
 import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
 
 const API_URL = 'https://app-9781.on-aptible.com/get-token/';
-// const API_URL = 'http://localhost:8000/get-token/';
+//const API_URL = 'http://localhost:8000/get-token/';
 
 export default (type, params) => {
     // called when the user attempts to log in
