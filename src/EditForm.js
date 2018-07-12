@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {
     SimpleForm, TextInput, ReferenceArrayInput, SelectArrayInput,
-    required, crudUpdate, DisabledInput
+    required, crudUpdate, DisabledInput, DateInput
 } from 'react-admin';
 import {startUndoable as startUndoableAction} from 'ra-core';
 import {connect} from 'react-redux';
@@ -75,6 +75,7 @@ class EditForm extends Component {
                 <Heading text="Basic Details"/>
                 <TextInput source="firstName"  validate={required()} onChange={this.onChange} />
                 <TextInput source="lastName"  validate={required()} onChange={this.onChange} />
+                <DateInput source="dob"  onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
                 <Heading text="Emergency Contact Details"/>
                 <TextInput source="emergencyContactName" onChange={this.onChange} />
