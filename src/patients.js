@@ -129,7 +129,7 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="firstName" formClassName={classes.inlineBlock} />
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
             <div className="picker">
-            <DateInput source="dateOfBirth" label="Date of Birth (Optional)" options={{ format: 'YYYY-MM-DD', disableFuture: true }} />
+            <DateInput source="dateOfBirth" label="Date of Birth (Optional)" options={{ format: 'YYYY-MM-DD', disableFuture: true, clearable: true }} />
             </div>
             <TextInput source="primaryContact" label="Phone Number" formClassName={classes.inlineBlock} />
             <Heading text="Emergency Contact Details"/>
