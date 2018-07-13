@@ -3,8 +3,9 @@ import {List, Datagrid, TextField, EditButton} from 'react-admin';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
-    SingleFieldList, ChipField, DateInput
+    SingleFieldList, ChipField
 } from 'react-admin';
+import { DateInput, TimeInput, DateTimeInput } from 'react-admin-date-inputs';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -127,12 +128,14 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
         <SimpleForm validate={validatePatientCreation} redirect="list">
             <TextInput source="firstName" formClassName={classes.inlineBlock} />
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
-            <DateInput source="dateOfBirth"  />
+            <div className="picker">
+            <DateInput source="dateOfBirth" label="Date of Birth (Optional)" options={{ format: 'YYYY-MM-DD', disableFuture: true }} />
+            </div>
             <TextInput source="primaryContact" label="Phone Number" formClassName={classes.inlineBlock} />
             <Heading text="Emergency Contact Details"/>
-            <TextInput source="emergencyContactName" formClassName={classes.inlineBlock} />
-            <TextInput source="emergencyContactNumber" label="Emergency Phone Number" formClassName={classes.inlineBlock}/>
-            <TextInput source="emergencyContactRelationship" label="Relationship" />
+            <TextInput source="emergencyContactName" label="Contact Name (Optional)" formClassName={classes.inlineBlock} />
+            <TextInput source="emergencyContactNumber" label="Phone Number (Optional)" formClassName={classes.inlineBlock}/>
+            <TextInput source="emergencyContactRelationship" label="Relationship (Optional)" />
             <Heading text="Address Details"/>
             <Field source="address" name="address" component={SearchBar} />
             <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} />
