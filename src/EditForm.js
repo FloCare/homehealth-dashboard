@@ -77,7 +77,7 @@ class EditForm extends Component {
                 <TextInput source="firstName"  validate={required()} onChange={this.onChange} />
                 <TextInput source="lastName"  validate={required()} onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
-                <DateInput source="dob"  label="Date of Birth (Optional)" options={{ format: 'YYYY-MM-DD', disableFuture: true }} onChange={this.onChange} />
+                <DateInput source="dob"  label="Date of Birth (Optional)" options={{ format: 'YYYY-MM-DD', disableFuture: true , keyboard: true}} onChange={this.onChange} />
                 <Heading text="Emergency Contact Details"/>
                 <TextInput source="emergencyContactName" onChange={this.onChange} />
                 <TextInput source="emergencyContactNumber" onChange={this.onChange}/>
