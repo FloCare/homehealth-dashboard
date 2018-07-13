@@ -128,10 +128,10 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
         <SimpleForm validate={validatePatientCreation} redirect="list">
             <TextInput source="firstName" formClassName={classes.inlineBlock} />
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
+            <TextInput source="primaryContact" label="Phone Number" />
             <div className="picker">
             <DateInput source="dateOfBirth" label="Date of Birth (Optional)" options={{ format: 'YYYY-MM-DD', disableFuture: true, clearable: true }} />
             </div>
-            <TextInput source="primaryContact" label="Phone Number" formClassName={classes.inlineBlock} />
             <Heading text="Emergency Contact Details"/>
             <TextInput source="emergencyContactName" label="Contact Name (Optional)" formClassName={classes.inlineBlock} />
             <TextInput source="emergencyContactNumber" label="Phone Number (Optional)" formClassName={classes.inlineBlock}/>
