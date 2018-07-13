@@ -69,6 +69,9 @@ const validatePatientCreation = (values) => {
     else if (!primaryContact ||  isNaN(primaryContact)) {
         errors.primaryContact = ['Contact Number can only contain numerics'];
     }
+    else if (!emergencyContactNumber ||  isNaN(emergencyContactNumber)) {
+        errors.emergencyContactNumber = ['Contact Number can only contain numerics'];
+    }
     else if (!primaryContact || primaryContact.length < 10) {
         errors.primaryContact = ['Contact Number incomplete'];
     }
