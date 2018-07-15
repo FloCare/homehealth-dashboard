@@ -80,7 +80,6 @@ class SearchBar extends React.Component {
           placeholder="2340 1st Avenue, New York, NY, USA"
           margin="normal"
           style = {{width: 350}}
-          minCharacters={10}
           {...getInputProps({
                 className: 'location-search-input'
               })}

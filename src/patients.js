@@ -5,7 +5,7 @@ import {
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
     SingleFieldList, ChipField
 } from 'react-admin';
-import { DateInput, TimeInput, DateTimeInput } from 'react-admin-date-inputs';
+import { DateInput } from 'react-admin-date-inputs';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -62,14 +62,26 @@ const validatePatientCreation = (values) => {
     if (!values.address || values.address.length < 6) {
         errors.address = ['The street address has to be selected from the dropdown'];
     }
+    var dateOfBirth = values.dateOfBirth;
+    if(dateOfBirth) {
+        var dob = JSON.stringify(dateOfBirth);
+        var dateMonthYearHifenSeparated = dob.substring(1, dob.length -1).split('T');
+        var dateArray = dateMonthYearHifenSeparated[0].split('-');
+        var date = parseInt(dateArray[2]);
+        var month = parseInt(dateArray[1]);
+        if(date > 31 || month > 12) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+    }
     const primaryContact = values.primaryContact;
+    const emergencyContactNumber = values.emergencyContactNumber;
     if (!values.primaryContact) {
         errors.primaryContact = ['Required'];
     }
     else if (!primaryContact ||  isNaN(primaryContact)) {
         errors.primaryContact = ['Contact Number can only contain numerics'];
     }
-    else if (!emergencyContactNumber ||  isNaN(emergencyContactNumber)) {
+    else if (isNaN(emergencyContactNumber)) {
         errors.emergencyContactNumber = ['Contact Number can only contain numerics'];
     }
     else if (!primaryContact || primaryContact.length < 10) {
@@ -129,14 +141,16 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create {...props} title="Create Patient">
         <SimpleForm validate={validatePatientCreation} redirect="list">
+            <Heading text="Basic Details"/>
             <TextInput source="firstName" formClassName={classes.inlineBlock} />
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
             <TextInput source="primaryContact" label="Phone Number" />
-            <DateInput source="dateOfBirth" label="DOB(yyyy-mm-dd) (Optional)" options={{ format: 'YYYY-MM-DD', disableFuture: true, clearable: true, keyboard: true }} />
-            <Heading text="Emergency Contact Details"/>
-            <TextInput source="emergencyContactName" label="Contact Name (Optional)" formClassName={classes.inlineBlock} />
-            <TextInput source="emergencyContactNumber" label="Phone Number (Optional)" formClassName={classes.inlineBlock}/>
-            <TextInput source="emergencyContactRelationship" label="Relationship (Optional)" />
+            <DateInput source="dateOfBirth" label="DOB(mm-dd-yyyy) (Optional)" 
+                options={{ format: 'MM-DD-YYYY', maxDate: '01-01-2018', disableFuture: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }} />
+            <Heading text="Emergency Contact Details (Optional)"/>
+            <TextInput source="emergencyContactName" label="Contact Name" formClassName={classes.inlineBlock} />
+            <TextInput source="emergencyContactNumber" label="Phone Number" formClassName={classes.inlineBlock}/>
+            <TextInput source="emergencyContactRelationship" label="Relationship" />
             <Heading text="Address Details"/>
             <Field source="address" name="address" component={SearchBar} />
             <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} />
