@@ -3,7 +3,7 @@ import {List, Datagrid, TextField, EditButton} from 'react-admin';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
-    SingleFieldList, ChipField
+    SingleFieldList, ChipField, ReferenceInput, SelectInput, AutocompleteInput
 } from 'react-admin';
 import { DateInput } from 'react-admin-date-inputs';
 import SearchBar from './SearchBar';
@@ -81,9 +81,6 @@ const validatePatientCreation = (values) => {
     else if (!primaryContact ||  isNaN(primaryContact)) {
         errors.primaryContact = ['Contact Number can only contain numerics'];
     }
-    else if (isNaN(emergencyContactNumber)) {
-        errors.emergencyContactNumber = ['Contact Number can only contain numerics'];
-    }
     else if (!primaryContact || primaryContact.length < 10) {
         errors.primaryContact = ['Contact Number incomplete'];
     }
@@ -158,6 +155,10 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <ReferenceArrayInput label="Staff" source="users" reference="users">
                 <SelectArrayInput optionText="displayname" optionValue="id" />
             </ReferenceArrayInput>
+            <Heading text="Physician Team"/>
+            <ReferenceInput label="Primary Physician" source="physician_id" reference="physicians">
+                <AutocompleteInput optionText="first_name" optionValue="id" />
+            </ReferenceInput>
             <Info style={{width: '100%', marginTop: 30}} text="Note: Do select the street address from the suggestions" textColor="black" />
         </SimpleForm>
     </Create>

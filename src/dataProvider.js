@@ -46,6 +46,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/${resource}/v1.0/org-access/?${stringify(query)}`, options};
                 case 'phi':
                     return { url: `${API_URL}/${resource}/v1.0/patients/?${stringify(query)}`, options};
+                case 'physicians':
+                    return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -58,6 +60,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             switch(resource) {
                 case 'phi':
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
+                case 'physicians':
+                    return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -108,11 +112,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // console.log('Running UPDATE for:', resource);
             switch(resource) {
                 case 'phi':
-                    // console.log('params:', params);
+                    //console.log('params:', params);
                     var body = {};
                     body.patient = {};
                     const updatedFields = params.data.updatedFields;
-                    // console.log('updatedFields = ', updatedFields);
+                    //console.log('updatedFields = ', updatedFields);
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
                         body.patient[field] = params.data[field];
@@ -132,6 +136,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     // }
                     body.id=params.data.id;
                     body.users=params.data.userIds;
+                    body.physicianId = params.data.physician_id;
                     // console.log('Sending request with body:', body);
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
@@ -168,6 +173,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     request.patient.emergencyContactRelationship = params.data.emergencyContactRelationship;
                     request.patient.dob = params.data.dateOfBirth;
                     request.users = params.data.users;
+                    request.physicianId = params.data.physician_id;
                     localStorage.removeItem('postalCode');
                     localStorage.removeItem('cityName');
                     localStorage.removeItem('stateName');
@@ -178,6 +184,19 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
+                    };
+                case 'physicians':
+                    var request = {};
+                    request.physician = {};
+                    request.physician.npi = params.data.npi;
+                    request.physician.firstName = params.data.firstName;
+                    request.physician.lastName = params.data.lastName;
+                    request.physician.phone1 = params.data.phone1;
+                    request.physician.phone2 = params.data.phone2;
+                    request.physician.fax = params.data.fax;
+                    return {
+                        url: `${API_URL}/phi/v1.0/physicians/?format=json`,
+                        options: { method: 'POST', body: JSON.stringify(request) },
                     };
                 default:
                     console.log('ERROR! Edit called on invalid resources.')
@@ -317,7 +336,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "state": json.patient.address.state,
                             "country": json.patient.address.country,
                             "zipCode": json.patient.address.zipCode,
-                            "userIds": json.userIds
+                            "userIds": json.userIds,
+                            "physician_id": json.physicianId,
                         }
                     };
                 default:

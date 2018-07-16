@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {
     SimpleForm, TextInput, ReferenceArrayInput, SelectArrayInput,
-    required, crudUpdate, DisabledInput
+    required, crudUpdate, DisabledInput, ReferenceInput, SelectInput
 } from 'react-admin';
 import { DateInput, TimeInput, DateTimeInput } from 'react-admin-date-inputs';
 import {startUndoable as startUndoableAction} from 'ra-core';
@@ -92,6 +92,10 @@ class EditForm extends Component {
                 <ReferenceArrayInput label="Staff" source="userIds" reference="users">
                     <SelectArrayInput optionText="displayname" optionValue="id" />
                 </ReferenceArrayInput>
+                <Heading text="Physician Team"/>
+                <ReferenceInput label="Primary Physician" source="physician_id" reference="physicians">
+                    <SelectInput optionText="first_name" optionValue="id" />
+                </ReferenceInput>
             </SimpleForm>
         );
     }
