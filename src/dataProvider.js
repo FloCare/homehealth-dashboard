@@ -108,11 +108,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // console.log('Running UPDATE for:', resource);
             switch(resource) {
                 case 'phi':
-                    // console.log('params:', params);
+                    //console.log('params:', params);
                     var body = {};
                     body.patient = {};
                     const updatedFields = params.data.updatedFields;
-                    // console.log('updatedFields = ', updatedFields);
+                    //console.log('updatedFields = ', updatedFields);
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
                         body.patient[field] = params.data[field];
@@ -166,7 +166,9 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     request.patient.emergencyContactName = params.data.emergencyContactName;
                     request.patient.emergencyContactNumber = params.data.emergencyContactNumber;
                     request.patient.emergencyContactRelationship = params.data.emergencyContactRelationship;
-                    request.patient.dob = params.data.dateOfBirth;
+                    if(params.data.dateOfBirth != null) {
+                        request.patient.dob = params.data.dateOfBirth;
+                    }
                     request.users = params.data.users;
                     localStorage.removeItem('postalCode');
                     localStorage.removeItem('cityName');
@@ -317,7 +319,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "state": json.patient.address.state,
                             "country": json.patient.address.country,
                             "zipCode": json.patient.address.zipCode,
-                            "userIds": json.userIds
+                            "userIds": json.userIds,
                         }
                     };
                 default:
