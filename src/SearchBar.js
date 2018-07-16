@@ -60,7 +60,6 @@ class SearchBar extends React.Component {
 
   render() {
     const { input: { value, onChange } } = this.props
-    console.log(this.props);
     const searchOptions = {
       types: ['address'],
       componentRestrictions: {country: "us"}

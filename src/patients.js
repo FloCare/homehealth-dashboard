@@ -63,13 +63,22 @@ const validatePatientCreation = (values) => {
         errors.address = ['The street address has to be selected from the dropdown'];
     }
     var dateOfBirth = values.dateOfBirth;
+    var today = new Date().toISOString().slice(0,10); 
     if(dateOfBirth) {
         var dob = JSON.stringify(dateOfBirth);
         var dateMonthYearHifenSeparated = dob.substring(1, dob.length -1).split('T');
         var dateArray = dateMonthYearHifenSeparated[0].split('-');
+        var todayDateArray = today.split('-');
         var date = parseInt(dateArray[2]);
         var month = parseInt(dateArray[1]);
-        if(date > 31 || month > 12) {
+        var year = parseInt(dateArray[0]);
+        if(year > parseInt(todayDateArray[0])) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+        else if(year == parseInt(todayDateArray[0]) && month > parseInt(todayDateArray[1])) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+        else if(year == parseInt(todayDateArray[0]) && month == parseInt(todayDateArray[1]) && date >= parseInt(todayDateArray[2])) {
             errors.dateOfBirth = ['Incorrect date entered'];
         }
     }
@@ -80,9 +89,6 @@ const validatePatientCreation = (values) => {
     }
     else if (!primaryContact ||  isNaN(primaryContact)) {
         errors.primaryContact = ['Contact Number can only contain numerics'];
-    }
-    else if (isNaN(emergencyContactNumber)) {
-        errors.emergencyContactNumber = ['Contact Number can only contain numerics'];
     }
     else if (!primaryContact || primaryContact.length < 10) {
         errors.primaryContact = ['Contact Number incomplete'];
@@ -146,7 +152,7 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
             <TextInput source="primaryContact" label="Phone Number" />
             <DateInput source="dateOfBirth" label="DOB(mm-dd-yyyy) (Optional)" 
-                options={{ format: 'MM-DD-YYYY', maxDate: '01-01-2018', openToYearSelection: true, disableFuture: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }} />
+                options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }} />
             <Heading text="Emergency Contact Details (Optional)"/>
             <TextInput source="emergencyContactName" label="Contact Name" formClassName={classes.inlineBlock} />
             <TextInput source="emergencyContactNumber" label="Phone Number" formClassName={classes.inlineBlock}/>
