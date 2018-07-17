@@ -3,8 +3,9 @@ import {List, Datagrid, TextField, EditButton} from 'react-admin';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
-    SingleFieldList, ChipField, DateInput
+    SingleFieldList, ChipField
 } from 'react-admin';
+import { DateInput } from 'react-admin-date-inputs';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -61,7 +62,28 @@ const validatePatientCreation = (values) => {
     if (!values.address || values.address.length < 6) {
         errors.address = ['The street address has to be selected from the dropdown'];
     }
+    var dateOfBirth = values.dateOfBirth;
+    var today = new Date().toISOString().slice(0,10); 
+    if(dateOfBirth) {
+        var dob = JSON.stringify(dateOfBirth);
+        var dateMonthYearHifenSeparated = dob.substring(1, dob.length -1).split('T');
+        var dateArray = dateMonthYearHifenSeparated[0].split('-');
+        var todayDateArray = today.split('-');
+        var date = parseInt(dateArray[2]);
+        var month = parseInt(dateArray[1]);
+        var year = parseInt(dateArray[0]);
+        if(year > parseInt(todayDateArray[0])) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+        else if(year == parseInt(todayDateArray[0]) && month > parseInt(todayDateArray[1])) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+        else if(year == parseInt(todayDateArray[0]) && month == parseInt(todayDateArray[1]) && date >= parseInt(todayDateArray[2])) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+    }
     const primaryContact = values.primaryContact;
+    const emergencyContactNumber = values.emergencyContactNumber;
     if (!values.primaryContact) {
         errors.primaryContact = ['Required'];
     }
@@ -125,13 +147,15 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create {...props} title="Create Patient">
         <SimpleForm validate={validatePatientCreation} redirect="list">
+            <Heading text="Basic Details"/>
             <TextInput source="firstName" formClassName={classes.inlineBlock} />
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
-            <DateInput source="dateOfBirth"  />
-            <TextInput source="primaryContact" label="Phone Number" formClassName={classes.inlineBlock} />
-            <Heading text="Emergency Contact Details"/>
-            <TextInput source="emergencyContactName" formClassName={classes.inlineBlock} />
-            <TextInput source="emergencyContactNumber" label="Emergency Phone Number" formClassName={classes.inlineBlock}/>
+            <TextInput source="primaryContact" label="Phone Number" />
+            <DateInput source="dateOfBirth" label="DOB(mm-dd-yyyy) (Optional)" 
+                options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }} />
+            <Heading text="Emergency Contact Details (Optional)"/>
+            <TextInput source="emergencyContactName" label="Contact Name" formClassName={classes.inlineBlock} />
+            <TextInput source="emergencyContactNumber" label="Phone Number" formClassName={classes.inlineBlock}/>
             <TextInput source="emergencyContactRelationship" label="Relationship" />
             <Heading text="Address Details"/>
             <Field source="address" name="address" component={SearchBar} />
