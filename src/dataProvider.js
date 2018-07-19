@@ -143,8 +143,15 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     };
                 case 'physicians':
-                    const updateBody = params.data;
-                    const npiID = params.data.npiID
+                    const updateBody = {
+                        physician: {
+                            npi : params.data.npiID,
+                            firstName : params.data.firstName,
+                            lastName : params.data.lastName,
+                            phone1 : params.data.phone1,
+                            phone2 : params.data.phone2,
+                            fax : params.data.fax,
+                        }};
                     return{
                         url: `http://localhost:8000/mock/v1.0/mock/${npiID}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
@@ -195,14 +202,15 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     };
 
                 case 'physicians':
-                    var request = {};
-                    request.physician = {};
-                    request.physician.npi = params.data.npi;
-                    request.physician.firstName = params.data.firstName;
-                    request.physician.lastName = params.data.lastName;
-                    request.physician.phone1 = params.data.phone1;
-                    request.physician.phone2 = params.data.phone2;
-                    request.physician.fax = params.data.fax;
+                    const request = {
+                        physician: {
+                            npi : params.data.npiID,
+                            firstName : params.data.firstName,
+                            lastName : params.data.lastName,
+                            phone1 : params.data.phone1,
+                            phone2 : params.data.phone2,
+                            fax : params.data.fax,
+                        }};
                     return {
                         url: `${API_URL}/phi/v1.0/physicians/?format=json`,
                         options: { method: 'POST', body: JSON.stringify(request) },

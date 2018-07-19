@@ -144,7 +144,7 @@ export default class PhysicianCreate extends React.Component {
                   </div>
                   <div style={styles.inlineBlock}>
                     <DisabledInput source="phone1" label="Phone No" style={styles.inlineElementStyle}/>
-                    <DisabledInput source="faxNo" label="Fax No" style={styles.inlineElementStyle}/>
+                    <DisabledInput source="fax" label="Fax No" style={styles.inlineElementStyle}/>
                     <TextInput source="phone2" label="Alternate Phone no" />
                   </div>
                 </div>
