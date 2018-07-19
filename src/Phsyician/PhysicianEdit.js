@@ -28,16 +28,16 @@ export default class PhysicianEdit extends React.Component {
           <Heading text="Edit Physician" />
 
           <div style={styles.inlineBlock}>
-            <DisabledInput source="npiID" label="NPI Id" style={styles.inlineElementStyle}/>
+            <DisabledInput source="npi" label="NPI Id" style={styles.inlineElementStyle}/>
           </div>
           <div>
             <div style={styles.inlineBlock}>
-              <DisabledInput source="firstName" style={styles.inlineElementStyle}/>
-              <DisabledInput source="lastName" label="Last Name"/>
+              <DisabledInput source="first_name" style={styles.inlineElementStyle}/>
+              <DisabledInput source="last_name" label="Last Name"/>
             </div>
             <div style={styles.inlineBlock}>
               <DisabledInput source="phone1" label="Phone No" style={styles.inlineElementStyle}/>
-              <DisabledInput source="faxNo" label="Fax No" style={styles.inlineElementStyle}/>
+              <DisabledInput source="fax" label="Fax No" style={styles.inlineElementStyle}/>
               <TextInput source="phone2" label="Alternate Phone no" />
             </div>
           </div>

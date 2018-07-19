@@ -11,8 +11,8 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 
-const API_URL = 'https://app-9781.on-aptible.com';
-// const API_URL = 'http://localhost:8000';
+//const API_URL = 'https://app-9781.on-aptible.com';
+const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -153,7 +153,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             fax : params.data.fax,
                         }};
                     return{
-                        url: `http://localhost:8000/mock/v1.0/mock/${npiID}/`,
+                        url: `http://localhost:8000/mock/v1.0/mock/${params.data.npiID}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
                     // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     }

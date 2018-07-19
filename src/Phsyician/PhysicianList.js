@@ -9,9 +9,9 @@ const PhysicianPagination = () => {
 export const PhysicianList = (props) => (
   <List {...props} title="List of physicians" pagination={<PhysicianPagination/>}>
     <Datagrid>
-      <TextField source="npiID" label="NPI ID"/>
-      <TextField source="firstName" label="First Name"/>
-      <TextField source="lastName" label="Last Name"/>
+      <TextField source="npi" label="NPI ID"/>
+      <TextField source="first_name" label="First Name"/>
+      <TextField source="last_name" label="Last Name"/>
       <TextField source="phone1" label="Office Phone"/>
       <TextField source="phone2" label="Alternate Number"/>
       <EditButton/>
