@@ -12,7 +12,7 @@ import {
 import {stringify} from 'query-string';
 
 const API_URL = 'https://app-9781.on-aptible.com';
-//const API_URL = 'http://localhost:8000';
+// const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -142,6 +142,14 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     };
+                case 'physicians':
+                    const updateBody = params.data;
+                    const npiID = params.data.npiID
+                    return{
+                        url: `http://localhost:8000/mock/v1.0/mock/${npiID}/`,
+                        options: { method: 'PUT', body: JSON.stringify(updateBody)},
+                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                    }
                 default:
                     console.log('ERROR! Edit called on invalid resources.');
                     return {};
@@ -185,6 +193,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
                     };
+
                 case 'physicians':
                     var request = {};
                     request.physician = {};
@@ -199,7 +208,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         options: { method: 'POST', body: JSON.stringify(request) },
                     };
                 default:
-                    console.log('ERROR! Edit called on invalid resources.')
+                    console.log('ERROR! CREATE called on invalid resources.');
                     return {};
             }
 
