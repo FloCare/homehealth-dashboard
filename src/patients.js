@@ -151,14 +151,14 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <Heading text="Address Details"/>
             <Field source="address" name="address" component={SearchBar} />
             <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} />
+            <Heading text="Physician Team"/>
+            <ReferenceInput label="Primary Physician" source="physician_id" reference="physicians">
+                <SelectInput optionText="first_name" optionValue="id" />
+            </ReferenceInput>
             <Heading text="Care Team" />
             <ReferenceArrayInput label="Staff" source="users" reference="users">
                 <SelectArrayInput optionText="displayname" optionValue="id" />
             </ReferenceArrayInput>
-            <Heading text="Physician Team"/>
-            <ReferenceInput label="Primary Physician" source="physician_id" reference="physicians">
-                <AutocompleteInput optionText="first_name" optionValue="id" />
-            </ReferenceInput>
             <Info style={{width: '100%', marginTop: 30}} text="Note: Do select the street address from the suggestions" textColor="black" />
         </SimpleForm>
     </Create>
