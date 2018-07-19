@@ -36,7 +36,7 @@ export default class PhysicianCreate extends React.Component {
       firstName: data.basic.first_name,
       lastName: data.basic.last_name,
       npiID: data.number,
-      faxNo: address ? address.us_fax_number : null,
+      fax: address ? address.us_fax_number : null,
       phone1: address ? address.us_telephone_number : null
     }
   }
@@ -103,13 +103,13 @@ export default class PhysicianCreate extends React.Component {
     const fetchedNPIData = this.state.fetchedNPIData
     let physicianData = {}
     if (fetchedNPIData) {
-      const {firstName, lastName, npiID, faxNo, phone1} = this.state.physicianNPIData
+      const {firstName, lastName, npiID, fax, phone1} = this.state.physicianNPIData
       physicianData = {
         npiID: npiID,
         firstName: firstName,
         lastName: lastName,
         phone1: phone1,
-        faxNo: faxNo
+        fax: fax
       }
     }
     return (
@@ -126,7 +126,7 @@ export default class PhysicianCreate extends React.Component {
           cancelLabel={null}
         />
         <Create {...props} record={physicianData} title="Create Physician">
-          <SimpleForm toolbar={<PhysicianCreateToolbar/>}>
+          <SimpleForm toolbar={<PhysicianCreateToolbar/>} redirect="list">
             <Heading text="Create Physician" />
 
             <div style={styles.inlineBlock}>

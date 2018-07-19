@@ -11,8 +11,8 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 
-//const API_URL = 'https://app-9781.on-aptible.com';
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://app-9781.on-aptible.com';
+//const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -213,7 +213,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         }};
                     return {
                         url: `${API_URL}/phi/v1.0/physicians/?format=json`,
-                        options: { method: 'POST', body: JSON.stringify(request) },
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
                     };
                 default:
                     console.log('ERROR! CREATE called on invalid resources.');
