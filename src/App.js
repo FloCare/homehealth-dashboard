@@ -9,6 +9,8 @@ import PhysicianEdit from './Phsyician/PhysicianEdit'
 import { UserList } from './users';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
+
+require('../node_modules/material-components-web/dist/material-components-web.min.css')
 // import { createMuiTheme } from '@material-ui/core/styles';
 
 // const theme = createMuiTheme({
