@@ -68,4 +68,8 @@ const ParseGooglePlacesAPIResponse = (details) => {
 
 };
 
-export {ParseGooglePlacesAPIResponse};
+const parseMobileNumber = (rawMobileString) => {
+    return rawMobileString.toString().replace(/-/g, "").replace(/ /g, "").replace(/\(/g, "").replace(/\)/g, "");
+}
+
+export {ParseGooglePlacesAPIResponse, parseMobileNumber};
