@@ -10,6 +10,7 @@ import {
     fetchUtils,
 } from 'react-admin';
 import {stringify} from 'query-string';
+import {parseMobileNumber} from './parsingUtils'
 
 //const API_URL = 'https://app-9781.on-aptible.com';
 const API_URL = 'http://localhost:8000';
@@ -207,8 +208,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             npi : params.data.npiID,
                             firstName : params.data.firstName,
                             lastName : params.data.lastName,
-                            phone1 : params.data.phone1,
-                            phone2 : params.data.phone2,
+                            phone1 : parseMobileNumber(params.data.phone1),
+                            phone2 : parseMobileNumber(params.data.phone2),
                             fax : params.data.fax,
                         }};
                     return {
