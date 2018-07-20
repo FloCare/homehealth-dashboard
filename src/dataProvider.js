@@ -11,8 +11,8 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 
-const API_URL = 'https://app-9781.on-aptible.com';
-//const API_URL = 'http://localhost:8000';
+//const API_URL = 'https://app-9781.on-aptible.com';
+const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -242,6 +242,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
     console.log('Converting API Response to Data Provider:', params);
     const {json, headers} = response;
+    console.log(json);
     switch (type) {
 
         case GET_LIST:
@@ -286,6 +287,23 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     return {
                         //data: json.map(x => x),
                         data: data,
+                        total: 20
+                    };
+                case 'physicians':
+                    const physicianData = json.map(item => {
+                        return ({
+                            id: item.id,
+                            first_name: item.first_name,
+                            last_name: item.last_name,
+                            phone1: item.phone1,
+                            phone2: item.phone2,
+                            fax: item.fax,
+                            displayname: `${item.last_name}  ${item.first_name}`,
+                        });
+                    });
+                    return {
+                        //data: json.map(x => x),
+                        data: physicianData,
                         total: 20
                     };
                 default:
@@ -333,8 +351,6 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         case GET_ONE:
             switch (resource) {
                 case 'phi':
-                    console.log('Data from GET_ONE:', json);
-
                     return {
                         data: {
                             "id": json.patient.id,
@@ -355,6 +371,18 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "zipCode": json.patient.address.zipCode,
                             "userIds": json.userIds,
                             "physician_id": json.physicianId,
+                        }
+                    };
+                case 'physicians':
+                    return {
+                        data: {
+                            "id": json.id,
+                            "first_name": json.first_name,
+                            "last_name": json.last_name,
+                            "phone1": json.phone1,
+                            "phone2": json.phone2,
+                            "fax": json.fax,
+                            "displayname": json.displayname
                         }
                     };
                 default:

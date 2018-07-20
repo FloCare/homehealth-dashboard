@@ -1,10 +1,11 @@
 import React from 'react';
-import {List, Datagrid, TextField, EditButton} from 'react-admin';
+import {List, Datagrid, TextField, EditButton, DeleteButton} from 'react-admin';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
     SingleFieldList, ChipField, ReferenceInput, SelectInput, AutocompleteInput
 } from 'react-admin';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import { DateInput } from 'react-admin-date-inputs';
 import SearchBar from './SearchBar';
 import {Field} from 'redux-form';
@@ -23,6 +24,7 @@ const PatientPagination = () => {
 };
 
 export const PatientList = (props) => (
+    props.options.label = 'Patients',
     <List {...props} title="List of patients" pagination={<PatientPagination />}>
         <Datagrid>
             <TextField source="firstName" />
@@ -34,6 +36,7 @@ export const PatientList = (props) => (
                         </SingleFieldList>
                     </ReferenceArrayField>
             <EditButton />
+            <DeleteButton />
         </Datagrid>
     </List>
 );
@@ -153,7 +156,7 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} />
             <Heading text="Physician Team"/>
             <ReferenceInput label="Primary Physician" source="physician_id" reference="physicians">
-                <SelectInput optionText="first_name" optionValue="id" />
+                <AutocompleteInput optionText="displayname" optionValue="id" />
             </ReferenceInput>
             <Heading text="Care Team" />
             <ReferenceArrayInput label="Staff" source="users" reference="users">

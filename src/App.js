@@ -18,9 +18,11 @@ require('../node_modules/material-components-web/dist/material-components-web.mi
 //   },
 // });
 
+var organizationName = localStorage.getItem('organizationName') ? localStorage.getItem('organizationName') : 'FloCare Admin Dashboard';
+
 const App = () => (
     <Admin
-        title="FloCare Admin Dashboard"
+        title={organizationName}
         authProvider={authProvider}
         dataProvider={dataProvider}
     >
