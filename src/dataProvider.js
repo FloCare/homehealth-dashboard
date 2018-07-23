@@ -12,8 +12,8 @@ import {
 import {stringify} from 'query-string';
 import {parseMobileNumber} from './parsingUtils'
 
-//const API_URL = 'https://app-9781.on-aptible.com';
-const API_URL = 'http://localhost:8000';
+const API_URL = 'https://app-9781.on-aptible.com';
+//const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -22,10 +22,8 @@ const API_URL = 'http://localhost:8000';
  * @returns {Object} { url, options } The HTTP request parameters
  */
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
-    console.log('');
     console.log('Converting Data Provider Call to HTTP Request on:');
     console.log('This called:', type, resource, params);
-    console.log('');
 
     switch (type) {
         case GET_LIST: {
@@ -55,7 +53,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         }
 
         case GET_ONE:
-            console.log('Running GET ONE for:', resource);
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
@@ -113,11 +110,9 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // console.log('Running UPDATE for:', resource);
             switch(resource) {
                 case 'phi':
-                    console.log('params:', params);
                     var body = {};
                     body.patient = {};
                     const updatedFields = params.data.updatedFields;
-                    console.log('updatedFields = ', updatedFields);
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
                         body.patient[field] = params.data[field];
@@ -138,7 +133,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     body.physicianId = params.data.physician_id;
-                    console.log('Sending request with body:', body);
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
@@ -243,14 +237,12 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
     console.log('Converting API Response to Data Provider:', params);
     const {json, headers} = response;
-    console.log(json);
     switch (type) {
 
         case GET_LIST:
             // console.log('EXECUTED GET_LIST for:', resource);
             switch(resource) {
                 case 'users':
-                    console.log('Users are:', json.users);
                     const usersData = json.users.map(user => {
                         return ({
                             id: user.id,
@@ -351,7 +343,6 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         case GET_ONE:
             switch (resource) {
                 case 'phi':
-                    var actualAddress = `${json.patient.address.streetAddress}, ${json.patient.address.city}, ${json.patient.address.state}`;
                     return {
                         data: {
                             "id": json.patient.id,
@@ -362,7 +353,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "emergencyContactName": json.patient.emergencyContactName,
                             "emergencyContactNumber": json.patient.emergencyContactNumber,
                             "emergencyContactRelationship": json.patient.emergencyContactRelationship,
-                            "streetAddress": actualAddress,
+                            "streetAddress": json.patient.address.streetAddress,
                             "apartmentNo": json.patient.address.apartment_no,
                             "latitude": json.patient.address.latitude,
                             "longitude": json.patient.address.longitude,

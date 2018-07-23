@@ -44,9 +44,6 @@ const validatePatientCreation = (values) => {
     if (!values.lastName) {
         errors.lastName = ['Required'];
     }
-    if (!values.address || values.address.length < 6) {
-        errors.address = ['The street address has to be selected from the dropdown'];
-    }
     var dateOfBirth = values.dateOfBirth;
     var today = new Date().toISOString().slice(0,10); 
     if(dateOfBirth) {

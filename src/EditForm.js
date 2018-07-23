@@ -112,7 +112,7 @@ class EditForm extends Component {
                 <Heading text="Basic Details"/>
                 <TextInput source="firstName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange}/>
+                <Field source="streetAddress" name="address" component={SearchBar} onChange={this.onChange}/>
                 <TextInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
                 <DateInput source="dob"  label="DOB (mm-dd-yyyy)(Optional)" 

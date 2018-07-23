@@ -37,15 +37,13 @@ const styles = theme => ({
 });
 
 const validatePatientCreation = (values) => {
+    console.log('hello');
     const errors = {};
     if (!values.firstName) {
         errors.firstName = ['Required'];
     }
     if (!values.lastName) {
         errors.lastName = ['Required'];
-    }
-    if (!values.address || values.address.length < 6) {
-        errors.address = ['The street address has to be selected from the dropdown'];
     }
     var dateOfBirth = values.dob;
     var today = new Date().toISOString().slice(0,10); 
@@ -133,6 +131,7 @@ class EditForm extends Component {
       };
 
     onSubmit(data, redirect){
+        console.log(data);
         const {startUndoable} = this.props;
 
         data.updatedFields = this.state.updatedFields;
