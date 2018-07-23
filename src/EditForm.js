@@ -15,8 +15,6 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-// import SearchBar from './SearchBar';
-// import {Field} from 'redux-form';
 
 const styles = theme => ({
    accordian: {
@@ -108,17 +106,16 @@ class EditForm extends Component {
     render() {
         const { classes } = this.props;
         this.props.options.label = 'Primary Physician';
-        console.log(this.props);
         const { expanded } = this.state;
         return (
             <SimpleForm {...this.props} save={this.onSubmit}>
                 <Heading text="Basic Details"/>
                 <TextInput source="firstName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <Field source="streetAddress" name="address" component={SearchBar} value="streetAddress"/>
+                <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange}/>
                 <DisabledInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
-                <DateInput source="dob"  label="DOB(mm-dd-yyyy)(Optional)" 
+                <DateInput source="dob"  label="DOB (mm-dd-yyyy)(Optional)" 
                      options={{ format: 'MM-DD-YYYY', maxDate: '01-01-2018', openToYearSelection: true, disableFuture: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
                      onChange={this.onChange} />
                 <div className={classes.root} >

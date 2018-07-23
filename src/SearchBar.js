@@ -6,8 +6,9 @@ import TextField from '@material-ui/core/TextField';
 class SearchBar extends React.Component {
   constructor(props) {
     super(props);
+    const { record: { actualAddress } } = props
     this.state = {
-      address: '',
+      address: actualAddress,
       errorMessage: '',
       latitude: null,
       longitude: null,
@@ -76,6 +77,7 @@ class SearchBar extends React.Component {
           <TextField
           required={true}
           id="required"
+          value={this.state.streetAddress}
           placeholder="2340 1st Avenue, New York, NY, USA"
           margin="normal"
           style = {{width: 525}}

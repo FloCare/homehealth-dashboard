@@ -127,7 +127,6 @@ export default class PhysicianCreate extends React.Component {
         />
         <Create {...props} record={physicianData} title="Create Physician">
           <SimpleForm toolbar={<PhysicianCreateToolbar/>} redirect="list">
-            <Heading text="Create Physician" />
 
             <div style={styles.inlineBlock}>
               <TextInput source="npiID" label="NPI Id" style={styles.inlineElementStyle}

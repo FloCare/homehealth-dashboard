@@ -29,6 +29,7 @@ export default (type, params) => {
     // called when the user clicks on the logout button
     if (type === AUTH_LOGOUT) {
         localStorage.removeItem('access_token');
+        localStorage.removeItem('organizationName');
         return Promise.resolve();
     }
     // called when the API returns an error

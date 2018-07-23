@@ -113,32 +113,32 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // console.log('Running UPDATE for:', resource);
             switch(resource) {
                 case 'phi':
-                    //console.log('params:', params);
+                    console.log('params:', params);
                     var body = {};
                     body.patient = {};
                     const updatedFields = params.data.updatedFields;
-                    //console.log('updatedFields = ', updatedFields);
+                    console.log('updatedFields = ', updatedFields);
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
                         body.patient[field] = params.data[field];
                     }
-                    // if (updatedFields.indexOf('streetAddress') > -1) {
-                    //     params.data.address = {
-                    //         "apartment_no": params.data.apartment_no,
-                    //         "streetAddress": localStorage.getItem('streetAddress'),
-                    //         "zipCode": localStorage.getItem('postalCode'),
-                    //         "city": localStorage.getItem('cityName'),
-                    //         "state": localStorage.getItem('stateName'),
-                    //         "country": localStorage.getItem('countryName'),
-                    //         "latitude": localStorage.getItem('latitude'),
-                    //         "longitude": localStorage.getItem('longitude')
-                    //     };
-                    //     body.data.address = params.data.address;
-                    // }
+                    if (updatedFields.indexOf('address') > -1) {
+                        params.data.address = {
+                            "apartment_no": params.data.apartment_no,
+                            "streetAddress": localStorage.getItem('streetAddress'),
+                            "zipCode": localStorage.getItem('postalCode'),
+                            "city": localStorage.getItem('cityName'),
+                            "state": localStorage.getItem('stateName'),
+                            "country": localStorage.getItem('countryName'),
+                            "latitude": localStorage.getItem('latitude'),
+                            "longitude": localStorage.getItem('longitude')
+                        };
+                        body.patient['address'] = params.data.address;
+                    }
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     body.physicianId = params.data.physician_id;
-                    // console.log('Sending request with body:', body);
+                    console.log('Sending request with body:', body);
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
@@ -362,6 +362,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "emergencyContactName": json.patient.emergencyContactName,
                             "emergencyContactNumber": json.patient.emergencyContactNumber,
                             "emergencyContactRelationship": json.patient.emergencyContactRelationship,
+                            "actualAddress": `${json.patient.address.streetAddress}, ${json.patient.address.city}, ${json.patient.address.state}, ${json.patient.address.country}`,
                             "streetAddress": json.patient.address.streetAddress,
                             "apartmentNo": json.patient.address.apartment_no,
                             "latitude": json.patient.address.latitude,

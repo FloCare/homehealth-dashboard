@@ -145,7 +145,7 @@ export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
             <TextInput source="firstName" formClassName={classes.inlineBlock} />
             <TextInput source="lastName" formClassName={classes.inlineBlock} />
             <TextInput source="primaryContact" label="Phone Number" />
-            <DateInput source="dateOfBirth" label="DOB(mm-dd-yyyy) (Optional)" 
+            <DateInput source="dateOfBirth" label="DOB (mm-dd-yyyy) (Optional)" 
                 options={{ format: 'MM-DD-YYYY', maxDate: '01-01-2018', openToYearSelection: true, disableFuture: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }} />
             <Heading text="Emergency Contact Details (Optional)"/>
             <TextInput source="emergencyContactName" label="Contact Name" formClassName={classes.inlineBlock} />
