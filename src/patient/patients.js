@@ -131,7 +131,6 @@ const styles = {
 
 
 export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
-    console.log('Props inside of PatientEdit are:', props);
     return (
         <Edit title="Edit Patient" {...props}>
             <EditForm {...props} />

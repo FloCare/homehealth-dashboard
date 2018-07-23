@@ -157,11 +157,11 @@ class EditForm extends Component {
         return (
             <SimpleForm {...this.props} validate={validatePatientCreation} save={this.onSubmit}>
                 <Heading text="Basic Details"/>
-                <TextInput source="firstName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <TextInput source="lastName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange}/>
+                <TextInput source="firstName" onChange={this.onChange} formClassName={classes.inlineBlock}/>
+                <TextInput source="lastName" onChange={this.onChange} formClassName={classes.inlineBlock}/>
+                <Field source="streetAddress" name="address" component={SearchBar} onChange={this.onChange}/>
                 <TextInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
-                <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
+                <TextInput source="primaryContact" label="Phone Number" onChange={this.onChange} />
                 <DateInput source="dob"  label="DOB (mm-dd-yyyy)(Optional)" 
                      options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
                      onChange={this.onChange} />

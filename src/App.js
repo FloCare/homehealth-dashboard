@@ -2,7 +2,7 @@ import React from 'react';
 import { Admin, Resource } from 'react-admin';
 import PatientIcon from '@material-ui/icons/Book';
 import UserIcon from '@material-ui/icons/Group';
-import { PatientList, PatientCreate, PatientEdit } from './patient/patients';
+import { PatientList, PatientCreate, PatientEdit } from './patients';
 import PhysicianCreate from './physician/PhysicianCreate'
 import {PhysicianList} from './physician/PhysicianList'
 import { UserList } from './users';

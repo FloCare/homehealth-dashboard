@@ -351,6 +351,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         case GET_ONE:
             switch (resource) {
                 case 'phi':
+                    var actualAddress = `${json.patient.address.streetAddress}, ${json.patient.address.city}, ${json.patient.address.state}`;
                     return {
                         data: {
                             "id": json.patient.id,
@@ -361,8 +362,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "emergencyContactName": json.patient.emergencyContactName,
                             "emergencyContactNumber": json.patient.emergencyContactNumber,
                             "emergencyContactRelationship": json.patient.emergencyContactRelationship,
-                            "actualAddress": `${json.patient.address.streetAddress}, ${json.patient.address.city}, ${json.patient.address.state}, ${json.patient.address.country}`,
-                            "streetAddress": json.patient.address.streetAddress,
+                            "streetAddress": actualAddress,
                             "apartmentNo": json.patient.address.apartment_no,
                             "latitude": json.patient.address.latitude,
                             "longitude": json.patient.address.longitude,
