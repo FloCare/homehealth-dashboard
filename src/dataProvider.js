@@ -298,8 +298,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             last_name: item.last_name,
                             phone1: item.phone1,
                             phone2: item.phone2,
-                            fax: item.fax,
-                            displayname: `${item.last_name}  ${item.first_name}`,
+                            fax: item.fax
                         });
                     });
                     return {
@@ -383,8 +382,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "last_name": json.last_name,
                             "phone1": json.phone1,
                             "phone2": json.phone2,
-                            "fax": json.fax,
-                            "displayname": json.displayname
+                            "fax": json.fax
                         }
                     };
                 default:

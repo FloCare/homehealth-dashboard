@@ -14,7 +14,6 @@ export const PhysicianList = (props) => (
       <TextField source="last_name" label="Last Name"/>
       <TextField source="phone1" label="Office Phone"/>
       <TextField source="phone2" label="Alternate Number"/>
-      <EditButton/>
     </Datagrid>
   </List>
 )

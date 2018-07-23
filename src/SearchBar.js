@@ -6,9 +6,9 @@ import TextField from '@material-ui/core/TextField';
 class SearchBar extends React.Component {
   constructor(props) {
     super(props);
-    const { record: { actualAddress } } = props
+    const { record: { streetAddress } } = props;
     this.state = {
-      address: actualAddress,
+      address: streetAddress,
       errorMessage: '',
       latitude: null,
       longitude: null,

@@ -7,11 +7,11 @@ import {
 } from 'react-admin';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import { DateInput } from 'react-admin-date-inputs';
-import SearchBar from './SearchBar';
+import SearchBar from '../SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
-import CreateForm from './CreateForm';
-import EditForm from './EditForm';
+import CreateForm from './PatientCreate';
+import EditForm from './PatientEdit';
 
 // import {FetchUsers} from './connectionUtils';
 // import LocationSearchInput from './LocationSearchInput';
