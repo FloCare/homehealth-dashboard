@@ -114,7 +114,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     var body = {};
                     body.patient = {};
                     const updatedFields = params.data.updatedFields;
-                    console.log(updatedFields);
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
                         if(field != 'apartmentNo')
@@ -144,7 +143,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         };
                         body.patient['address'] = params.data.address;
                     } 
-                    else {
+                    else if(updatedFields.indexOf('apartmentNo') > -1){
                         params.data.address = {
                             "apartmentNo": params.data.apartmentNo
                         };
