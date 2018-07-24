@@ -33,8 +33,7 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.text.secondary,
   },
-  inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
-  inlineBlock1: { marginTop: '5rem' },
+  inlineBlock: { display: 'inline-flex', marginRight: '2rem' },
 });
 
 const validatePatientCreation = (values) => {
@@ -172,7 +171,7 @@ class EditForm extends Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <TextInput source="emergencyContactName" label="Contact Name" onChange={this.onChange} className={classes.inlineBlock} />
-                        <TextInput source="emergencyContactRelationship" label="Relationship" onChange={this.onChange} className={classes.inlineBlock1} />
+                        <TextInput source="emergencyContactRelationship" label="Relationship" onChange={this.onChange} className={classes.inlineBlock} />
                         <TextInput source="emergencyContactNumber" label="Contact Number" onChange={this.onChange} />
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
