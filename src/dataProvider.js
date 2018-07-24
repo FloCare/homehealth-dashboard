@@ -12,6 +12,7 @@ import {
 import {stringify} from 'query-string';
 import {parseMobileNumber} from './parsingUtils'
 
+//const API_URL = 'https://app-9707.on-aptible.com';
 const API_URL = 'https://app-9781.on-aptible.com';
 //const API_URL = 'http://localhost:8000';
 
@@ -113,11 +114,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     var body = {};
                     body.patient = {};
                     const updatedFields = params.data.updatedFields;
+                    console.log(updatedFields);
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
-                        body.patient[field] = params.data[field];
+                        if(field != 'apartmentNo')
+                            body.patient[field] = params.data[field];
                     }
-                    if (updatedFields.indexOf('address') > -1) {
+                    if (updatedFields.indexOf('address') > -1 && updatedFields.indexOf('apartmentNo') > -1) {
                         params.data.address = {
                             "apartmentNo": params.data.apartmentNo,
                             "streetAddress": localStorage.getItem('streetAddress'),
@@ -129,7 +132,24 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             "longitude": localStorage.getItem('longitude')
                         };
                         body.patient['address'] = params.data.address;
-                    }
+                    } else if (updatedFields.indexOf('address') > -1 ) {
+                        params.data.address = {
+                            "streetAddress": localStorage.getItem('streetAddress'),
+                            "zipCode": localStorage.getItem('postalCode'),
+                            "city": localStorage.getItem('cityName'),
+                            "state": localStorage.getItem('stateName'),
+                            "country": localStorage.getItem('countryName'),
+                            "latitude": localStorage.getItem('latitude'),
+                            "longitude": localStorage.getItem('longitude')
+                        };
+                        body.patient['address'] = params.data.address;
+                    } 
+                    else {
+                        params.data.address = {
+                            "apartmentNo": params.data.apartmentNo
+                        };
+                        body.patient['address'] = params.data.address;
+                    } 
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     body.physicianId = params.data.physician_id;
