@@ -34,6 +34,7 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
+  inlineBlock1: { marginTop: '5rem' },
 });
 
 const validatePatientCreation = (values) => {
@@ -171,8 +172,8 @@ class EditForm extends Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <TextInput source="emergencyContactName" label="Contact Name" onChange={this.onChange} className={classes.inlineBlock} />
-                        <TextInput source="emergencyContactNumber" label="Contact Number" onChange={this.onChange} className={classes.inlineBlock} />
-                        <TextInput source="emergencyContactRelationship" label="Relationship" onChange={this.onChange} />
+                        <TextInput source="emergencyContactRelationship" label="Relationship" onChange={this.onChange} className={classes.inlineBlock1} />
+                        <TextInput source="emergencyContactNumber" label="Contact Number" onChange={this.onChange} />
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                 </div>
@@ -182,7 +183,7 @@ class EditForm extends Component {
                         <Typography className={classes.heading}>Care Team</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceArrayInput {...this.props} label="Staff" source="userIds" reference="users">
+                        <ReferenceArrayInput record={this.props.record} label="Staff" source="userIds" reference="users">
                             <SelectArrayInput optionText="displayname" optionValue="id" />
                         </ReferenceArrayInput>
                       </ExpansionPanelDetails>
@@ -194,7 +195,7 @@ class EditForm extends Component {
                         <Typography className={classes.heading}>Physician Team</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceInput label="Primary Physician" {...this.props} source="physician_id" reference="physicians">
+                        <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
                             <SelectInput optionText="first_name" optionValue="id" />
                         </ReferenceInput>
                       </ExpansionPanelDetails>

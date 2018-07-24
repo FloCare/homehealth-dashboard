@@ -119,7 +119,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     }
                     if (updatedFields.indexOf('address') > -1) {
                         params.data.address = {
-                            "apartment_no": params.data.apartment_no,
+                            "apartmentNo": params.data.apartmentNo,
                             "streetAddress": localStorage.getItem('streetAddress'),
                             "zipCode": localStorage.getItem('postalCode'),
                             "city": localStorage.getItem('cityName'),
@@ -163,7 +163,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'phi':
                     var request = {};
                     params.data.address = {
-                        "apartment_no": params.data.apartment_no,
+                        "apartmentNo": params.data.apartmentNo,
                         "streetAddress": localStorage.getItem('streetAddress'),
                         "zipCode": localStorage.getItem('postalCode'),
                         "city": localStorage.getItem('cityName'),
@@ -354,7 +354,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "emergencyContactNumber": json.patient.emergencyContactNumber,
                             "emergencyContactRelationship": json.patient.emergencyContactRelationship,
                             "streetAddress": json.patient.address.streetAddress,
-                            "apartmentNo": json.patient.address.apartment_no,
+                            "apartmentNo": json.patient.address.apartmentNo,
                             "latitude": json.patient.address.latitude,
                             "longitude": json.patient.address.longitude,
                             "city": json.patient.address.city,

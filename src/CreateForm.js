@@ -72,7 +72,7 @@ class CreateForm extends Component {
                 <TextInput source="firstName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange}/>
-                <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
+                <TextInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
                 <DateInput source="dateOfBirth"  label="DOB (mm-dd-yyyy)(Optional)" 
                      options={{ format: 'MM-DD-YYYY', maxDate: '01-01-2018', openToYearSelection: true, disableFuture: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}

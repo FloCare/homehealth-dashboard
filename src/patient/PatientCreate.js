@@ -34,7 +34,17 @@ const styles = theme => ({
     color: theme.palette.text.secondary,
   },
   inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
+  inlineBlock1: { marginTop: '5rem' },
 });
+
+const Info = props => {
+    const {text, style, textColor} = props;
+    return (
+        <div style={style}>
+            <font size="2" color={textColor}>{text}</font>
+        </div>
+    );
+};
 
 const validatePatientCreation = (values) => {
     const errors = {};
@@ -117,7 +127,7 @@ class CreateForm extends Component {
                 <TextInput source="firstName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange}/>
-                <TextInput source="apartment_no" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
+                <TextInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" onChange={this.onChange} />
                 <DateInput source="dateOfBirth"  label="DOB (mm-dd-yyyy)(Optional)" 
                      options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
@@ -129,8 +139,8 @@ class CreateForm extends Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <TextInput source="emergencyContactName" label="Contact Name" onChange={this.onChange} className={classes.inlineBlock} />
-                        <TextInput source="emergencyContactNumber" label="Contact Number" onChange={this.onChange} className={classes.inlineBlock} />
-                        <TextInput source="emergencyContactRelationship" label="Relationship" onChange={this.onChange} />
+                        <TextInput source="emergencyContactRelationship" label="Relationship" onChange={this.onChange} className={classes.inlineBlock1} />
+                        <TextInput source="emergencyContactNumber" label="Contact Number" onChange={this.onChange} />
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                 </div>
@@ -140,7 +150,7 @@ class CreateForm extends Component {
                         <Typography className={classes.heading}>Care Team</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceArrayInput {...this.props} label="Staff" source="users" reference="users">
+                        <ReferenceArrayInput record={this.props.record} label="Staff" source="users" reference="users">
                             <SelectArrayInput optionText="displayname" optionValue="id" />
                         </ReferenceArrayInput>
                       </ExpansionPanelDetails>
@@ -152,12 +162,13 @@ class CreateForm extends Component {
                         <Typography className={classes.heading}>Physician Team</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceInput label="Primary Physician" {...this.props} source="physician_id" reference="physicians">
+                        <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
                             <SelectInput optionText="first_name" optionValue="id" />
                         </ReferenceInput>
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                 </div>
+                <Info style={{width: '100%', marginTop: 30}} text="Note: Do select the street address from the suggestions" textColor="black" />
             </SimpleForm>
         );
     }
