@@ -190,6 +190,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('countryName');
                     localStorage.removeItem('latitude');
                     localStorage.removeItem('longitude');
+                    localStorage.removeItem('streetAddress');
 
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
@@ -290,7 +291,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             last_name: item.last_name,
                             phone1: item.phone1,
                             phone2: item.phone2,
-                            fax: item.fax
+                            fax: item.fax,
+                            displayname: `${item.last_name} ${item.first_name}`
                         });
                     });
                     return {
@@ -373,7 +375,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "last_name": json.last_name,
                             "phone1": json.phone1,
                             "phone2": json.phone2,
-                            "fax": json.fax
+                            "fax": json.fax,
+                            "displayname": `${json.last_name} ${json.first_name}`
                         }
                     };
                 default:

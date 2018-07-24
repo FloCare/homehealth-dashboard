@@ -22,7 +22,7 @@ export default (type, params) => {
             })
             .then(({ token }) => {
                 localStorage.setItem('access_token', token);
-                // TODO to be changed based on the logged in Org
+                // TODO logic to be changed based on the logged in Org
                 localStorage.setItem('organizationName', 'Freudenthal Home Health');
             });
         // accept all username/password combinations

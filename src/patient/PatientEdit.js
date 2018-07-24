@@ -196,7 +196,7 @@ class EditForm extends Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
-                            <SelectInput optionText="first_name" optionValue="id" />
+                            <SelectInput optionText="displayname" optionValue="id" />
                         </ReferenceInput>
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
