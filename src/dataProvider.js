@@ -306,6 +306,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     const physicianData = json.map(item => {
                         return ({
                             id: item.id,
+                            npi: item.npi,
                             first_name: item.first_name,
                             last_name: item.last_name,
                             phone1: item.phone1,
