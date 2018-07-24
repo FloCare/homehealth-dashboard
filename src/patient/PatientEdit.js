@@ -79,6 +79,9 @@ const validatePatientCreation = (values) => {
     else if (!primaryContact || primaryContact.length > 10) {
         errors.primaryContact = ['Contact Number too long'];
     }
+    if ((emergencyContactNumber && emergencyContactNumber.length > 1) && isNaN(emergencyContactNumber)) {
+        errors.emergencyContactNumber = ['Contact Number can only contain numerics'];
+    }
     return errors
 };
 
