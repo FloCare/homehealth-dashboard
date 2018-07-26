@@ -119,7 +119,7 @@ export default class PhysicianCreate extends React.Component {
       >
         <SimpleDialog
           title="ERROR"
-          body="Unable to fetch Data from registry. Please try later."
+          body="Invalid NPI Id passed, please enter a valid NPI ID"
           open={this.state.showErrorPopUp}
           onClose={evt => this.setState({showErrorPopUp: false})}
           acceptLabel={'OK'}
