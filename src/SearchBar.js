@@ -88,9 +88,9 @@ class SearchBar extends React.Component {
           required={true}
           id="required"
           value={this.state.streetAddress}
-          placeholder="2340 1st Avenue, New York, NY, USA"
+          placeholder="Street Address"
           margin="normal"
-          style = {{width: 550}}
+          style = {{width: 350}}
           {...getInputProps({
                 className: 'location-search-input'
               })}

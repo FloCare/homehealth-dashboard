@@ -38,7 +38,6 @@ export const PatientList = (props) => (
                         </SingleFieldList>
                     </ReferenceArrayField>
             <EditButton />
-            <DeleteButton />
         </Datagrid>
     </List>
 );

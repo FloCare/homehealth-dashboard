@@ -29,7 +29,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
     switch (type) {
         case GET_LIST: {
             // console.log('Running GET LIST for:', resource);
-            // const {page, perPage} = params.pagination;
+            const {page, perPage} = params.pagination;
             const {field, order} = params.sort;
             // console.log(page);
             const query = {
@@ -223,7 +223,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             firstName : params.data.firstName,
                             lastName : params.data.lastName,
                             phone1 : parseMobileNumber(params.data.phone1),
-                            phone2 : parseMobileNumber(params.data.phone2),
+                            phone2 : params.data.phone2? parseMobileNumber(params.data.phone2) : null,
                             fax : params.data.fax,
                         }};
                     return {
