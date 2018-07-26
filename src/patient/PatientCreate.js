@@ -30,7 +30,7 @@ const styles = theme => ({
     root1: {
     width: '100%',
     marginTop: '2%',
-    marginBottom: '10%'
+    marginBottom: '8%'
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -168,7 +168,7 @@ class CreateForm extends Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
-                            <AutocompleteInput optionText="displayname" optionValue="id" suggestionComponent={suggestionRenderer} options={{fullWidth: true}}/>
+                            <SelectInput optionText="displayname" optionValue="id" />
                         </ReferenceInput>
                         <div className={classes.root1} />
                       </ExpansionPanelDetails>

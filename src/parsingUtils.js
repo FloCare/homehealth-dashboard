@@ -72,4 +72,8 @@ const parseMobileNumber = (rawMobileString) => {
     return rawMobileString.toString().replace(/-/g, "").replace(/ /g, "").replace(/\(/g, "").replace(/\)/g, "");
 }
 
-export {ParseGooglePlacesAPIResponse, parseMobileNumber};
+const capitalize = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize};

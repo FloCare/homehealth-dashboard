@@ -174,11 +174,11 @@ class EditForm extends Component {
                 <TextInput source="firstName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="primaryContact" label="Phone Number" onChange={this.onChange} />
-                <DateInput source="dateOfBirth"  label="DOB (mm-dd-yyyy)(Optional)"
-                     options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
-                     onChange={this.onChange} />
                 <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
                 <LongTextInput source="apartmentNo" label="Apt., (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
+                <DateInput source="dob"  label="DOB (mm-dd-yyyy)(Optional)"
+                     options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
+                     onChange={this.onChange} />
                 <Heading text="Care Team"/>
                 <ReferenceArrayInput record={this.props.record} label="Staff" source="userIds" reference="users">
                     <SelectArrayInput optionText="displayname" optionValue="id" />
@@ -190,7 +190,7 @@ class EditForm extends Component {
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
-                            <AutocompleteInput optionText="displayname" optionValue="id" suggestionComponent={suggestionRenderer} options={{fullWidth: true}}/>
+                            <SelectInput optionText="displayname" optionValue="id"/>
                         </ReferenceInput>
                         <div className={classes.root1} />
                       </ExpansionPanelDetails>
