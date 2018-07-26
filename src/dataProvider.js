@@ -223,7 +223,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             firstName : params.data.firstName,
                             lastName : params.data.lastName,
                             phone1 : parseMobileNumber(params.data.phone1),
-                            phone2 : params.data.phone2? parseMobileNumber(params.data.phone2) : null,
                             fax : params.data.fax,
                         }};
                     return {

@@ -22,7 +22,6 @@ import Paper from '@material-ui/core/Paper';
 const styles = theme => ({
    accordian: {
     width: '100%',
-    marginTop: '2%',
   },
   root: {
     width: '100%',
@@ -31,7 +30,7 @@ const styles = theme => ({
     root1: {
     width: '100%',
     marginTop: '2%',
-    marginBottom: '8%'
+    marginBottom: '10%'
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
@@ -112,7 +111,6 @@ const validatePatientCreation = (values) => {
 
 const Heading = props => {
     const {text} = props;
-    console.log(props);
     return (
         <div>
             <h5>{text}</h5>
@@ -141,24 +139,40 @@ class CreateForm extends Component {
     render() {
         const { classes } = this.props;
         const { expanded } = this.state;
+        const suggestionRenderer = ({ suggestion, query, isHighlighted, props }) => {
+            if(query.length>0) {
+                return (<div><text>{suggestion.last_name} {suggestion.first_name}</text>
+                     </div>)
+            }
+            return null;
+        }
         return (
             <SimpleForm {...this.props} validate={validatePatientCreation} redirect="list" >
                 <TextInput source="firstName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <TextInput source="primaryContact" label="Phone Number" formClassName={classes.inlineBlock} onChange={this.onChange} />
+                <TextInput source="primaryContact" label="Phone Number" onChange={this.onChange} />
                 <DateInput source="dateOfBirth"  label="DOB (mm-dd-yyyy)(Optional)"
                      options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
-                     onChange={this.onChange}/>
+                     onChange={this.onChange} />
                 <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
                 <LongTextInput source="apartmentNo" label="Apt., (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
                 <Heading text="Care Team"/>
                 <ReferenceArrayInput record={this.props.record} label="Staff" source="users" reference="users">
                     <SelectArrayInput optionText="displayname" optionValue="id" />
                 </ReferenceArrayInput>
-                <Heading text="Physician Team"/>
-                <ReferenceInput label="Primary Physician (Optional)" record={this.props.record} source="physician_id" reference="physicians">
-                    <SelectInput optionText="displayname" optionValue="id" allowEmpty="true"/>
-                </ReferenceInput>
+                <div className={classes.root} >
+                    <ExpansionPanel expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
+                      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <Typography className={classes.heading}>Physician Details</Typography>
+                      </ExpansionPanelSummary>
+                      <ExpansionPanelDetails>
+                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
+                            <SelectInput optionText="displayname" optionValue="id"/>
+                        </ReferenceInput>
+                        <div className={classes.root1} />
+                      </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                </div>
                 <div className={classes.accordian} >
                     <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
                       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
