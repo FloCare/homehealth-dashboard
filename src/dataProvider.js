@@ -223,6 +223,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             firstName : params.data.firstName,
                             lastName : params.data.lastName,
                             phone1 : parseMobileNumber(params.data.phone1),
+                            phone2 : params.data.phone2,
                             fax : params.data.fax,
                         }};
                     return {
@@ -304,14 +305,14 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                 case 'physicians':
                     const physicianData = json.map(item => {
                         return ({
-                            id: item.id,
+                            id: item.physicianID,
                             npi: item.npi,
-                            first_name: item.first_name,
-                            last_name: item.last_name,
+                            firstName: item.firstName,
+                            lastName: item.lastName,
                             phone1: item.phone1,
                             phone2: item.phone2,
                             fax: item.fax,
-                            displayname: `${item.last_name} ${item.first_name}`
+                            displayname: `${item.lastName} ${item.firstName}`
                         });
                     });
                     return {
@@ -390,12 +391,12 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     return {
                         data: {
                             "id": json.id,
-                            "first_name": json.first_name,
-                            "last_name": json.last_name,
+                            "firstName": json.firstName,
+                            "lastName": json.lastName,
                             "phone1": json.phone1,
                             "phone2": json.phone2,
                             "fax": json.fax,
-                            "displayname": `${json.last_name} ${json.first_name}`
+                            "displayname": `${json.lastName} ${json.firstName}`
                         }
                     };
                 default:

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {
     SimpleForm, TextInput, ReferenceArrayInput, SelectArrayInput,
-    required, crudUpdate, DisabledInput, ReferenceInput, SelectInput, LongTextInput
+    required, crudUpdate, DisabledInput, ReferenceInput, SelectInput, LongTextInput, AutocompleteInput
 } from 'react-admin';
 import { withStyles } from '@material-ui/core/styles';
 import {Field} from 'redux-form';
@@ -162,6 +162,13 @@ class EditForm extends Component {
     render() {
         const { classes } = this.props;
         const { expanded } = this.state;
+        const suggestionRenderer = ({ suggestion, query, isHighlighted, props }) => {
+            if(query.length>0) {
+                return (<div><text>{suggestion.last_name} {suggestion.first_name}</text>
+                     </div>)
+            }
+            return null;
+        }
         return (
             <SimpleForm {...this.props} validate={validatePatientCreation} save={this.onSubmit}>
                 <TextInput source="firstName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
@@ -173,7 +180,7 @@ class EditForm extends Component {
                 <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
                 <LongTextInput source="apartmentNo" label="Apt., (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
                 <Heading text="Care Team"/>
-                <ReferenceArrayInput record={this.props.record} label="Staff" source="users" reference="users">
+                <ReferenceArrayInput record={this.props.record} label="Staff" source="userIds" reference="users">
                     <SelectArrayInput optionText="displayname" optionValue="id" />
                 </ReferenceArrayInput>
                 <div className={classes.root} >
@@ -182,8 +189,8 @@ class EditForm extends Component {
                         <Typography className={classes.heading}>Physician Details</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
-                            <SelectInput optionText="displayname" optionValue="id"/>
+                        <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
+                            <AutocompleteInput optionText="displayname" optionValue="id" suggestionComponent={suggestionRenderer} options={{fullWidth: true}}/>
                         </ReferenceInput>
                         <div className={classes.root1} />
                       </ExpansionPanelDetails>
