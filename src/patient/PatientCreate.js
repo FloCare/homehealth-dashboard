@@ -3,7 +3,9 @@ import {
     SimpleForm, TextInput, ReferenceArrayInput, SelectArrayInput,
     required, crudUpdate, crudCreate, DisabledInput, ReferenceInput, SelectInput, LongTextInput, AutocompleteInput
 } from 'react-admin';
+import MaskedInput from 'react-text-mask';
 import { withStyles } from '@material-ui/core/styles';
+import Input from '@material-ui/core/Input';
 import {Field} from 'redux-form';
 import SearchBar from '../SearchBar';
 import { DateInput, TimeInput, DateTimeInput } from 'react-admin-date-inputs';
@@ -118,14 +120,39 @@ const Heading = props => {
     );
 };
 
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      ref={inputRef}
+      mask={['(', '+', /[1-9]/,')', '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+      placeholderChar={'\u2000'}
+      showMask
+    />
+  );
+}
+
+TextMaskCustom.propTypes = {
+  inputRef: PropTypes.func.isRequired,
+};
+
 class CreateForm extends Component {
     constructor(props){
         super(props);
         this.state = {
+            textmask: '(+1)   -    -   ',
             updatedFields: [],
             expanded: null
         };
     }
+
+    handleChange1 = name => event => {
+        this.setState({
+          [name]: event.target.value,
+        });
+      };
 
       handleChange = panel => (event, expanded) => {
         this.setState({
@@ -138,12 +165,13 @@ class CreateForm extends Component {
     // Todo: Shouldn't have to pass onChange to each field
     render() {
         const { classes } = this.props;
-        const { expanded } = this.state;
+        const { expanded, textmask } = this.state;
         const suggestionRenderer = ({ suggestion, query, isHighlighted, props }) => {
             console.log('inside', query);
             if(query.length>0) {
-                return (<div><text>{suggestion.lastName} {suggestion.firstName}</text>
-                     </div>)
+                return (<div style={{width: '175px'}}>
+                            <span>{suggestion.lastName} {suggestion.firstName}</span>
+                        </div>)
             }
             return null;
         }
@@ -167,7 +195,7 @@ class CreateForm extends Component {
                         <Typography className={classes.heading}>Physician Details (Optional)</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
+                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
                             <SelectInput optionText="displayname" optionValue="id" />
                         </ReferenceInput>
                         <div className={classes.root1} />
