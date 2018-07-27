@@ -14,10 +14,8 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@material-ui/icons/AddCircleOutline';
 import Divider from '@material-ui/core/Divider';
-import Hidden from '@material-ui/core/Hidden';
-import Paper from '@material-ui/core/Paper';
 
 const styles = theme => ({
    accordian: {

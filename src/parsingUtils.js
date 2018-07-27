@@ -69,7 +69,7 @@ const ParseGooglePlacesAPIResponse = (details) => {
 };
 
 const parseMobileNumber = (rawMobileString) => {
-    return rawMobileString.toString().replace(/-/g, "").replace(/ /g, "").replace(/\(/g, "").replace(/\)/g, "");
+    return rawMobileString.toString().replace(/-/g, "");
 }
 
 const capitalize = (string) => {

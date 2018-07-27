@@ -10,7 +10,7 @@ import {
     fetchUtils,
 } from 'react-admin';
 import {stringify} from 'query-string';
-import {parseMobileNumber, capitalize} from './parsingUtils'
+import {parseMobileNumber, capitalize} from './parsingUtils';
 
 //const API_URL = 'https://app-9707.on-aptible.com';
 const API_URL = 'https://app-9781.on-aptible.com';
@@ -222,7 +222,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             npi : params.data.npiID,
                             firstName : capitalize(params.data.firstName),
                             lastName : capitalize(params.data.lastName),
-                            phone1 : parseMobileNumber(params.data.phone1),
+                            phone1 : params.data.phone1,
                             phone2 : params.data.phone2,
                             fax : params.data.fax,
                         }};

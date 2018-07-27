@@ -4,6 +4,7 @@ import Loadable from 'react-loading-overlay'
 import SimpleButton from '../components/common/Button'
 import {HttpStatus} from '../HttpStatusConstants'
 import {SimpleDialog} from 'rmwc/Dialog'
+import {parseMobileNumber, capitalize} from '../parsingUtils'
 
 const Heading = props => {
   const {text} = props
@@ -31,13 +32,14 @@ export default class PhysicianCreate extends React.Component {
   }
 
   parseNPIData (data) {
-    const address = data.addresses.find((address) => address.address_purpose === 'LOCATION')
+    const address = data.addresses.find((address) => address.address_purpose === 'LOCATION');
+    console.log(address);
     return {
-      firstName: data.basic.first_name,
-      lastName: data.basic.last_name,
+      firstName: capitalize(data.basic.first_name),
+      lastName: capitalize(data.basic.last_name),
       npiID: data.number,
       fax: address ? address.us_fax_number : null,
-      phone1: address ? address.us_telephone_number : null
+      phone1: address ? parseMobileNumber(address.us_telephone_number) : null
     }
   }
 
@@ -142,9 +144,9 @@ export default class PhysicianCreate extends React.Component {
                     <DisabledInput source="lastName" label="Last Name"/>
                   </div>
                   <div style={styles.inlineBlock}>
-                    <DisabledInput source="phone1" label="Phone No" style={styles.inlineElementStyle}/>
+                    <TextInput source="phone1" label="Phone1" style={styles.inlineElementStyle}/>
                     <DisabledInput source="fax" label="Fax No" style={styles.inlineElementStyle}/>
-                    <TextInput source="phone2" label="Alternate Phone no" />
+                    <TextInput source="phone2" label="Phone2" />
                   </div>
                 </div>
             }
