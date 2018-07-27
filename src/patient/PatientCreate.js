@@ -3,9 +3,7 @@ import {
     SimpleForm, TextInput, ReferenceArrayInput, SelectArrayInput,
     required, crudUpdate, crudCreate, DisabledInput, ReferenceInput, SelectInput, LongTextInput, AutocompleteInput
 } from 'react-admin';
-import MaskedInput from 'react-text-mask';
 import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
 import {Field} from 'redux-form';
 import SearchBar from '../SearchBar';
 import { DateInput, TimeInput, DateTimeInput } from 'react-admin-date-inputs';
@@ -45,13 +43,6 @@ const styles = theme => ({
   },
   inlineBlock: { display: 'inline-flex', marginRight: '2rem' },
   inlineBlock1: { display: 'inline-flex', marginRight: '1rem' },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    flex: '1 0 auto',
-    margin: theme.spacing.unit,
-  },
 });
 
 const Info = props => {
@@ -120,45 +111,21 @@ const Heading = props => {
     );
 };
 
-function TextMaskCustom(props) {
-  const { inputRef, ...other } = props;
-
-  return (
-    <MaskedInput
-      {...other}
-      ref={inputRef}
-      mask={['(', '+', /[1-9]/,')', '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
-      placeholderChar={'\u2000'}
-      showMask
-    />
-  );
-}
-
-TextMaskCustom.propTypes = {
-  inputRef: PropTypes.func.isRequired,
-};
-
 class CreateForm extends Component {
     constructor(props){
         super(props);
         this.state = {
-            textmask: '(+1)   -    -   ',
             updatedFields: [],
             expanded: null
         };
     }
 
-    handleChange1 = name => event => {
-        this.setState({
-          [name]: event.target.value,
-        });
-      };
 
-      handleChange = panel => (event, expanded) => {
+    handleChange = panel => (event, expanded) => {
         this.setState({
           expanded: expanded ? panel : false,
         });
-      };
+    };
 
 
     // Todo: Pass only relevant props to SimpleForm (Find out how Edit component does this)
@@ -167,7 +134,6 @@ class CreateForm extends Component {
         const { classes } = this.props;
         const { expanded, textmask } = this.state;
         const suggestionRenderer = ({ suggestion, query, isHighlighted, props }) => {
-            console.log('inside', query);
             if(query.length>0) {
                 return (<div style={{width: '175px'}}>
                             <span>{suggestion.lastName} {suggestion.firstName}</span>

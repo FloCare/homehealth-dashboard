@@ -176,7 +176,7 @@ class EditForm extends Component {
                 <TextInput source="primaryContact" label="Phone Number" onChange={this.onChange} />
                 <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
                 <LongTextInput source="apartmentNo" label="Apt., (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
-                <DateInput source="dateOfBirth"  label="DOB (mm-dd-yyyy)(Optional)"
+                <DateInput source="dob"  label="DOB (mm-dd-yyyy)(Optional)"
                      options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
                      onChange={this.onChange} />
                 <Heading text="Care Team"/>
