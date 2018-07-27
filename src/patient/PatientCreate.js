@@ -84,6 +84,9 @@ const validatePatientCreation = (values) => {
     }
     const primaryContact = values.primaryContact;
     const emergencyContactNumber = values.emergencyContactNumber;
+    if ((emergencyContactNumber && emergencyContactNumber.length > 1) && emergencyContactNumber.length < 10) {
+        errors.emergencyContactNumber = ['Contact Number incomplete'];
+    }
     if (!values.primaryContact) {
         errors.primaryContact = ['Required'];
     }
@@ -132,7 +135,7 @@ class CreateForm extends Component {
     // Todo: Shouldn't have to pass onChange to each field
     render() {
         const { classes } = this.props;
-        const { expanded, textmask } = this.state;
+        const { expanded } = this.state;
         const suggestionRenderer = ({ suggestion, query, isHighlighted, props }) => {
             if(query.length>0) {
                 return (<div style={{width: '175px'}}>
