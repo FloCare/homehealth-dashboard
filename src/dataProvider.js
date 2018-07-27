@@ -31,11 +31,12 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // console.log('Running GET LIST for:', resource);
             const {page, perPage} = params.pagination;
             const {field, order} = params.sort;
+            const {q} = params.filter;
             // console.log(page);
             const query = {
                 format: 'json',
-                sort: field,
-                order: order,
+                query: q,
+                size: perPage
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
             // console.log(query.range);

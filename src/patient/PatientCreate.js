@@ -14,7 +14,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/AddCircleOutline';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 
 const styles = theme => ({
@@ -31,7 +31,8 @@ const styles = theme => ({
     marginBottom: '8%'
   },
   heading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: theme.typography.pxToRem(14),
+    fontColor: 'black',
     flexBasis: '33.33%',
     flexShrink: 0,
   },
@@ -41,6 +42,11 @@ const styles = theme => ({
   },
   inlineBlock: { display: 'inline-flex', marginRight: '2rem' },
   inlineBlock1: { display: 'inline-flex', marginRight: '1rem' },
+  expandIcon: {
+    position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%) rotate(45deg)',
+  },
 });
 
 const Info = props => {
@@ -106,7 +112,7 @@ const validatePatientCreation = (values) => {
 const Heading = props => {
     const {text} = props;
     return (
-        <div>
+        <div style={{marginBottom: 1}}>
             <h5>{text}</h5>
         </div>
     );
@@ -136,7 +142,7 @@ class CreateForm extends Component {
         const { expanded } = this.state;
         const suggestionRenderer = ({ suggestion, query, isHighlighted, props }) => {
             if(query.length>0) {
-                return (<div style={{width: '175px'}}>
+                return (<div style={{width: '175px', paddingLeft: '10px', marginBottom: '3px'}}>
                             <span>{suggestion.lastName} {suggestion.firstName}</span>
                         </div>)
             }
@@ -159,11 +165,11 @@ class CreateForm extends Component {
                 <div className={classes.root} >
                     <ExpansionPanel expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
                       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Physician Details (Optional)</Typography>
+                        <Typography className={classes.heading}><b>Physician Details</b> (Optional)</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
-                            <SelectInput optionText="displayname" optionValue="id" />
+                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians" perPage={4}>
+                            <AutocompleteInput optionText="displayname" optionValue="id" suggestionComponent={suggestionRenderer} />
                         </ReferenceInput>
                         <div className={classes.root1} />
                       </ExpansionPanelDetails>
@@ -172,7 +178,7 @@ class CreateForm extends Component {
                 <div className={classes.accordian} >
                     <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
                       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Emergency Contact Details (Optional)</Typography>
+                        <Typography className={classes.heading}><b>Emergency Contact Details</b> (Optional)</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <TextInput source="emergencyContactName" label="Contact Name" onChange={this.onChange} className={classes.inlineBlock} />

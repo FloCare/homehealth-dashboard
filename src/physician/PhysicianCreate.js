@@ -33,7 +33,6 @@ export default class PhysicianCreate extends React.Component {
 
   parseNPIData (data) {
     const address = data.addresses.find((address) => address.address_purpose === 'LOCATION');
-    console.log(address);
     return {
       firstName: capitalize(data.basic.first_name),
       lastName: capitalize(data.basic.last_name),

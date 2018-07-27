@@ -14,7 +14,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/AddCircleOutline';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
    accordian: {
@@ -167,8 +167,9 @@ class EditForm extends Component {
         const { expanded } = this.state;
         const suggestionRenderer = ({ suggestion, query, isHighlighted, props }) => {
             if(query.length>0) {
-                return (<div><text>{suggestion.last_name} {suggestion.first_name}</text>
-                     </div>)
+                return (<div style={{width: '175px', paddingLeft: '10px', marginBottom: '3px'}}>
+                            <span>{suggestion.lastName} {suggestion.firstName}</span>
+                        </div>)
             }
             return null;
         }
@@ -189,11 +190,11 @@ class EditForm extends Component {
                 <div className={classes.root} >
                     <ExpansionPanel expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
                       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Physician Details</Typography>
+                        <Typography className={classes.heading}><b>Physician Details</b> (Optional)</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians">
-                            <SelectInput optionText="displayname" optionValue="id" />
+                        <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians" perPage={3}>
+                            <AutocompleteInput optionText="displayname" optionValue="id" suggestionComponent={suggestionRenderer} />
                         </ReferenceInput>
                         <div className={classes.root1} />
                       </ExpansionPanelDetails>
@@ -202,7 +203,7 @@ class EditForm extends Component {
                 <div className={classes.accordian} >
                     <ExpansionPanel expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
                       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography className={classes.heading}>Emergency Contact Details (Optional)</Typography>
+                        <Typography className={classes.heading}><b>Emergency Contact Details</b> (Optional)</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <TextInput source="emergencyContactName" label="Contact Name" onChange={this.onChange} className={classes.inlineBlock} />
