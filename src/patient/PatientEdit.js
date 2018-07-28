@@ -30,7 +30,7 @@ const styles = theme => ({
     marginBottom: '8%'
   },
   heading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: theme.typography.pxToRem(14),
     flexBasis: '33.33%',
     flexShrink: 0,
   },
