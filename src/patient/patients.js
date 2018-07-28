@@ -139,7 +139,7 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
 
 
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
-    <Create {...props} title="Create Patient">
+    <Create {...props} title="Add Patient">
         <CreateForm {...props} />
     </Create>
 ));

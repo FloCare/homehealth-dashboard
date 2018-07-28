@@ -12,8 +12,8 @@ import {
 import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './parsingUtils';
 
-//const API_URL = 'https://app-9707.on-aptible.com';
-const API_URL = 'https://app-9781.on-aptible.com';
+const API_URL = 'https://app-9707.on-aptible.com';
+//const API_URL = 'https://app-9781.on-aptible.com';
 //const API_URL = 'http://localhost:8000';
 
 /**
@@ -117,7 +117,16 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     const updatedFields = params.data.updatedFields;
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
-                        if(field != 'apartmentNo')
+                        if(field === 'dob') {
+                            var date = params.data[field];
+                            var month = date.getUTCMonth() + 1; //months from 1-12
+                            var day = date.getUTCDate() + 1;
+                            var year = date.getUTCFullYear();
+                            if(day<10)  { day='0'+day } 
+                            if(month<10)  { month='0'+month }
+                            body.patient[field] = year+'-'+month+'-'+day;
+                        }
+                        else if(field != 'apartmentNo')
                             body.patient[field] = params.data[field];
                     }
                     if (updatedFields.indexOf('address') > -1 && updatedFields.indexOf('apartmentNo') > -1) {
@@ -201,7 +210,15 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     request.patient.emergencyContactName = params.data.emergencyContactName;
                     request.patient.emergencyContactNumber = params.data.emergencyContactNumber;
                     request.patient.emergencyContactRelationship = params.data.emergencyContactRelationship;
-                    request.patient.dob = params.data.dateOfBirth;
+                    if(params.data.dateOfBirth != null) {
+                        var date = params.data.dateOfBirth;
+                        var month = date.getUTCMonth() + 1; //months from 1-12
+                        var day = date.getUTCDate() + 1;
+                        var year = date.getUTCFullYear();
+                        if(day<10)  { day='0'+day } 
+                        if(month<10)  { month='0'+month }
+                        request.patient.dob = year+'-'+month+'-'+day;
+                    }
                     request.users = params.data.users;
                     request.physicianId = params.data.physician_id;
                     localStorage.removeItem('postalCode');

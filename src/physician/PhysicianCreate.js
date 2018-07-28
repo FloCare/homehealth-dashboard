@@ -126,7 +126,7 @@ export default class PhysicianCreate extends React.Component {
           acceptLabel={'OK'}
           cancelLabel={null}
         />
-        <Create {...props} record={physicianData} title="Create Physician">
+        <Create {...props} record={physicianData} title="Add Physician">
           <SimpleForm toolbar={<PhysicianCreateToolbar/>} redirect="list">
 
             <div style={styles.inlineBlock}>
@@ -143,7 +143,7 @@ export default class PhysicianCreate extends React.Component {
                     <DisabledInput source="lastName" label="Last Name"/>
                   </div>
                   <div style={styles.inlineBlock}>
-                    <TextInput source="phone1" label="Phone1" style={styles.inlineElementStyle}/>
+                    <DisabledInput source="phone1" label="Phone1" style={styles.inlineElementStyle}/>
                     <DisabledInput source="fax" label="Fax No" style={styles.inlineElementStyle}/>
                     <TextInput source="phone2" label="Phone2" />
                   </div>
