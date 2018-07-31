@@ -68,13 +68,22 @@ const validatePatientCreation = (values) => {
         errors.address = ['The street address has to be selected from the dropdown'];
     }
     var dateOfBirth = values.dateOfBirth;
+    var today = new Date().toISOString().slice(0,10); 
     if(dateOfBirth) {
         var dob = JSON.stringify(dateOfBirth);
         var dateMonthYearHifenSeparated = dob.substring(1, dob.length -1).split('T');
         var dateArray = dateMonthYearHifenSeparated[0].split('-');
+        var todayDateArray = today.split('-');
         var date = parseInt(dateArray[2]);
         var month = parseInt(dateArray[1]);
-        if(date > 31 || month > 12) {
+        var year = parseInt(dateArray[0]);
+        if(year > parseInt(todayDateArray[0])) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+        else if(year == parseInt(todayDateArray[0]) && month > parseInt(todayDateArray[1])) {
+            errors.dateOfBirth = ['Incorrect date entered'];
+        }
+        else if(year == parseInt(todayDateArray[0]) && month == parseInt(todayDateArray[1]) && date >= parseInt(todayDateArray[2])) {
             errors.dateOfBirth = ['Incorrect date entered'];
         }
     }
