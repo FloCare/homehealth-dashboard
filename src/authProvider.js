@@ -1,5 +1,6 @@
 import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin';
 
+//const API_URL = 'https://app-9707.on-aptible.com/get-token/';
 const API_URL = 'https://app-9781.on-aptible.com/get-token/';
 //const API_URL = 'http://localhost:8000/get-token/';
 
@@ -22,12 +23,15 @@ export default (type, params) => {
             })
             .then(({ token }) => {
                 localStorage.setItem('access_token', token);
+                // TODO logic to be changed based on the logged in Org
+                localStorage.setItem('organizationName', 'Freudenthal Home Health');
             });
         // accept all username/password combinations
     }
     // called when the user clicks on the logout button
     if (type === AUTH_LOGOUT) {
         localStorage.removeItem('access_token');
+        localStorage.removeItem('organizationName');
         return Promise.resolve();
     }
     // called when the API returns an error

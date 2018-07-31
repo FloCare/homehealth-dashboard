@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {
     SimpleForm, TextInput, ReferenceArrayInput, SelectArrayInput,
-    required, crudUpdate, DisabledInput, ReferenceInput, SelectInput
+    required, crudUpdate, crudCreate, DisabledInput, ReferenceInput, SelectInput
 } from 'react-admin';
 import { withStyles } from '@material-ui/core/styles';
 import {Field} from 'redux-form';
@@ -45,37 +45,13 @@ const Heading = props => {
     );
 };
 
-class EditForm extends Component {
+class CreateForm extends Component {
     constructor(props){
         super(props);
         this.state = {
             updatedFields: [],
             expanded: null
         };
-        this.onChange = this.onChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.getBasePath = this.getBasePath.bind(this);
-    }
-
-    getBasePath() {
-        const { location } = this.props;
-        return location.pathname
-            .split('/')
-            .slice(0, -1)
-            .join('/');
-    }
-
-    onChange(e, newValue, previousValue, name) {
-        const updatedFields = this.state.updatedFields.slice(0);
-        if (updatedFields.indexOf(name) > -1) {
-            return;
-        }
-        updatedFields.push(name);
-        // Mark all address fields dirty
-        // if (name === 'streetAddress') {
-        //     updatedFields.push('latitude', 'longitude');
-        // }
-        this.setState({updatedFields: updatedFields});
     }
 
       handleChange = panel => (event, expanded) => {
@@ -84,38 +60,21 @@ class EditForm extends Component {
         });
       };
 
-    onSubmit(data, redirect){
-        const {startUndoable} = this.props;
-
-        data.updatedFields = this.state.updatedFields;
-
-        startUndoable(
-            crudUpdate(
-                this.props.resource,
-                this.props.record.id,
-                data,
-                this.props.record,
-                this.getBasePath(),
-                redirect
-            )
-        );
-    }
 
     // Todo: Pass only relevant props to SimpleForm (Find out how Edit component does this)
     // Todo: Shouldn't have to pass onChange to each field
     render() {
         const { classes } = this.props;
-        this.props.options.label = 'Primary Physician';
         const { expanded } = this.state;
         return (
-            <SimpleForm {...this.props} save={this.onSubmit}>
+            <SimpleForm {...this.props} redirect="list" >
                 <Heading text="Basic Details"/>
                 <TextInput source="firstName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  validate={required()} onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <Field source="streetAddress" name="address" component={SearchBar} onChange={this.onChange}/>
+                <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange}/>
                 <TextInput source="apartmentNo" label="Apt #, suite, unit, floor (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} />
                 <TextInput source="primaryContact" label="Phone Number" validate={required()} onChange={this.onChange} />
-                <DateInput source="dob"  label="DOB (mm-dd-yyyy)(Optional)" 
+                <DateInput source="dateOfBirth"  label="DOB (mm-dd-yyyy)(Optional)" 
                      options={{ format: 'MM-DD-YYYY', maxDate: '01-01-2018', openToYearSelection: true, disableFuture: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[1-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
                      onChange={this.onChange} />
                 <div className={classes.root} >
@@ -136,7 +95,7 @@ class EditForm extends Component {
                         <Typography className={classes.heading}>Care Team</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceArrayInput {...this.props} label="Staff" source="userIds" reference="users">
+                        <ReferenceArrayInput {...this.props} label="Staff" source="users" reference="users">
                             <SelectArrayInput optionText="displayname" optionValue="id" />
                         </ReferenceArrayInput>
                       </ExpansionPanelDetails>
@@ -159,32 +118,12 @@ class EditForm extends Component {
     }
 }
 
-// function mapStateToProps(state, props) {
-//     return {
-//         id: decodeURIComponent(props.match.params.id),
-//         record: state.admin.resources[props.resource]
-//             ? state.admin.resources[props.resource].data[
-//                   decodeURIComponent(props.match.params.id)
-//               ]
-//             : null,
-//     };
-// }
-
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         destroyTodo: () =>
-//             dispatch({
-//                 type: 'DESTROY_TODO'
-//             })
-//     }
-// };
-
-EditForm.propTypes = {
+CreateForm.propTypes = {
     startUndoable: PropTypes.func,
 };
 
-EditForm = withStyles(styles)(EditForm);
+CreateForm = withStyles(styles)(CreateForm);
 
 export default connect(null, {
     startUndoable: startUndoableAction,
-})(EditForm);
+})(CreateForm);

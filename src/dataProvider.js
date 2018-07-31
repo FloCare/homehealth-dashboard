@@ -10,7 +10,9 @@ import {
     fetchUtils,
 } from 'react-admin';
 import {stringify} from 'query-string';
+import {parseMobileNumber, capitalize} from './parsingUtils';
 
+//const API_URL = 'https://app-9707.on-aptible.com';
 const API_URL = 'https://app-9781.on-aptible.com';
 //const API_URL = 'http://localhost:8000';
 
@@ -21,21 +23,20 @@ const API_URL = 'https://app-9781.on-aptible.com';
  * @returns {Object} { url, options } The HTTP request parameters
  */
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
-    console.log('');
     console.log('Converting Data Provider Call to HTTP Request on:');
     console.log('This called:', type, resource, params);
-    console.log('');
 
     switch (type) {
         case GET_LIST: {
             // console.log('Running GET LIST for:', resource);
-            // const {page, perPage} = params.pagination;
+            const {page, perPage} = params.pagination;
             const {field, order} = params.sort;
+            const {q} = params.filter;
             // console.log(page);
             const query = {
                 format: 'json',
-                sort: field,
-                order: order,
+                query: q,
+                size: perPage
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
             // console.log(query.range);
@@ -46,18 +47,21 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/${resource}/v1.0/org-access/?${stringify(query)}`, options};
                 case 'phi':
                     return { url: `${API_URL}/${resource}/v1.0/patients/?${stringify(query)}`, options};
+                case 'physicians':
+                    return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
         }
 
         case GET_ONE:
-            console.log('Running GET ONE for:', resource);
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'phi':
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
+                case 'physicians':
+                    return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -108,35 +112,75 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             // console.log('Running UPDATE for:', resource);
             switch(resource) {
                 case 'phi':
-                    //console.log('params:', params);
                     var body = {};
                     body.patient = {};
                     const updatedFields = params.data.updatedFields;
-                    //console.log('updatedFields = ', updatedFields);
                     for (let i=0; i<updatedFields.length; i++){
                         const field = updatedFields[i];
-                        body.patient[field] = params.data[field];
+                        if(field === 'dob') {
+                            var date = params.data[field];
+                            var month = date.getUTCMonth() + 1; //months from 1-12
+                            var day = date.getUTCDate() + 1;
+                            var year = date.getUTCFullYear();
+                            if(day<10)  { day='0'+day } 
+                            if(month<10)  { month='0'+month }
+                            body.patient[field] = year+'-'+month+'-'+day;
+                        }
+                        else if(field != 'apartmentNo')
+                            body.patient[field] = params.data[field];
                     }
-                    // if (updatedFields.indexOf('streetAddress') > -1) {
-                    //     params.data.address = {
-                    //         "apartment_no": params.data.apartment_no,
-                    //         "streetAddress": localStorage.getItem('streetAddress'),
-                    //         "zipCode": localStorage.getItem('postalCode'),
-                    //         "city": localStorage.getItem('cityName'),
-                    //         "state": localStorage.getItem('stateName'),
-                    //         "country": localStorage.getItem('countryName'),
-                    //         "latitude": localStorage.getItem('latitude'),
-                    //         "longitude": localStorage.getItem('longitude')
-                    //     };
-                    //     body.data.address = params.data.address;
-                    // }
+                    if (updatedFields.indexOf('address') > -1 && updatedFields.indexOf('apartmentNo') > -1) {
+                        params.data.address = {
+                            "apartmentNo": params.data.apartmentNo,
+                            "streetAddress": localStorage.getItem('streetAddress'),
+                            "zipCode": localStorage.getItem('postalCode'),
+                            "city": localStorage.getItem('cityName'),
+                            "state": localStorage.getItem('stateName'),
+                            "country": localStorage.getItem('countryName'),
+                            "latitude": localStorage.getItem('latitude'),
+                            "longitude": localStorage.getItem('longitude')
+                        };
+                        body.patient['address'] = params.data.address;
+                    } else if (updatedFields.indexOf('address') > -1 ) {
+                        params.data.address = {
+                            "streetAddress": localStorage.getItem('streetAddress'),
+                            "zipCode": localStorage.getItem('postalCode'),
+                            "city": localStorage.getItem('cityName'),
+                            "state": localStorage.getItem('stateName'),
+                            "country": localStorage.getItem('countryName'),
+                            "latitude": localStorage.getItem('latitude'),
+                            "longitude": localStorage.getItem('longitude')
+                        };
+                        body.patient['address'] = params.data.address;
+                    } 
+                    else if(updatedFields.indexOf('apartmentNo') > -1){
+                        params.data.address = {
+                            "apartmentNo": params.data.apartmentNo
+                        };
+                        body.patient['address'] = params.data.address;
+                    } 
                     body.id=params.data.id;
                     body.users=params.data.userIds;
-                    // console.log('Sending request with body:', body);
+                    body.physicianId = params.data.physician_id;
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     };
+                case 'physicians':
+                    const updateBody = {
+                        physician: {
+                            npi : params.data.npiID,
+                            firstName : params.data.firstName,
+                            lastName : params.data.lastName,
+                            phone1 : params.data.phone1,
+                            phone2 : params.data.phone2,
+                            fax : params.data.fax,
+                        }};
+                    return{
+                        url: `http://localhost:8000/mock/v1.0/mock/${params.data.npiID}/`,
+                        options: { method: 'PUT', body: JSON.stringify(updateBody)},
+                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                    }
                 default:
                     console.log('ERROR! Edit called on invalid resources.');
                     return {};
@@ -148,7 +192,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'phi':
                     var request = {};
                     params.data.address = {
-                        "apartment_no": params.data.apartment_no,
+                        "apartmentNo": params.data.apartmentNo,
                         "streetAddress": localStorage.getItem('streetAddress'),
                         "zipCode": localStorage.getItem('postalCode'),
                         "city": localStorage.getItem('cityName'),
@@ -167,22 +211,45 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     request.patient.emergencyContactNumber = params.data.emergencyContactNumber;
                     request.patient.emergencyContactRelationship = params.data.emergencyContactRelationship;
                     if(params.data.dateOfBirth != null) {
-                        request.patient.dob = params.data.dateOfBirth;
+                        var date = params.data.dateOfBirth;
+                        var month = date.getUTCMonth() + 1; //months from 1-12
+                        var day = date.getUTCDate() + 1;
+                        var year = date.getUTCFullYear();
+                        if(day<10)  { day='0'+day } 
+                        if(month<10)  { month='0'+month }
+                        request.patient.dob = year+'-'+month+'-'+day;
                     }
                     request.users = params.data.users;
+                    request.physicianId = params.data.physician_id;
                     localStorage.removeItem('postalCode');
                     localStorage.removeItem('cityName');
                     localStorage.removeItem('stateName');
                     localStorage.removeItem('countryName');
                     localStorage.removeItem('latitude');
                     localStorage.removeItem('longitude');
+                    localStorage.removeItem('streetAddress');
 
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
                     };
+
+                case 'physicians':
+                    const request = {
+                        physician: {
+                            npi : params.data.npiID,
+                            firstName : capitalize(params.data.firstName),
+                            lastName : capitalize(params.data.lastName),
+                            phone1 : params.data.phone1,
+                            phone2 : params.data.phone2,
+                            fax : params.data.fax,
+                        }};
+                    return {
+                        url: `${API_URL}/phi/v1.0/physicians/?format=json`,
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
+                    };
                 default:
-                    console.log('ERROR! Edit called on invalid resources.')
+                    console.log('ERROR! CREATE called on invalid resources.');
                     return {};
             }
 
@@ -214,7 +281,6 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             // console.log('EXECUTED GET_LIST for:', resource);
             switch(resource) {
                 case 'users':
-                    console.log('Users are:', json.users);
                     const usersData = json.users.map(user => {
                         return ({
                             id: user.id,
@@ -252,6 +318,24 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     return {
                         //data: json.map(x => x),
                         data: data,
+                        total: 20
+                    };
+                case 'physicians':
+                    const physicianData = json.map(item => {
+                        return ({
+                            id: item.physicianID,
+                            npi: item.npi,
+                            firstName: item.firstName,
+                            lastName: item.lastName,
+                            phone1: item.phone1,
+                            phone2: item.phone2,
+                            fax: item.fax,
+                            displayname: `${item.lastName} ${item.firstName}`
+                        });
+                    });
+                    return {
+                        //data: json.map(x => x),
+                        data: physicianData,
                         total: 20
                     };
                 default:
@@ -299,8 +383,6 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         case GET_ONE:
             switch (resource) {
                 case 'phi':
-                    console.log('Data from GET_ONE:', json);
-
                     return {
                         data: {
                             "id": json.patient.id,
@@ -312,7 +394,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "emergencyContactNumber": json.patient.emergencyContactNumber,
                             "emergencyContactRelationship": json.patient.emergencyContactRelationship,
                             "streetAddress": json.patient.address.streetAddress,
-                            "apartmentNo": json.patient.address.apartment_no,
+                            "apartmentNo": json.patient.address.apartmentNo,
                             "latitude": json.patient.address.latitude,
                             "longitude": json.patient.address.longitude,
                             "city": json.patient.address.city,
@@ -320,6 +402,19 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "country": json.patient.address.country,
                             "zipCode": json.patient.address.zipCode,
                             "userIds": json.userIds,
+                            "physician_id": json.physicianId,
+                        }
+                    };
+                case 'physicians':
+                    return {
+                        data: {
+                            "id": json.physicianID,
+                            "firstName": json.firstName,
+                            "lastName": json.lastName,
+                            "phone1": json.phone1,
+                            "phone2": json.phone2,
+                            "fax": json.fax,
+                            "displayname": `${json.lastName} ${json.firstName}`
                         }
                     };
                 default:
