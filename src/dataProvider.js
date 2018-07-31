@@ -12,8 +12,8 @@ import {
 import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './parsingUtils';
 
-const API_URL = 'https://app-9707.on-aptible.com';
-//const API_URL = 'https://app-9781.on-aptible.com';
+//const API_URL = 'https://app-9707.on-aptible.com';
+const API_URL = 'https://app-9781.on-aptible.com';
 //const API_URL = 'http://localhost:8000';
 
 /**
