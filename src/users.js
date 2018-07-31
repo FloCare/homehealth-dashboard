@@ -1,5 +1,6 @@
 import React from 'react';
-import { List, Datagrid, EmailField, TextField } from 'react-admin';
+import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton } from 'react-admin';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 const UserPagination = () => {
     return (
@@ -15,6 +16,31 @@ export const UserList = (props) => (
             <TextField label="Role" source="user_role" />
             <EmailField label="email" source="email" />
             <TextField label="Phone Number" source="contact_no" />
+            <EditButton />
         </Datagrid>
     </List>
+);
+
+export const UserCreate = (props) => (
+    <Create title="Create Staff" {...props}>
+        <SimpleForm>
+            <TextInput label="First Name" source="first_name" />
+            <TextInput label="Last Name" source="last_name" />
+            <TextInput label="Role" source="user_role" />
+            <TextInput label="email" source="email" />
+            <TextInput label="Phone Number" source="contact_no" />
+        </SimpleForm>
+    </Create>
+);
+
+export const UserEdit = (props) => (
+    <Edit title="Edit Staff" {...props}>
+        <SimpleForm>
+            <TextField label="First Name" source="first_name" />
+            <TextField label="Last Name" source="last_name" />
+            <TextField label="Role" source="user_role" />
+            <EmailField label="email" source="email" />
+            <TextField label="Phone Number" source="contact_no" />
+        </SimpleForm>
+    </Edit>
 );
