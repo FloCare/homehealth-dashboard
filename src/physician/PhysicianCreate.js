@@ -53,8 +53,6 @@ export default class PhysicianCreate extends React.Component {
     })
     fetch(npiURL).then(
       (response) => {
-        console.log('response 1')
-        console.log(response);
         if (response.status === HttpStatus.OK) {
           return response.json()
         }
@@ -62,8 +60,6 @@ export default class PhysicianCreate extends React.Component {
       }
     ).then(
       (response) => {
-        console.log('response 2');
-        console.log(response)
         this.setState({
           fetchedNPIData: true,
           loading: false,
