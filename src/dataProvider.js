@@ -14,7 +14,7 @@ import {parseMobileNumber, capitalize} from './parsingUtils';
 
 //const API_URL = 'https://app-9707.on-aptible.com';
 export const API_URL = 'https://app-9781.on-aptible.com';
-//const API_URL = 'http://localhost:8000';
+//export const API_URL = 'http://localhost:8000';
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -32,14 +32,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             const {page, perPage} = params.pagination;
             const {field, order} = params.sort;
             const {q} = params.filter;
-            // console.log(page);
+            //TODO change the default from 100 when we do pagination
             const query = {
                 format: 'json',
                 query: q,
-                size: perPage
+                size: (q === undefined) ? 100: perPage
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
-            // console.log(query.range);
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
