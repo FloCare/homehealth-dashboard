@@ -23,9 +23,10 @@ export const UserList = (props) => (
 
 export const UserCreate = (props) => (
     <Create title="Create Staff" {...props}>
-        <SimpleForm>
+        <SimpleForm redirect="list">
             <TextInput label="First Name" source="first_name" />
             <TextInput label="Last Name" source="last_name" />
+            <TextInput label="Password" source="password" type="password"/>
             <TextInput label="Role" source="user_role" />
             <TextInput label="email" source="email" />
             <TextInput label="Phone Number" source="contact_no" />
@@ -36,11 +37,12 @@ export const UserCreate = (props) => (
 export const UserEdit = (props) => (
     <Edit title="Edit Staff" {...props}>
         <SimpleForm>
-            <TextField label="First Name" source="first_name" />
-            <TextField label="Last Name" source="last_name" />
-            <TextField label="Role" source="user_role" />
-            <EmailField label="email" source="email" />
-            <TextField label="Phone Number" source="contact_no" />
+            <TextInput label="First Name" source="first_name" />
+            <TextInput label="Last Name" source="last_name" />
+            <TextInput label="Password" source="password" type="password"/>
+            <TextInput label="Role" source="user_role" />
+            <TextInput label="email" source="email" />
+            <TextInput label="Phone Number" source="contact_no" />
         </SimpleForm>
     </Edit>
 );

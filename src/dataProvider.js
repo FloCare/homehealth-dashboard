@@ -12,8 +12,8 @@ import {
 import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './parsingUtils';
 
-const API_URL = 'https://app-9707.on-aptible.com';
-//const API_URL = 'https://app-9781.on-aptible.com';
+//const API_URL = 'https://app-9707.on-aptible.com';
+const API_URL = 'https://app-9781.on-aptible.com';
 //const API_URL = 'http://localhost:8000';
 
 /**
@@ -62,6 +62,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
                 case 'physicians':
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
+                case 'users':
+                    return { url: `${API_URL}/users/v1.0/staff/${params.id}/`, options };
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -181,6 +183,22 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
                     // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     }
+                case 'users':
+                    const userData = {
+                        user: {
+                            firstName : params.data.first_name,
+                            lastName : params.data.last_name,
+                            password : params.data.password,
+                            phone : params.data.contact_no,
+                            role : params.data.user_role,
+                            email : params.data.email,
+                        }
+                    };
+                    return{
+                        url: `${API_URL}/users/v1.0/staff/${params.id}/`,
+                        options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                }
                 default:
                     console.log('ERROR! Edit called on invalid resources.');
                     return {};
@@ -234,6 +252,22 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
                     };
 
+                case 'users':
+                    const userRequest = {
+                        user: {
+                            firstName : params.data.first_name,
+                            lastName : params.data.last_name,
+                            password : params.data.password,
+                            phone : params.data.contact_no,
+                            role : params.data.user_role,
+                            email : params.data.email,
+                        }
+                    };
+                    return {
+                        url: `${API_URL}/users/v1.0/staff/?format=json`,
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(userRequest) },
+                    };
+
                 case 'physicians':
                     const request = {
                         physician: {
@@ -255,10 +289,20 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
         case DELETE:
             // console.log('Running DELETE for:', resource);
-            return {
-                url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
-                options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
-            };
+            switch(resource) {
+                case 'users':
+                    return {
+                        url: `${API_URL}/${resource}/v1.0/staff/${params.id}/`,
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                    };
+
+                case 'phi':
+                    return {
+                        url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                    };
+
+            }
 
         default:
             throw new Error(`Unsupported fetch action type ${type}`);
@@ -415,6 +459,18 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "phone2": json.phone2,
                             "fax": json.fax,
                             "displayname": `${json.lastName} ${json.firstName}`
+                        }
+                    };
+                case 'users':
+                    return {
+                        data: {
+                            "id": json.user.id,
+                            "first_name": json.user.first_name,
+                            "last_name": json.user.last_name,
+                            "password": json.user.password,
+                            "contact_no": json.user.contact_no,
+                            "user_role": json.user.user_role,
+                            "email": json.user.email,
                         }
                     };
                 default:
