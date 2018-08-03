@@ -16,6 +16,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
+import ReactGA from 'react-ga';
 
 const styles = theme => ({
    accordian: {
@@ -125,6 +126,12 @@ class CreateForm extends Component {
             updatedFields: [],
             expanded: null
         };
+    }
+
+    componentDidMount() {
+        ReactGA.initialize('UA-000000-02');
+        console.log(window.location.hash)
+        ReactGA.pageview('/phi/create');
     }
 
 

@@ -9,7 +9,7 @@ const UserPagination = () => {
 }
 
 export const UserList = (props) => (
-    <List title="Staff" {...props} pagination={<UserPagination />}>
+    <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false}>
         <Datagrid>
             <TextField label="First Name" source="first_name" />
             <TextField label="Last Name" source="last_name" />

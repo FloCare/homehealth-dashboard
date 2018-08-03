@@ -12,6 +12,7 @@ import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
 import CreateForm from './PatientCreate';
 import EditForm from './PatientEdit';
+import ReactGA from 'react-ga';
 
 // import {FetchUsers} from './connectionUtils';
 // import LocationSearchInput from './LocationSearchInput';
@@ -27,7 +28,7 @@ const PatientPagination = () => {
 
 export const PatientList = (props) => (
     props.options.label = 'Patients',
-    <List {...props} title="List of patients" pagination={<PatientPagination />}>
+    <List {...props} title="List of patients" pagination={<PatientPagination />} bulkActions={false}>
         <Datagrid>
             <TextField source="firstName" />
             <TextField source="lastName" />

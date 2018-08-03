@@ -15,6 +15,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ReactGA from 'react-ga';
 
 const styles = theme => ({
    accordian: {
@@ -113,6 +114,11 @@ class EditForm extends Component {
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.getBasePath = this.getBasePath.bind(this);
+    }
+
+    componentDidMount() {
+        ReactGA.initialize('UA-000000-02');
+        ReactGA.pageview('/phi/edit');
     }
 
     getBasePath() {
