@@ -8,8 +8,48 @@ const UserPagination = () => {
     );
 }
 
+const validateEmail = (email) => {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
+
+const validateUserCreation = (values) => {
+    const errors = {};
+    const email = values.email;
+    const primaryContact = values.contact_no;
+    if (!values.first_name) {
+        errors.first_name = ['Required'];
+    }
+    if (!values.last_name) {
+        errors.last_name = ['Required'];
+    }
+    if (!values.password) {
+        errors.password = ['Required'];
+    }
+    if (!values.user_role) {
+        errors.user_role = ['Required'];
+    }
+    if (!email) {
+        errors.email = ['Required'];
+    }
+    if(validateEmail(email) === false) {
+        errors.email = ['Enter a valid email'];
+    }
+    if (!primaryContact) {
+        errors.contact_no = ['Required'];
+    }
+    if (!primaryContact ||  isNaN(primaryContact)) {
+        errors.contact_no = ['Contact Number can only contain numerics'];
+    }
+    else if (!primaryContact || primaryContact.length < 10) {
+        errors.contact_no = ['Contact Number incomplete'];
+    }
+
+    return errors
+};
+
 export const UserList = (props) => (
-    <List title="Staff" {...props} pagination={<UserPagination />}>
+    <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false}>
         <Datagrid>
             <TextField label="First Name" source="first_name" />
             <TextField label="Last Name" source="last_name" />
@@ -22,8 +62,8 @@ export const UserList = (props) => (
 );
 
 export const UserCreate = (props) => (
-    <Create title="Create Staff" {...props}>
-        <SimpleForm redirect="list">
+    <Create title="Add Staff" {...props}>
+        <SimpleForm redirect="list" validate={validateUserCreation}>
             <TextInput label="First Name" source="first_name" />
             <TextInput label="Last Name" source="last_name" />
             <TextInput label="Password" source="password" type="password"/>
@@ -36,7 +76,7 @@ export const UserCreate = (props) => (
 
 export const UserEdit = (props) => (
     <Edit title="Edit Staff" {...props}>
-        <SimpleForm>
+        <SimpleForm validate={validateUserCreation}>
             <TextInput label="First Name" source="first_name" />
             <TextInput label="Last Name" source="last_name" />
             <TextInput label="Password" source="password" type="password"/>
