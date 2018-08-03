@@ -184,16 +184,31 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     }
                 case 'users':
-                    const userData = {
-                        user: {
-                            firstName : params.data.first_name,
-                            lastName : params.data.last_name,
-                            password : params.data.password,
-                            phone : params.data.contact_no,
-                            role : params.data.user_role,
-                            email : params.data.email,
-                        }
-                    };
+                    var userData = undefined;
+                    // Hacky till password is being set by an email route 
+                    if(params.data.password === '******') {
+                        userData = {
+                            user: {
+                                firstName : params.data.first_name,
+                                lastName : params.data.last_name,
+                                phone : params.data.contact_no,
+                                role : params.data.user_role,
+                                email : params.data.email,
+                            }
+                        };
+                    }
+                    else {
+                        userData = {
+                            user: {
+                                firstName : params.data.first_name,
+                                lastName : params.data.last_name,
+                                password : params.data.password,
+                                phone : params.data.contact_no,
+                                role : params.data.user_role,
+                                email : params.data.email,
+                            }
+                        };
+                    }
                     return{
                         url: `${API_URL}/users/v1.0/staff/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
@@ -467,7 +482,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "id": json.user.id,
                             "first_name": json.user.first_name,
                             "last_name": json.user.last_name,
-                            "password": json.user.password,
+                            "password": '******',
                             "contact_no": json.user.contact_no,
                             "user_role": json.user.user_role,
                             "email": json.user.email,
