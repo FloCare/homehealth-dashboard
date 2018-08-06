@@ -39,10 +39,10 @@ const validateUserCreation = (values) => {
         errors.contact_no = ['Required'];
     }
     if (!primaryContact ||  isNaN(primaryContact)) {
-        errors.contact_no = ['Contact Number can only contain numerics'];
+        errors.contact_no = ['Phone Number can only contain numerics'];
     }
     else if (!primaryContact || primaryContact.length < 10) {
-        errors.contact_no = ['Contact Number incomplete'];
+        errors.contact_no = ['Phone Number incomplete'];
     }
 
     return errors
