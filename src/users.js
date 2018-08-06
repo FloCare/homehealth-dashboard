@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton } from 'react-admin';
+import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton, SelectInput } from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 const UserPagination = () => {
@@ -48,6 +48,12 @@ const validateUserCreation = (values) => {
     return errors
 };
 
+const styles = {
+    inlineBlock: { display: 'inline-flex', marginRight: '15rem' },
+    block: { display: 'inline-block', marginRight: '1rem' },
+    textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'}
+};
+
 export const UserList = (props) => (
     <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false}>
         <Datagrid>
@@ -61,28 +67,34 @@ export const UserList = (props) => (
     </List>
 );
 
-export const UserCreate = (props) => (
+export const UserCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create title="Add Staff" {...props}>
         <SimpleForm redirect="list" validate={validateUserCreation}>
-            <TextInput label="First Name" source="first_name" />
-            <TextInput label="Last Name" source="last_name" />
-            <TextInput label="Password" source="password" type="password"/>
-            <TextInput label="Role" source="user_role" />
-            <TextInput label="email" source="email" />
-            <TextInput label="Phone Number" source="contact_no" />
+            <TextInput label="First Name" source="first_name" formClassName={classes.inlineBlock}/>
+            <TextInput label="Last Name" source="last_name" formClassName={classes.inlineBlock}/>
+            <TextInput label="Password" source="password" type="password" formClassName={classes.inlineBlock}/>
+            <SelectInput source="user_role" choices={[
+                { id: 'LPN', name: 'LPN' },
+                { id: 'PTA', name: 'PTA' },
+            ]} formClassName={classes.inlineBlock}/>
+            <TextInput label="Email" source="email" formClassName={classes.inlineBlock}/>
+            <TextInput label="Phone Number" source="contact_no" formClassName={classes.inlineBlock}/>
         </SimpleForm>
     </Create>
-);
+));
 
-export const UserEdit = (props) => (
+export const UserEdit = withStyles(styles)(({ classes, ...props }) => (
     <Edit title="Edit Staff" {...props}>
         <SimpleForm validate={validateUserCreation}>
-            <TextInput label="First Name" source="first_name" />
-            <TextInput label="Last Name" source="last_name" />
-            <TextInput label="Password" source="password" type="password"/>
-            <TextInput label="Role" source="user_role" />
-            <TextInput label="email" source="email" />
-            <TextInput label="Phone Number" source="contact_no" />
+            <TextInput label="First Name" source="first_name" formClassName={classes.inlineBlock}/>
+            <TextInput label="Last Name" source="last_name" formClassName={classes.inlineBlock}/>
+            <TextInput label="Password" source="password" type="password" formClassName={classes.inlineBlock}/>
+            <SelectInput source="user_role" choices={[
+                { id: 'LPN', name: 'LPN' },
+                { id: 'PTA', name: 'PTA' },
+            ]} formClassName={classes.inlineBlock}/>
+            <TextInput label="Email" source="email" formClassName={classes.inlineBlock}/>
+            <TextInput label="Phone Number" source="contact_no" formClassName={classes.inlineBlock}/>
         </SimpleForm>
     </Edit>
-);
+));
