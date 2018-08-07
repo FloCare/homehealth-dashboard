@@ -186,7 +186,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'users':
                     var userData = undefined;
                     // Hacky till password is being set by an email route 
-                    if(params.data.password === '******') {
+                    if(params.data.password === '') {
                         userData = {
                             user: {
                                 firstName : params.data.first_name,
@@ -194,6 +194,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                                 phone : params.data.contact_no,
                                 role : params.data.user_role,
                                 email : params.data.email,
+                                is_active: params.data.is_active,
                             }
                         };
                     }
@@ -350,6 +351,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             user_role: user.user_role,
                             username: user.username,
                             displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
+                            is_active: user.is_active
                         });
                     });
                     return {
@@ -407,7 +409,13 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             // console.log('EXECUTED GET_MANY for:', resource);
             switch(resource) {
                 case 'users':
-                    // console.log('Users are:', json.users);
+                    var orgName = localStorage.getItem('organizationName');
+                    if(orgName != json.organization.name) {
+                        localStorage.setItem('organizationName', json.organization.name);
+                        // Hacky, react-router does advice to use window.location.reload()
+                        // Invoke a refresh action provided by react-admin
+                        window.location.reload();
+                    }
                     const usersData = json.users.map(user => {
                         return ({
                             id: user.id,
@@ -482,10 +490,11 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "id": json.user.id,
                             "first_name": json.user.first_name,
                             "last_name": json.user.last_name,
-                            "password": '******',
+                            "password": '',
                             "contact_no": json.user.contact_no,
                             "user_role": json.user.user_role,
                             "email": json.user.email,
+                            "is_active": json.user.is_active
                         }
                     };
                 default:

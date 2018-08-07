@@ -19,7 +19,7 @@ require('../node_modules/material-components-web/dist/material-components-web.mi
 // });
 
 // TODO logic to be changed in authProvider , depending on logged in Org user
-var organizationName = localStorage.getItem('organizationName') ? localStorage.getItem('organizationName') : 'Freudenthal Home Health';
+var organizationName = localStorage.getItem('organizationName') ? localStorage.getItem('organizationName') : 'FloCare Admin Dashboard';
 
 const App = () => (
     <Admin
