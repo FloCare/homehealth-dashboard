@@ -5,7 +5,8 @@ import UserIcon from '@material-ui/icons/Group';
 import { PatientList, PatientCreate, PatientEdit } from './patient/patients';
 import PhysicianCreate from './physician/PhysicianCreate'
 import {PhysicianList} from './physician/PhysicianList'
-import { UserList, UserEdit, UserCreate } from './users';
+import { UserList, StaffEdit } from './user/users';
+import UserCreate from './user/UserCreate';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
 
@@ -28,7 +29,7 @@ const App = () => (
         dataProvider={dataProvider}
     >
         <Resource name="phi" options={{label: 'Patients'}} list={PatientList} edit={PatientEdit} create={PatientCreate} icon={PatientIcon} />
-        <Resource name="users" options={{label: 'Staff'}} list={UserList} edit={UserEdit} create={UserCreate} icon={UserIcon} />
+        <Resource name="users" options={{label: 'Staff'}} list={UserList} edit={StaffEdit} create={UserCreate} icon={UserIcon} />
         <Resource name="physicians"
                   options={{label: 'Physicians'}}
                   create={PhysicianCreate}

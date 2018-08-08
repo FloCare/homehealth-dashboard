@@ -1,6 +1,7 @@
 import React from 'react';
 import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton, SelectInput, BooleanInput , BooleanField} from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
+import UserEdit from './UserEdit';
 
 const UserPagination = () => {
     return (
@@ -116,27 +117,10 @@ export const UserCreate = withStyles(styles)(({ classes, ...props }) => (
     </Create>
 ));
 
-export const UserEdit = withStyles(styles)(({ classes, ...props }) => (
-    <Edit title="Edit Staff" {...props}>
-        <SimpleForm validate={validateUserEdit}>
-            <TextInput label="First Name" source="first_name" formClassName={classes.inlineBlock}/>
-            <TextInput label="Last Name" source="last_name" formClassName={classes.inlineBlock}/>
-            <TextInput label="Password" source="password" type="password" placeholder={'******'} formClassName={classes.inlineBlock}/>
-            <SelectInput source="user_role" choices={[
-                { id: 'LPN', name: 'LPN' },
-                { id: 'PTA', name: 'PTA' },
-                { id: 'RN', name: 'RN' },
-                { id: 'PT, DPT', name: 'PT, DPT' },
-                { id: 'RN, MSN', name: 'RN, MSN' },
-                { id: 'RN, BSN', name: 'RN, BSN' },
-                { id: 'LMSW', name: 'LMSW' },
-                { id: 'COTA', name: 'COTA' },
-                { id: 'OT', name: 'OT' },
-                { id: 'BSW', name: 'BSW' },
-            ]} formClassName={classes.inlineBlock}/>
-            <TextInput label="Email" source="email" formClassName={classes.inlineBlock}/>
-            <TextInput label="Phone Number" source="contact_no" formClassName={classes.inlineBlock}/>
-            <BooleanInput label="Active" source="is_active" />
-        </SimpleForm>
-    </Edit>
-));
+export const StaffEdit = withStyles(styles)(({ classes, ...props }) => {
+    return (
+        <Edit title="Edit Staff" {...props}>
+            <UserEdit {...props} />
+        </Edit>
+    );
+});

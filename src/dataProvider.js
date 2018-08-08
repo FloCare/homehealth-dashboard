@@ -185,7 +185,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     }
                 case 'users':
                     var userData = undefined;
-                    // Hacky till password is being set by an email route 
                     if(params.data.password === '') {
                         userData = {
                             user: {
@@ -207,6 +206,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                                 phone : params.data.contact_no,
                                 role : params.data.user_role,
                                 email : params.data.email,
+                                is_active: params.data.is_active
                             }
                         };
                     }

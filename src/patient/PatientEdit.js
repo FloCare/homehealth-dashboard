@@ -43,7 +43,6 @@ const styles = theme => ({
 });
 
 const validatePatientCreation = (values) => {
-    console.log('hello');
     const errors = {};
     if (!values.firstName) {
         errors.firstName = ['Required'];
