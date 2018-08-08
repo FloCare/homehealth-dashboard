@@ -133,7 +133,6 @@ class UserEdit extends React.Component {
                 password: this.state.password,
             }
         }
-        console.log(userData);
         this.props.record.password = this.state.password;
         return (
                 <SimpleForm {...this.props} record={userData} toolbar={<UserEditToolbar/>} redirect="list" validate={validateUserCreation}>
@@ -141,7 +140,7 @@ class UserEdit extends React.Component {
                     <TextInput label="Last Name" source="last_name" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                     <div style={styles.inlineBlock1}>
                         <TextInput label="Phone Number" source="contact_no" onChange={this.onChange} style={styles.inlineElementStyle1}/>
-                        <SelectInput source="user_role" choices={[
+                        <SelectInput source="user_role" label="User Role" choices={[
                             { id: 'LPN', name: 'LPN' },
                             { id: 'PTA', name: 'PTA' },
                             { id: 'RN', name: 'RN' },
@@ -157,7 +156,7 @@ class UserEdit extends React.Component {
                     <BooleanInput label="Active" source="is_active" onChange={this.onChange}/>
                     <Heading text="App credentials"/>
                     <TextInput source="email" label="Organization Email" onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                    <TextInput source="password" defaultValue="hello" label="Password" onChange={this.onChange} formClassName={classes.inlineBlock}/>
+                    <DisabledInput source="password" defaultValue="hello" label="Password" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                     <SimpleButton text={'Reset Password'}
                                   onClick={(event) => { this.generatePassword(event) }}
                                   formClassName={classes.inlineBlock}

@@ -128,7 +128,7 @@ class UserCreate extends React.Component {
                 <TextInput label="Last Name" source="last_name" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <div style={styles.inlineBlock1}>
                     <TextInput label="Phone Number" source="contact_no" onChange={this.onChange} style={styles.inlineElementStyle1}/>
-                    <SelectInput source="user_role" choices={[
+                    <SelectInput source="user_role" label="User Role" choices={[
                         { id: 'LPN', name: 'LPN' },
                         { id: 'PTA', name: 'PTA' },
                         { id: 'RN', name: 'RN' },
@@ -143,7 +143,7 @@ class UserCreate extends React.Component {
                 </div>
                 <Heading text="App credentials"/>
                   <TextInput source="email" label="Organization Email" onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                  <TextInput source="password" label="Password" formClassName={classes.inlineBlock}/>
+                  <DisabledInput source="password" label="Password" formClassName={classes.inlineBlock}/>
                 <SimpleButton text={'Generate Password'}
                               onClick={(event) => { this.generatePassword(event) }}
                               formClassName={classes.inlineBlock}
