@@ -16,7 +16,10 @@ const Heading = props => {
 }
 
 const styles = {
-  inlineBlock: { display: 'inline-flex', marginRight: '2rem'},
+    inlineBlock: { display: 'inline-flex', marginRight: '2rem'},
+    inlineBlock1: {width: '200%'},
+    inlineElementStyle: {marginLeft: 20, width: '9.5%'},
+    inlineElementStyle1: {width: '9.5%'}
 }
 
 const validateEmail = (email) => {
@@ -123,20 +126,22 @@ class UserCreate extends React.Component {
             <SimpleForm toolbar={<UserCreateToolbar/>} redirect="list" validate={validateUserCreation}>
                 <TextInput label="First Name" source="first_name" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput label="Last Name" source="last_name" onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <SelectInput source="user_role" choices={[
-                    { id: 'LPN', name: 'LPN' },
-                    { id: 'PTA', name: 'PTA' },
-                    { id: 'RN', name: 'RN' },
-                    { id: 'PT, DPT', name: 'PT, DPT' },
-                    { id: 'RN, MSN', name: 'RN, MSN' },
-                    { id: 'RN, BSN', name: 'RN, BSN' },
-                    { id: 'LMSW', name: 'LMSW' },
-                    { id: 'COTA', name: 'COTA' },
-                    { id: 'OT', name: 'OT' },
-                    { id: 'BSW', name: 'BSW' },
-                ]} onChange={this.onChange}/>
-                <TextInput label="Phone Number" source="contact_no" onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                <Heading text="Organization credentials"/>
+                <div style={styles.inlineBlock1}>
+                    <TextInput label="Phone Number" source="contact_no" onChange={this.onChange} style={styles.inlineElementStyle1}/>
+                    <SelectInput source="user_role" choices={[
+                        { id: 'LPN', name: 'LPN' },
+                        { id: 'PTA', name: 'PTA' },
+                        { id: 'RN', name: 'RN' },
+                        { id: 'PT, DPT', name: 'PT, DPT' },
+                        { id: 'RN, MSN', name: 'RN, MSN' },
+                        { id: 'RN, BSN', name: 'RN, BSN' },
+                        { id: 'LMSW', name: 'LMSW' },
+                        { id: 'COTA', name: 'COTA' },
+                        { id: 'OT', name: 'OT' },
+                        { id: 'BSW', name: 'BSW' },
+                    ]} style={styles.inlineElementStyle} onChange={this.onChange}/>
+                </div>
+                <Heading text="App credentials"/>
                   <TextInput source="email" label="Organization Email" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                   <TextInput source="password" label="Password" formClassName={classes.inlineBlock}/>
                 <SimpleButton text={'Generate Password'}
