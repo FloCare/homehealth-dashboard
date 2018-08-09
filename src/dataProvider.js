@@ -516,5 +516,12 @@ export default (type, resource, params) => {
     const { fetchJson } = fetchUtils;
     const {url, options} = convertDataProviderRequestToHTTP(type, resource, params);
     return fetchJson(url, options)
-        .then(response => convertHTTPResponseToDataProvider(response, type, resource, params));
+        .then(response => {
+            return convertHTTPResponseToDataProvider(response, type, resource, params)
+        })
+        .catch((error) => {
+            if(resource === 'users' && (type === 'CREATE' || type === 'UPDATE')) {
+                throw new Error(`User with this Email already registered`);
+            }
+        });
 };
