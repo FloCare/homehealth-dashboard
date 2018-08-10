@@ -11,10 +11,12 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './parsingUtils';
+import ReactGA from 'react-ga';
 
 //const API_URL = 'https://app-9707.on-aptible.com';
 export const API_URL = 'https://app-9781.on-aptible.com';
 //export const API_URL = 'http://localhost:8000';
+ReactGA.initialize('UA-123730827-1');
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -43,10 +45,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'users':
+                    ReactGA.pageview('/users/list');
                     return { url: `${API_URL}/${resource}/v1.0/org-access/?${stringify(query)}`, options};
                 case 'phi':
+                    ReactGA.pageview('/phi/list');
                     return { url: `${API_URL}/${resource}/v1.0/patients/?${stringify(query)}`, options};
                 case 'physicians':
+                    ReactGA.pageview('/physicians/list');
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
@@ -58,6 +63,10 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'phi':
+                    ReactGA.event({
+                      category: 'Edit',
+                      action: 'patient_edit'
+                    });
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
                 case 'physicians':
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
@@ -163,6 +172,10 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     body.physicianId = params.data.physician_id;
+                    ReactGA.event({
+                      category: 'Edited',
+                      action: 'patient_edited'
+                    });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
@@ -262,6 +275,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('longitude');
                     localStorage.removeItem('streetAddress');
 
+                    ReactGA.event({
+                      category: 'Create',
+                      action: 'patient_create'
+                    });
+
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
@@ -293,6 +311,10 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             phone2 : params.data.phone2,
                             fax : params.data.fax,
                         }};
+                     ReactGA.event({
+                      category: 'Create',
+                      action: 'physician_create'
+                    });
                     return {
                         url: `${API_URL}/phi/v1.0/physicians/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
@@ -312,6 +334,10 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     };
 
                 case 'phi':
+                    ReactGA.event({
+                      category: 'Delete',
+                      action: 'patient_delete'
+                    });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                         options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },

@@ -5,6 +5,7 @@ import SimpleButton from '../components/common/Button'
 import {HttpStatus} from '../HttpStatusConstants'
 import {SimpleDialog} from 'rmwc/Dialog'
 import {parseMobileNumber, capitalize} from '../parsingUtils'
+import ReactGA from 'react-ga';
 import {API_URL} from '../dataProvider';
 
 const Heading = props => {
@@ -30,6 +31,11 @@ export default class PhysicianCreate extends React.Component {
       saveDisabled: true,
       showErrorPopUp: false
     }
+  }
+
+  componentDidMount() {
+      ReactGA.initialize('UA-123730827-1');
+      ReactGA.pageview('/physician/create');
   }
 
   parseNPIData (data) {
