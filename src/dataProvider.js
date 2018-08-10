@@ -14,9 +14,9 @@ import {parseMobileNumber, capitalize} from './parsingUtils';
 import ReactGA from 'react-ga';
 
 //const API_URL = 'https://app-9707.on-aptible.com';
-//const API_URL = 'https://app-9781.on-aptible.com';
-const API_URL = 'http://localhost:8000';
-ReactGA.initialize('UA-000000-02');
+export const API_URL = 'https://app-9781.on-aptible.com';
+//export const API_URL = 'http://localhost:8000';
+ReactGA.initialize('UA-123730827-1');
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
