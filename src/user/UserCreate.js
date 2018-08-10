@@ -151,8 +151,6 @@ class UserCreate extends React.Component {
                               onClick={(event) => { this.generatePassword(event) }}
                               formClassName={classes.inlineBlock}
                 />
-                <Button onClick={(event) => { this.generatePassword(event) }}
-                        formClassName={classes.inlineBlock}>Generate Password</Button>
             </SimpleForm>
           </Create>
       )
