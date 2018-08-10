@@ -144,6 +144,8 @@ class UserEdit extends React.Component {
                             { id: 'LPN', name: 'LPN' },
                             { id: 'PTA', name: 'PTA' },
                             { id: 'RN', name: 'RN' },
+                            { id: 'OTR', name: 'OTR' },
+                            { id: 'MS,CCC-SLP', name: 'MS,CCC-SLP' },
                             { id: 'PT, DPT', name: 'PT, DPT' },
                             { id: 'RN, MSN', name: 'RN, MSN' },
                             { id: 'RN, BSN', name: 'RN, BSN' },
@@ -153,7 +155,6 @@ class UserEdit extends React.Component {
                             { id: 'BSW', name: 'BSW' },
                         ]} style={styles.inlineElementStyle} onChange={this.onChange}/>
                     </div>
-                    <BooleanInput label="Active" source="is_active" onChange={this.onChange}/>
                     <Heading text="App credentials"/>
                     <TextInput source="email" label="Organization Email" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                     <DisabledInput source="password" defaultValue="hello" label="Password" onChange={this.onChange} formClassName={classes.inlineBlock}/>

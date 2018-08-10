@@ -1,5 +1,7 @@
 import React from 'react';
-import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton, SelectInput, BooleanInput , BooleanField} from 'react-admin';
+import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton, SelectInput, BooleanInput , BooleanField, CardActions,
+    ListButton,
+    RefreshButton,} from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
 import UserEdit from './UserEdit';
 
@@ -87,6 +89,13 @@ const styles = {
     textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'}
 };
 
+const StaffEditActions = ({ basePath, data, resource }) => (
+    <CardActions>
+        <ListButton basePath={basePath} />
+        <RefreshButton />
+    </CardActions>
+);
+
 export const UserList = (props) => (
     <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false}>
         <Datagrid>
@@ -119,7 +128,7 @@ export const UserCreate = withStyles(styles)(({ classes, ...props }) => (
 
 export const StaffEdit = withStyles(styles)(({ classes, ...props }) => {
     return (
-        <Edit title="Edit Staff" {...props}>
+        <Edit title="Edit Staff" {...props} actions={<StaffEditActions />}>
             <UserEdit {...props} />
         </Edit>
     );

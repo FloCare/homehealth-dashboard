@@ -2,7 +2,8 @@ import React from 'react'
 import {Create, DisabledInput, SimpleForm, TextInput, SaveButton, Toolbar, SelectInput, BooleanInput } from 'react-admin'
 import { withStyles } from '@material-ui/core/styles';
 import {startUndoable as startUndoableAction} from 'ra-core';
-import SimpleButton from '../components/common/Button'
+import SimpleButton from '../components/common/Button';
+import Button from '@material-ui/core/Button';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
@@ -19,7 +20,7 @@ const styles = {
     inlineBlock: { display: 'inline-flex', marginRight: '2rem'},
     inlineBlock1: {width: '200%'},
     inlineElementStyle: {marginLeft: 20, width: '9.5%'},
-    inlineElementStyle1: {width: '9.5%'}
+    inlineElementStyle1: {width: '9.5%'},
 }
 
 const validateEmail = (email) => {
@@ -132,6 +133,8 @@ class UserCreate extends React.Component {
                         { id: 'LPN', name: 'LPN' },
                         { id: 'PTA', name: 'PTA' },
                         { id: 'RN', name: 'RN' },
+                        { id: 'OTR', name: 'OTR' },
+                        { id: 'MS,CCC-SLP', name: 'MS,CCC-SLP' },
                         { id: 'PT, DPT', name: 'PT, DPT' },
                         { id: 'RN, MSN', name: 'RN, MSN' },
                         { id: 'RN, BSN', name: 'RN, BSN' },
@@ -143,12 +146,13 @@ class UserCreate extends React.Component {
                 </div>
                 <Heading text="App credentials"/>
                   <TextInput source="email" label="Organization Email" onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                  <DisabledInput source="password" label="Password" formClassName={classes.inlineBlock}/>
+                  <TextInput source="password" label="Password" formClassName={classes.inlineBlock}/>
                 <SimpleButton text={'Generate Password'}
                               onClick={(event) => { this.generatePassword(event) }}
                               formClassName={classes.inlineBlock}
-                              disabled={true}
                 />
+                <Button onClick={(event) => { this.generatePassword(event) }}
+                        formClassName={classes.inlineBlock}>Generate Password</Button>
             </SimpleForm>
           </Create>
       )
