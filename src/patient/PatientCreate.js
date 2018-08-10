@@ -129,7 +129,6 @@ class CreateForm extends Component {
 
     componentDidMount() {
         ReactGA.initialize('UA-123730827-1');
-        console.log(window.location.hash)
         ReactGA.pageview('/phi/create');
     }
 

@@ -2,6 +2,7 @@ import React from 'react'
 import {Create, DisabledInput, SimpleForm, TextInput, SaveButton, Toolbar, SelectInput, BooleanInput } from 'react-admin'
 import { withStyles } from '@material-ui/core/styles';
 import {startUndoable as startUndoableAction} from 'ra-core';
+import ReactGA from 'react-ga';
 import SimpleButton from '../components/common/Button';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
@@ -75,6 +76,11 @@ class UserCreate extends React.Component {
       is_active: ''
     }
     this.onChange = this.onChange.bind(this);
+  }
+
+  componentDidMount() {
+    ReactGA.initialize('UA-123730827-1');
+    ReactGA.pageview('/phi/create');
   }
 
   randomPassword(length) {
@@ -152,7 +158,7 @@ class UserCreate extends React.Component {
                               formClassName={classes.inlineBlock}
                 />
                 <div style={{width: '100%', marginTop: 30}}>
-                    <font size="2" color="red">Note: Please copy and share the password with the staff</font>
+                    <font size="2" color="grey">Note: Please copy and share the password with the staff</font>
                 </div>
             </SimpleForm>
           </Create>

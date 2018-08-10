@@ -13,8 +13,8 @@ import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './parsingUtils';
 import ReactGA from 'react-ga';
 
-//const API_URL = 'https://app-9707.on-aptible.com';
-export const API_URL = 'https://app-9781.on-aptible.com';
+export const API_URL = 'https://app-9707.on-aptible.com';
+//export const API_URL = 'https://app-9781.on-aptible.com';
 //export const API_URL = 'http://localhost:8000';
 ReactGA.initialize('UA-123730827-1');
 
@@ -296,6 +296,10 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             email : params.data.email,
                         }
                     };
+                    ReactGA.event({
+                        category: 'Create',
+                        action: 'staff_create'
+                    });
                     return {
                         url: `${API_URL}/users/v1.0/staff/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(userRequest) },

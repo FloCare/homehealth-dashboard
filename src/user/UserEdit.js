@@ -158,12 +158,13 @@ class UserEdit extends React.Component {
                     <Heading text="App credentials"/>
                     <TextInput source="email" label="Organization Email" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                     <DisabledInput source="password" defaultValue="hello" label="Password" onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                    <SimpleButton text={'Reset Password'}
+                    <SimpleButton disabled={this.state.password != ''}
+                                  text={'Reset Password'}
                                   onClick={(event) => { this.generatePassword(event) }}
                                   formClassName={classes.inlineBlock}
                     />
                     <div style={{width: '100%', marginTop: 30}}>
-                        <font size="2" color="red">Note: Please copy and share the password with the staff</font>
+                        <font size="2" color="grey">Note: Please copy and share the password with the staff</font>
                     </div>
                 </SimpleForm>
         )
