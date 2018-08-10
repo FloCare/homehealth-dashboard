@@ -162,6 +162,9 @@ class UserEdit extends React.Component {
                                   onClick={(event) => { this.generatePassword(event) }}
                                   formClassName={classes.inlineBlock}
                     />
+                    <div style={{width: '100%', marginTop: 30}}>
+                        <font size="2" color="red">Note: Please copy and share the password with the staff</font>
+                    </div>
                 </SimpleForm>
         )
     }

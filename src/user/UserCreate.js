@@ -3,7 +3,6 @@ import {Create, DisabledInput, SimpleForm, TextInput, SaveButton, Toolbar, Selec
 import { withStyles } from '@material-ui/core/styles';
 import {startUndoable as startUndoableAction} from 'ra-core';
 import SimpleButton from '../components/common/Button';
-import Button from '@material-ui/core/Button';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
@@ -146,11 +145,15 @@ class UserCreate extends React.Component {
                 </div>
                 <Heading text="App credentials"/>
                   <TextInput source="email" label="Organization Email" onChange={this.onChange} formClassName={classes.inlineBlock}/>
-                  <TextInput source="password" label="Password" formClassName={classes.inlineBlock}/>
-                <SimpleButton text={'Generate Password'}
+                  <DisabledInput source="password" label="Password" formClassName={classes.inlineBlock}/>
+                <SimpleButton disabled={this.state.password != ''}
+                              text={'Generate Password'}
                               onClick={(event) => { this.generatePassword(event) }}
                               formClassName={classes.inlineBlock}
                 />
+                <div style={{width: '100%', marginTop: 30}}>
+                    <font size="2" color="red">Note: Please copy and share the password with the staff</font>
+                </div>
             </SimpleForm>
           </Create>
       )
