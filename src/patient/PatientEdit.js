@@ -116,7 +116,7 @@ class EditForm extends Component {
     }
 
     componentDidMount() {
-        ReactGA.initialize('UA-000000-02');
+        ReactGA.initialize('UA-123730827-1');
         ReactGA.pageview('/phi/edit');
     }
 
