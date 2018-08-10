@@ -6,6 +6,7 @@ import {HttpStatus} from '../HttpStatusConstants'
 import {SimpleDialog} from 'rmwc/Dialog'
 import {parseMobileNumber, capitalize} from '../parsingUtils'
 import ReactGA from 'react-ga';
+import {API_URL} from '../dataProvider';
 
 const Heading = props => {
   const {text} = props
@@ -51,7 +52,7 @@ export default class PhysicianCreate extends React.Component {
   fetchNPIData (event) {
     console.log('fetching NPI data for ', this.npiInput)
     event.preventDefault()
-    const npiURL = 'http://npi.npi.io/npi/' + this.npiInput + '.json'
+    const npiURL = API_URL  + '/phi/v1.0/get-physician-for-npi/?npi_id=' + this.npiInput;
     this.setState({
       fetchedNPIData: false,
       loading: true
@@ -65,7 +66,6 @@ export default class PhysicianCreate extends React.Component {
       }
     ).then(
       (response) => {
-        console.log(response)
         this.setState({
           fetchedNPIData: true,
           loading: false,

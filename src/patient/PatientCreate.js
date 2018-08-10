@@ -15,7 +15,6 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Divider from '@material-ui/core/Divider';
 import ReactGA from 'react-ga';
 
 const styles = theme => ({
@@ -166,7 +165,7 @@ class CreateForm extends Component {
                      options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
                      onChange={this.onChange} />
                 <Heading text="Care Team"/>
-                <ReferenceArrayInput record={this.props.record} label="Staff" source="users" reference="users">
+                <ReferenceArrayInput record={this.props.record} label="Staff" source="users" reference="users" sort={{ field: 'last_name', order: 'DESC' }}>
                     <SelectArrayInput optionText="displayname" optionValue="id" />
                 </ReferenceArrayInput>
                 <div className={classes.root} >
@@ -175,7 +174,7 @@ class CreateForm extends Component {
                         <Typography className={classes.heading}><b>Physician Details</b> (Optional)</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians" perPage={4}>
+                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians" perPage={3}>
                             <AutocompleteInput optionText="displayname" optionValue="id" suggestionComponent={suggestionRenderer} />
                         </ReferenceInput>
                         <div className={classes.root1} />

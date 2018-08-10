@@ -34,14 +34,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             const {page, perPage} = params.pagination;
             const {field, order} = params.sort;
             const {q} = params.filter;
-            // console.log(page);
+            //TODO change the default from 100 when we do pagination
             const query = {
                 format: 'json',
                 query: q,
-                size: perPage
+                size: (q === undefined) ? 100: perPage
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
-            // console.log(query.range);
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
@@ -197,16 +196,32 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     }
                 case 'users':
-                    const userData = {
-                        user: {
-                            firstName : params.data.first_name,
-                            lastName : params.data.last_name,
-                            password : params.data.password,
-                            phone : params.data.contact_no,
-                            role : params.data.user_role,
-                            email : params.data.email,
-                        }
-                    };
+                    var userData = undefined;
+                    if(params.data.password === '') {
+                        userData = {
+                            user: {
+                                firstName : params.data.first_name,
+                                lastName : params.data.last_name,
+                                phone : params.data.contact_no,
+                                role : params.data.user_role,
+                                email : params.data.email,
+                                is_active: params.data.is_active,
+                            }
+                        };
+                    }
+                    else {
+                        userData = {
+                            user: {
+                                firstName : params.data.first_name,
+                                lastName : params.data.last_name,
+                                password : params.data.password,
+                                phone : params.data.contact_no,
+                                role : params.data.user_role,
+                                email : params.data.email,
+                                is_active: params.data.is_active
+                            }
+                        };
+                    }
                     return{
                         url: `${API_URL}/users/v1.0/staff/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
@@ -361,6 +376,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             user_role: user.user_role,
                             username: user.username,
                             displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
+                            is_active: user.is_active
                         });
                     });
                     return {
@@ -418,7 +434,13 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             // console.log('EXECUTED GET_MANY for:', resource);
             switch(resource) {
                 case 'users':
-                    // console.log('Users are:', json.users);
+                    var orgName = localStorage.getItem('organizationName');
+                    if(orgName != json.organization.name) {
+                        localStorage.setItem('organizationName', json.organization.name);
+                        // Hacky, react-router does advice to use window.location.reload()
+                        // Invoke a refresh action provided by react-admin
+                        window.location.reload();
+                    }
                     const usersData = json.users.map(user => {
                         return ({
                             id: user.id,
@@ -493,10 +515,11 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "id": json.user.id,
                             "first_name": json.user.first_name,
                             "last_name": json.user.last_name,
-                            "password": json.user.password,
+                            "password": '',
                             "contact_no": json.user.contact_no,
                             "user_role": json.user.user_role,
                             "email": json.user.email,
+                            "is_active": json.user.is_active
                         }
                     };
                 default:
@@ -518,5 +541,12 @@ export default (type, resource, params) => {
     const { fetchJson } = fetchUtils;
     const {url, options} = convertDataProviderRequestToHTTP(type, resource, params);
     return fetchJson(url, options)
-        .then(response => convertHTTPResponseToDataProvider(response, type, resource, params));
+        .then(response => {
+            return convertHTTPResponseToDataProvider(response, type, resource, params)
+        })
+        .catch((error) => {
+            if(resource === 'users' && (type === 'CREATE' || type === 'UPDATE')) {
+                throw new Error(`User with this Email already registered`);
+            }
+        });
 };
