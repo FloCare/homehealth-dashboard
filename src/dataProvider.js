@@ -13,8 +13,8 @@ import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './parsingUtils';
 import ReactGA from 'react-ga';
 
-export const API_URL = 'https://app-9707.on-aptible.com';
-//export const API_URL = 'https://app-9781.on-aptible.com';
+//export const API_URL = 'https://app-9707.on-aptible.com';
+export const API_URL = 'https://app-9781.on-aptible.com';
 //export const API_URL = 'http://localhost:8000';
 ReactGA.initialize('UA-123730827-1');
 
@@ -45,7 +45,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'users':
-                    ReactGA.pageview('/users/list');
+                    ReactGA.pageview('/staff/list');
                     return { url: `${API_URL}/${resource}/v1.0/org-access/?${stringify(query)}`, options};
                 case 'phi':
                     ReactGA.pageview('/phi/list');
@@ -64,7 +64,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             switch(resource) {
                 case 'phi':
                     ReactGA.event({
-                      category: 'Edit',
+                      category: 'PatientEdit',
                       action: 'patient_edit'
                     });
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
@@ -168,12 +168,19 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             "apartmentNo": params.data.apartmentNo
                         };
                         body.patient['address'] = params.data.address;
-                    } 
+                    }
+                    if(params.data.userIds.length != params.previousData.userIds.length) {
+                        ReactGA.event({
+                            category: 'PatientEdited',
+                            action: 'staff_tagging_edit',
+                            value: params.data.userIds.length
+                        });
+                    }
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     body.physicianId = params.data.physician_id;
                     ReactGA.event({
-                      category: 'Edited',
+                      category: 'PatientEdited',
                       action: 'patient_edited'
                     });
                     return {
@@ -275,9 +282,23 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('longitude');
                     localStorage.removeItem('streetAddress');
 
+                    if(params.data.users != undefined) {
+                        ReactGA.event({
+                            category: 'PatientCreated',
+                            action: 'staff_tagging',
+                            value: params.data.users.length
+                        });
+                    }
+                    if(params.data.emergencyContactName != undefined || params.data.emergencyContactNumber != undefined) {
+                        ReactGA.event({
+                            category: 'PatientCreated',
+                            action: 'added_emergency_details'
+                        });
+                    }
+
                     ReactGA.event({
-                      category: 'Create',
-                      action: 'patient_create'
+                      category: 'PatientCreated',
+                      action: 'patient_created'
                     });
 
                     return {
@@ -297,8 +318,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         }
                     };
                     ReactGA.event({
-                        category: 'Create',
-                        action: 'staff_create'
+                        category: 'StaffCreated',
+                        action: 'staff_created'
                     });
                     return {
                         url: `${API_URL}/users/v1.0/staff/?format=json`,
@@ -316,8 +337,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             fax : params.data.fax,
                         }};
                      ReactGA.event({
-                      category: 'Create',
-                      action: 'physician_create'
+                      category: 'PhysicianCreated',
+                      action: 'physician_created'
                     });
                     return {
                         url: `${API_URL}/phi/v1.0/physicians/?format=json`,
@@ -339,8 +360,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
                 case 'phi':
                     ReactGA.event({
-                      category: 'Delete',
-                      action: 'patient_delete'
+                      category: 'PatientDeleted',
+                      action: 'patient_deleted'
                     });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
