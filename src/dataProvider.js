@@ -14,9 +14,13 @@ import {parseMobileNumber, capitalize} from './parsingUtils';
 import ReactGA from 'react-ga';
 
 //export const API_URL = 'https://app-9707.on-aptible.com';
-export const API_URL = 'https://app-9781.on-aptible.com';
-//export const API_URL = 'http://localhost:8000';
+//export const API_URL = 'https://app-9781.on-aptible.com';
+export const API_URL = 'http://localhost:8000';
+const REFRESH_API_URL = 'http://localhost:8000/api-token-refresh/';
 ReactGA.initialize('UA-123730827-1');
+var nJwt = require('njwt');
+var EXPIRY_TIME_CHECK = 600000; // 10 minutes
+var SECRET_KEY = '3mtih1f4nf@$56$14sdwp48czyonlf25)9hk11=chgyi0#v(gg';// secret key to match with the jwt secret key set in the backend
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -26,7 +30,36 @@ ReactGA.initialize('UA-123730827-1');
  */
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
     console.log('Converting Data Provider Call to HTTP Request on:');
-    console.log('This called:', type, resource, params);
+    console.log('This called:', type);
+    var accessToken = localStorage.getItem('access_token');
+    nJwt.verify(accessToken, SECRET_KEY, function(err,verifiedJwt){
+        if(err){
+            localStorage.removeItem('access_token');
+            window.location.reload();
+        }else{
+            // Each time the user loads the page, we check if there is an existing non-expired token and if it's close to being expired, refresh it to extend the expiry.
+            // Currently being set to 10 minutes
+            if((verifiedJwt.body.exp * 1000) - Date.now() < EXPIRY_TIME_CHECK) {
+                console.log('refresh');
+                const request = new Request(REFRESH_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ token: accessToken, orig_iat: verifiedJwt.body.iat }),
+                    headers: new Headers({ 'Content-Type': 'application/json'
+                    }),
+                })
+                return fetch(request)
+                    .then(response => {
+                        if (response.status < 200 || response.status >= 300) {
+                            return Promise.reject();
+                        }
+                        return response.json();
+                    })
+                    .then(({ token }) => {
+                        localStorage.setItem('access_token', token);
+                    });
+            }
+        }
+    });
 
     switch (type) {
         case GET_LIST: {
@@ -42,7 +75,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
             const options = {};
-            options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
+            options.headers = new Headers({Authorization: 'JWT '+ accessToken});
             switch(resource) {
                 case 'users':
                     ReactGA.pageview('/staff/list');
@@ -60,7 +93,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
         case GET_ONE:
             const options = {};
-            options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
+            options.headers = new Headers({Authorization: 'JWT '+ accessToken});
             switch(resource) {
                 case 'phi':
                     ReactGA.event({
@@ -92,7 +125,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             };
             // console.log('Query params:', stringify(query));
             const options = {};
-            options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
+            options.headers = new Headers({Authorization: 'JWT '+ accessToken});
 
             switch(resource) {
                 case 'users':
@@ -185,7 +218,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
-                        options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                        options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'JWT '+ accessToken})},
                     };
                 case 'physicians':
                     const updateBody = {
@@ -200,7 +233,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return{
                         url: `http://localhost:8000/mock/v1.0/mock/${params.data.npiID}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
-                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'JWT '+ accessToken})},
                     }
                 case 'users':
                     var userData = undefined;
@@ -231,8 +264,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     }
                     return{
                         url: `${API_URL}/users/v1.0/staff/${params.id}/`,
-                        options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
-                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                        options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'JWT '+ accessToken})},
+                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'JWT '+ accessToken})},
                 }
                 default:
                     console.log('ERROR! Edit called on invalid resources.');
@@ -303,7 +336,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
-                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
+                        options: { method: 'POST', headers: new Headers({Authorization: 'JWT '+ accessToken}), body: JSON.stringify(request) },
                     };
 
                 case 'users':
@@ -323,7 +356,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/users/v1.0/staff/?format=json`,
-                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(userRequest) },
+                        options: { method: 'POST', headers: new Headers({Authorization: 'JWT '+ accessToken}), body: JSON.stringify(userRequest) },
                     };
 
                 case 'physicians':
@@ -342,7 +375,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/phi/v1.0/physicians/?format=json`,
-                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
+                        options: { method: 'POST', headers: new Headers({Authorization: 'JWT '+ accessToken}), body: JSON.stringify(request) },
                     };
                 default:
                     console.log('ERROR! CREATE called on invalid resources.');
@@ -355,7 +388,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'users':
                     return {
                         url: `${API_URL}/${resource}/v1.0/staff/${params.id}/`,
-                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'JWT '+ accessToken}) },
                     };
 
                 case 'phi':
@@ -365,7 +398,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
-                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'JWT '+ accessToken}) },
                     };
 
             }
@@ -464,7 +497,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         localStorage.setItem('organizationName', json.organization.name);
                         // Hacky, react-router does advice to use window.location.reload()
                         // Invoke a refresh action provided by react-admin
-                        window.location.reload();
+                        //window.location.reload();
                     }
                     const usersData = json.users.map(user => {
                         return ({
@@ -570,6 +603,11 @@ export default (type, resource, params) => {
             return convertHTTPResponseToDataProvider(response, type, resource, params)
         })
         .catch((error) => {
+            if(error.toString().includes('HttpError: Unauthorized')) {
+                throw new Error('Timed out, please Login')
+            }
+            localStorage.removeItem('access_token');
+            window.location.reload();
             if(resource === 'users' && (type === 'CREATE' || type === 'UPDATE')) {
                 throw new Error(`User with this Email already registered`);
             }
