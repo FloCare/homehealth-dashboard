@@ -11,10 +11,12 @@ import {
 } from 'react-admin';
 import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './parsingUtils';
+import ReactGA from 'react-ga';
 
-//const API_URL = 'https://app-9707.on-aptible.com';
+//export const API_URL = 'https://app-9707.on-aptible.com';
 export const API_URL = 'https://app-9781.on-aptible.com';
 //export const API_URL = 'http://localhost:8000';
+ReactGA.initialize('UA-123730827-1');
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -43,10 +45,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'users':
+                    ReactGA.pageview('/staff/list');
                     return { url: `${API_URL}/${resource}/v1.0/org-access/?${stringify(query)}`, options};
                 case 'phi':
+                    ReactGA.pageview('/phi/list');
                     return { url: `${API_URL}/${resource}/v1.0/patients/?${stringify(query)}`, options};
                 case 'physicians':
+                    ReactGA.pageview('/physicians/list');
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
@@ -58,9 +63,15 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
             switch(resource) {
                 case 'phi':
+                    ReactGA.event({
+                      category: 'PatientEdit',
+                      action: 'patient_edit'
+                    });
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
                 case 'physicians':
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
+                case 'users':
+                    return { url: `${API_URL}/users/v1.0/staff/${params.id}/`, options };
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -157,10 +168,21 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             "apartmentNo": params.data.apartmentNo
                         };
                         body.patient['address'] = params.data.address;
-                    } 
+                    }
+                    if(params.data.userIds.length != params.previousData.userIds.length) {
+                        ReactGA.event({
+                            category: 'PatientEdited',
+                            action: 'staff_tagging_edit',
+                            value: params.data.userIds.length
+                        });
+                    }
                     body.id=params.data.id;
                     body.users=params.data.userIds;
                     body.physicianId = params.data.physician_id;
+                    ReactGA.event({
+                      category: 'PatientEdited',
+                      action: 'patient_edited'
+                    });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
@@ -180,6 +202,38 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
                     // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     }
+                case 'users':
+                    var userData = undefined;
+                    if(params.data.password === '') {
+                        userData = {
+                            user: {
+                                firstName : params.data.first_name,
+                                lastName : params.data.last_name,
+                                phone : params.data.contact_no,
+                                role : params.data.user_role,
+                                email : params.data.email,
+                                is_active: params.data.is_active,
+                            }
+                        };
+                    }
+                    else {
+                        userData = {
+                            user: {
+                                firstName : params.data.first_name,
+                                lastName : params.data.last_name,
+                                password : params.data.password,
+                                phone : params.data.contact_no,
+                                role : params.data.user_role,
+                                email : params.data.email,
+                                is_active: params.data.is_active
+                            }
+                        };
+                    }
+                    return{
+                        url: `${API_URL}/users/v1.0/staff/${params.id}/`,
+                        options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                }
                 default:
                     console.log('ERROR! Edit called on invalid resources.');
                     return {};
@@ -228,9 +282,48 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('longitude');
                     localStorage.removeItem('streetAddress');
 
+                    if(params.data.users != undefined) {
+                        ReactGA.event({
+                            category: 'PatientCreated',
+                            action: 'staff_tagging',
+                            value: params.data.users.length
+                        });
+                    }
+                    if(params.data.emergencyContactName != undefined || params.data.emergencyContactNumber != undefined) {
+                        ReactGA.event({
+                            category: 'PatientCreated',
+                            action: 'added_emergency_details'
+                        });
+                    }
+
+                    ReactGA.event({
+                      category: 'PatientCreated',
+                      action: 'patient_created'
+                    });
+
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
+                    };
+
+                case 'users':
+                    const userRequest = {
+                        user: {
+                            firstName : params.data.first_name,
+                            lastName : params.data.last_name,
+                            password : params.data.password,
+                            phone : params.data.contact_no,
+                            role : params.data.user_role,
+                            email : params.data.email,
+                        }
+                    };
+                    ReactGA.event({
+                        category: 'StaffCreated',
+                        action: 'staff_created'
+                    });
+                    return {
+                        url: `${API_URL}/users/v1.0/staff/?format=json`,
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(userRequest) },
                     };
 
                 case 'physicians':
@@ -243,6 +336,10 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             phone2 : params.data.phone2,
                             fax : params.data.fax,
                         }};
+                     ReactGA.event({
+                      category: 'PhysicianCreated',
+                      action: 'physician_created'
+                    });
                     return {
                         url: `${API_URL}/phi/v1.0/physicians/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
@@ -254,10 +351,24 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
         case DELETE:
             // console.log('Running DELETE for:', resource);
-            return {
-                url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
-                options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
-            };
+            switch(resource) {
+                case 'users':
+                    return {
+                        url: `${API_URL}/${resource}/v1.0/staff/${params.id}/`,
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                    };
+
+                case 'phi':
+                    ReactGA.event({
+                      category: 'PatientDeleted',
+                      action: 'patient_deleted'
+                    });
+                    return {
+                        url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                    };
+
+            }
 
         default:
             throw new Error(`Unsupported fetch action type ${type}`);
@@ -290,6 +401,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             user_role: user.user_role,
                             username: user.username,
                             displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
+                            is_active: user.is_active
                         });
                     });
                     return {
@@ -347,7 +459,13 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             // console.log('EXECUTED GET_MANY for:', resource);
             switch(resource) {
                 case 'users':
-                    // console.log('Users are:', json.users);
+                    var orgName = localStorage.getItem('organizationName');
+                    if(orgName != json.organization.name) {
+                        localStorage.setItem('organizationName', json.organization.name);
+                        // Hacky, react-router does advice to use window.location.reload()
+                        // Invoke a refresh action provided by react-admin
+                        window.location.reload();
+                    }
                     const usersData = json.users.map(user => {
                         return ({
                             id: user.id,
@@ -416,6 +534,19 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "displayname": `${json.lastName} ${json.firstName}`
                         }
                     };
+                case 'users':
+                    return {
+                        data: {
+                            "id": json.user.id,
+                            "first_name": json.user.first_name,
+                            "last_name": json.user.last_name,
+                            "password": '',
+                            "contact_no": json.user.contact_no,
+                            "user_role": json.user.user_role,
+                            "email": json.user.email,
+                            "is_active": json.user.is_active
+                        }
+                    };
                 default:
                     return {data: json};
             }
@@ -435,5 +566,12 @@ export default (type, resource, params) => {
     const { fetchJson } = fetchUtils;
     const {url, options} = convertDataProviderRequestToHTTP(type, resource, params);
     return fetchJson(url, options)
-        .then(response => convertHTTPResponseToDataProvider(response, type, resource, params));
+        .then(response => {
+            return convertHTTPResponseToDataProvider(response, type, resource, params)
+        })
+        .catch((error) => {
+            if(resource === 'users' && (type === 'CREATE' || type === 'UPDATE')) {
+                throw new Error(`User with this Email already registered`);
+            }
+        });
 };

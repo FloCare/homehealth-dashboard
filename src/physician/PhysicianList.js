@@ -7,7 +7,7 @@ const PhysicianPagination = () => {
 }
 
 export const PhysicianList = (props) => (
-  <List {...props} title="List of physicians" pagination={<PhysicianPagination/>}>
+  <List {...props} title="List of physicians" pagination={<PhysicianPagination/>} bulkActions={false}>
     <Datagrid>
       <TextField source="npi" label="NPI ID"/>
       <TextField source="firstName" label="First Name"/>

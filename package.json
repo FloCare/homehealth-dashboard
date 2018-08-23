@@ -24,6 +24,7 @@
     "ra-data-simple-rest": "~2.0.0",
     "react-places-autocomplete": "7.1.2",
     "redux-form": "7.4.0",
-    "react-admin-date-inputs": "1.0.16"
+    "react-admin-date-inputs": "1.0.16",
+    "react-ga": "2.5.3"
   }
 }
