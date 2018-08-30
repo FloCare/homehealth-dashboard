@@ -52,7 +52,7 @@ let visitDoneLabel = new window.google.maps.MarkerImage(
 let visitNotDoneLabel = new window.google.maps.MarkerImage(
     Images.visitNotDoneLabel,
     null, /* size is determined at runtime */
-    new window.google.maps.Point(-2, 0), /* origin is 0,0 */
+    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
     null, /* anchor is bottom center of the scaled image */
     new window.google.maps.Size(84, 32)
 );
