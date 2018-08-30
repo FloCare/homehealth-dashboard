@@ -45,16 +45,16 @@ const tenThousandFeetToDegrees = 0.0274321;
 let visitDoneLabel = new window.google.maps.MarkerImage(
     Images.visitDoneLabel,
     null, /* size is determined at runtime */
-    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
+    new window.google.maps.Point(-6, 0), /* origin is 0,0 */
     null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(84, 32)
+    new window.google.maps.Size(90, 32)
 );
 let visitNotDoneLabel = new window.google.maps.MarkerImage(
     Images.visitNotDoneLabel,
     null, /* size is determined at runtime */
-    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
+    new window.google.maps.Point(-6, 0), /* origin is 0,0 */
     null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(84, 32)
+    new window.google.maps.Size(90, 32)
 );
 let patientIconLabel = new window.google.maps.MarkerImage(
     Images.patientIconLabel,
@@ -250,7 +250,7 @@ class Scheduler extends Component {
             formattedDate = getDateFromDateTimeObject();
         }
         // TODO remove the hardcoded date which was added for testing
-        const request = new Request(VISIT_DATA_API_URL+'2018-08-24/', {
+        const request = new Request(VISIT_DATA_API_URL+formattedDate+'/', {
             headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
             }),
         })
