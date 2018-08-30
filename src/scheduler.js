@@ -24,37 +24,38 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import FaceIcon from '@material-ui/icons/Face';
 import PeopleIcon from '@material-ui/icons/Person';
+import DateIcon from '@material-ui/icons/DateRange';
 import {Images} from './Images';
 import {stringify} from 'query-string';
 import {getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject} from './parsingUtils'
 
-//const PATIENT_LIST_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
+const PATIENT_LIST_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
 //const PATIENT_LIST_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
-const PATIENT_LIST_API_URL = 'http://localhost:8000/phi/v1.0/patients/?format=json&size=100';
+//const PATIENT_LIST_API_URL = 'http://localhost:8000/phi/v1.0/patients/?format=json&size=100';
 
-//const USER_DETAILS_API_URL = 'https://app-9707.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
+const USER_DETAILS_API_URL = 'https://app-9707.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
 //const USER_DETAILS_API_URL = 'https://app-9781.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
-const USER_DETAILS_API_URL = 'http://localhost:8000/users/v1.0/org-access/?format=json&size=100';
+//const USER_DETAILS_API_URL = 'http://localhost:8000/users/v1.0/org-access/?format=json&size=100';
 
-//const VISIT_DATA_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
+const VISIT_DATA_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
 //const VISIT_DATA_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
-const VISIT_DATA_API_URL = 'http://localhost:8000/phi/v1.0/get-visits-for-org/';
+//const VISIT_DATA_API_URL = 'http://localhost:8000/phi/v1.0/get-visits-for-org/';
 
 const tenThousandFeetToDegrees = 0.0274321;
 
 let visitDoneLabel = new window.google.maps.MarkerImage(
     Images.visitDoneLabel,
     null, /* size is determined at runtime */
-    new window.google.maps.Point(-6, 0), /* origin is 0,0 */
+    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
     null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(90, 32)
+    new window.google.maps.Size(84, 32)
 );
 let visitNotDoneLabel = new window.google.maps.MarkerImage(
     Images.visitNotDoneLabel,
     null, /* size is determined at runtime */
-    new window.google.maps.Point(-6, 0), /* origin is 0,0 */
+    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
     null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(90, 32)
+    new window.google.maps.Size(84, 32)
 );
 let patientIconLabel = new window.google.maps.MarkerImage(
     Images.patientIconLabel,
@@ -505,6 +506,11 @@ class Scheduler extends Component {
             return (
                 <Chip
                     label="Today"
+                    avatar={
+                        <Avatar>
+                            <DateIcon />
+                        </Avatar>
+                    }
                     onDelete={this.handleDelete('isToday')}
                     className={classes.chip}
                     color="primary"
@@ -515,6 +521,11 @@ class Scheduler extends Component {
             return (
                 <Chip
                     label="Tomorrow"
+                    avatar={
+                        <Avatar>
+                            <DateIcon />
+                        </Avatar>
+                    }
                     onDelete={this.handleDelete('isTomorrow')}
                     className={classes.chip}
                     color="primary"
@@ -644,9 +655,10 @@ class Scheduler extends Component {
                                 key={key}
                                 label={{
                                     text: userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
-                                    userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' | ' + filteredVisitsMap[value][j].visitTime,
+                                    userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' ' + filteredVisitsMap[value][j].visitTime,
                                     color: "white",
-                                    fontSize: "10",
+                                    fontSize: "10px",
+                                    textAlign: "left"
                                 }}
                                 icon={filteredVisitsMap[value][j].isDone ? visitDoneLabel : visitNotDoneLabel}
                                 // onClick={(e) => {
@@ -669,7 +681,7 @@ class Scheduler extends Component {
                     label={{
                         text: this.state.selectedPatientName,
                         color: "white",
-                        fontSize: "20",
+                        fontSize: "12px",
                     }}
                     icon={patientIconLabel}
                 /> : <Marker/>}
