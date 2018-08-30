@@ -9,6 +9,7 @@ import { UserList, StaffEdit } from './user/users';
 import UserCreate from './user/UserCreate';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
+import Scheduler from './scheduler';
 
 require('../node_modules/material-components-web/dist/material-components-web.min.css')
 // import { createMuiTheme } from '@material-ui/core/styles';
@@ -35,6 +36,10 @@ const App = () => (
                   create={PhysicianCreate}
                   list={PhysicianList}
                   icon={UserIcon} />
+        <Resource name="scheduler"
+                  options={{label: 'Scheduler'}}
+                  list={Scheduler}
+        />
     </Admin>
 );
 

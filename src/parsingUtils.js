@@ -76,4 +76,40 @@ const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize};
+// Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
+const getDateFromDateTimeObject = () => {
+    var formattedDate = new Date();
+    var dd = formattedDate.getDate();
+    var mm = formattedDate.getMonth()+1; //January is 0!
+    var yyyy = formattedDate.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    }
+
+    if(mm<10) {
+        mm = '0'+mm
+    }
+    formattedDate = yyyy+'-'+mm+'-'+dd;
+    return formattedDate;
+}
+
+// Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
+const getTomorrowDateFromDateTimeObject = () => {
+    var formattedDate = new Date();
+    var dd = formattedDate.getDate()+1;
+    var mm = formattedDate.getMonth()+1; //January is 0!
+    var yyyy = formattedDate.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    }
+
+    if(mm<10) {
+        mm = '0'+mm
+    }
+    formattedDate = yyyy+'-'+mm+'-'+dd;
+    return formattedDate;
+}
+
+export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize, getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject};
