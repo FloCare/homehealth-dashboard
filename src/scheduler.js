@@ -24,6 +24,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import FaceIcon from '@material-ui/icons/Face';
 import PeopleIcon from '@material-ui/icons/Person';
+import DateIcon from '@material-ui/icons/DateRange';
 import {Images} from './Images';
 import {stringify} from 'query-string';
 import {getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject} from './parsingUtils'
@@ -37,7 +38,7 @@ const USER_DETAILS_API_URL = 'https://app-9707.on-aptible.com/users/v1.0/org-acc
 //const USER_DETAILS_API_URL = 'http://localhost:8000/users/v1.0/org-access/?format=json&size=100';
 
 const VISIT_DATA_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/get-visits-for-org/';
-//const VISIT_DATA_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
+//const VISIT_DATA_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/get-visits-for-org/';
 //const VISIT_DATA_API_URL = 'http://localhost:8000/phi/v1.0/get-visits-for-org/';
 
 const tenThousandFeetToDegrees = 0.0274321;
@@ -45,16 +46,16 @@ const tenThousandFeetToDegrees = 0.0274321;
 let visitDoneLabel = new window.google.maps.MarkerImage(
     Images.visitDoneLabel,
     null, /* size is determined at runtime */
-    new window.google.maps.Point(-6, 0), /* origin is 0,0 */
+    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
     null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(90, 32)
+    new window.google.maps.Size(84, 32)
 );
 let visitNotDoneLabel = new window.google.maps.MarkerImage(
     Images.visitNotDoneLabel,
     null, /* size is determined at runtime */
-    new window.google.maps.Point(-6, 0), /* origin is 0,0 */
+    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
     null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(90, 32)
+    new window.google.maps.Size(84, 32)
 );
 let patientIconLabel = new window.google.maps.MarkerImage(
     Images.patientIconLabel,
@@ -67,6 +68,7 @@ let patientIconLabel = new window.google.maps.MarkerImage(
 const styles = theme => ({
     root: {
         width: '100%',
+        height: '72vh',
         maxWidth: 300,
         borderRight: 'ridge',
     },
@@ -76,7 +78,7 @@ const styles = theme => ({
     default: {
         paddingTop: 0,
         paddingBottom: 0.001,
-        height: 40
+        height: '1%'
     },
     button: {
         '&:hover': {
@@ -85,6 +87,8 @@ const styles = theme => ({
         }
     },
     inlineBlock: {
+        width: '100%',
+        height: '100%',
         display: 'inline-flex'
     },
     sticky: {
@@ -107,19 +111,25 @@ const styles = theme => ({
         borderBottom: 'ridge',
         marginTop: '0.1%',
         width: '100%',
-        height: '100%'
+        height: '100%',
 
     },
     marginLevel: {
+        width: '100%',
         marginTop: '1%',
         marginBottom: '1%',
         marginLeft: '1%',
         display: 'inline-flex',
         alignItems: 'center',
     },
+    marginLevel1: {
+        display: 'inline-flex',
+        alignItems: 'center',
+    },
     marginPatientLevel: {
-        display: 'flex',
-        marginLeft: '230%'
+        position: 'relative',
+        display: 'inline-flex',
+        leftMargin: '200%',
     },
     suggestionsContainerOpen: {
         position: "absolute",
@@ -505,6 +515,11 @@ class Scheduler extends Component {
             return (
                 <Chip
                     label="Today"
+                    avatar={
+                        <Avatar>
+                            <DateIcon />
+                        </Avatar>
+                    }
                     onDelete={this.handleDelete('isToday')}
                     className={classes.chip}
                     color="primary"
@@ -515,6 +530,11 @@ class Scheduler extends Component {
             return (
                 <Chip
                     label="Tomorrow"
+                    avatar={
+                        <Avatar>
+                            <DateIcon />
+                        </Avatar>
+                    }
                     onDelete={this.handleDelete('isTomorrow')}
                     className={classes.chip}
                     color="primary"
@@ -554,7 +574,7 @@ class Scheduler extends Component {
                 className={classes.chip}
                 color="primary"
             />}
-            <div className={classes.inlineBlock}>
+            <div className={classes.marginPatientLevel}>
             {
                 this.state.chipSelectedPatient != '' ?
                     <Chip
@@ -644,9 +664,10 @@ class Scheduler extends Component {
                                 key={key}
                                 label={{
                                     text: userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
-                                    userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' | ' + filteredVisitsMap[value][j].visitTime,
+                                    userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' ' + filteredVisitsMap[value][j].visitTime,
                                     color: "white",
-                                    fontSize: "10",
+                                    fontSize: "10px",
+                                    textAlign: "left"
                                 }}
                                 icon={filteredVisitsMap[value][j].isDone ? visitDoneLabel : visitNotDoneLabel}
                                 // onClick={(e) => {
@@ -669,7 +690,7 @@ class Scheduler extends Component {
                     label={{
                         text: this.state.selectedPatientName,
                         color: "white",
-                        fontSize: "20",
+                        fontSize: "12px",
                     }}
                     icon={patientIconLabel}
                 /> : <Marker/>}
@@ -681,7 +702,7 @@ class Scheduler extends Component {
             <div className={classes.bordered}>
                 <div className={classes.marginLevel}>
                     <FormLabel component="legend">Date:</FormLabel>
-                    <div className={classes.marginLevel}>
+                    <div className={classes.marginLevel1}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -704,6 +725,7 @@ class Scheduler extends Component {
                         }
                         label="Tomorrow"
                     />
+                    </div>
                     <div className={classes.marginPatientLevel}>
                         <Autosuggest
                             {...autosuggestProps}
@@ -726,8 +748,6 @@ class Scheduler extends Component {
                             )}
                         />
                     </div>
-                        <div/>
-                    </div>
                 </div>
                 <Divider />
                 <Divider />
@@ -739,7 +759,7 @@ class Scheduler extends Component {
                 <Divider />
                 <div className={classes.inlineBlock} >
                     <div className={classes.root}>
-                        <Paper style={{maxHeight: 730, overflow: 'auto'}}>
+                        <Paper style={{maxHeight: '100%', overflow: 'auto'}}>
                         <List component="div" disablePadding >
                                 <ListItem
                                     classes={{
@@ -794,8 +814,8 @@ class Scheduler extends Component {
 
                     </div>
                     <GoogleMapExample
-                        containerElement={ <div style={{ height: `725px`, width: '1200px' }} /> }
-                        mapElement={ <div style={{ height: `100%` }} /> }
+                        containerElement={ <div style={{ height: `100%`, width: '100%' }} /> }
+                        mapElement={ <div style={{ height: `72vh` }} /> }
                     />
                 </div>
             </div>
