@@ -71,19 +71,14 @@ class ShowReport extends Component{
 
     openModal() {
         this.setState({modalIsOpen: true});
-        console.log('opening the modal');
     }
 
     closeModal() {
         this.setState({modalIsOpen: false});
-        console.log('closing the modal');
     }
 
     // Todo: Open the entire show component inside a modal
     render(){
-        console.log('============================================');
-        console.log('Show Reports re-render');
-        console.log('===========================================');
         return (
             <Show {...this.props}>
                 <ModalComponent open={this.state.modalIsOpen} onClose={this.closeModal}>

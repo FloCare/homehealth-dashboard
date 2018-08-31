@@ -19,10 +19,6 @@ const customStyles = {
 
 
 const ViewReports = (props) => {
-    console.log('============================================');
-    console.log('View Reports re-render');
-    console.log('===========================================');
-    // console.log('props = ', props);
     return (
         <List {...props} bulkActions={false}>
             <Datagrid>

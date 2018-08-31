@@ -7,6 +7,7 @@ import PatientIcon from '@material-ui/icons/Book';
 import UserIcon from '@material-ui/icons/Group';
 import {MENU_ITEM_USERS, MENU_ITEM_PHI} from '../constants';
 
+// Todo: 'Responsive' component might need tweaking
 const appMenu = ({ resources, onMenuClick, logout }) => (
     <div>
         {resources.filter(resource => resource.name !== 'reports').map(resource => {
