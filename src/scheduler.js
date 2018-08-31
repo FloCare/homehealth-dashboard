@@ -66,21 +66,21 @@ let patientIconLabel = new window.google.maps.MarkerImage(
 );
 
 const styles = theme => ({
-    root: {
+    leftNavStyle: {
         width: '100%',
-        height: '72vh',
-        maxWidth: 300,
+        height: '74vh',
+        maxWidth: '20%',
         borderRight: 'ridge',
     },
-    nested: {
+    listItemNestedStyle: {
         paddingLeft: theme.spacing.unit * 4,
     },
-    default: {
+    listItemDefaultStyle: {
         paddingTop: 0,
         paddingBottom: 0.001,
         height: '1%'
     },
-    button: {
+    listItemButtonStyle: {
         '&:hover': {
             textDecoration: 'none',
             backgroundColor: 'none',
@@ -88,16 +88,16 @@ const styles = theme => ({
     },
     inlineBlock: {
         width: '100%',
-        height: '100%',
-        display: 'inline-flex'
+        height: '74vh',
+        display: 'inline-flex',
     },
-    sticky: {
+    disciplineBkgColor: {
         backgroundColor: '#D3D3D3'
     },
-    headerRoot: {
+    disciplineLabelStyle: {
         lineHeight: '32px',
     },
-    chip: {
+    chipStyle: {
         margin: theme.spacing.unit,
     },
     suggestionsList: {
@@ -105,7 +105,7 @@ const styles = theme => ({
         padding: 0,
         listStyleType: 'none',
     },
-    bordered: {
+    rootLevelStyle: {
         borderLeft: 'ridge',
         borderRight: 'ridge',
         borderBottom: 'ridge',
@@ -114,27 +114,41 @@ const styles = theme => ({
         height: '100%',
 
     },
-    marginLevel: {
+    borderStyle: {
         width: '100%',
-        marginTop: '1%',
-        marginBottom: '1%',
+        borderLeft: 'ridge',
+        borderRight: 'ridge',
+        borderBottom: 'ridge'
+
+    },
+    topViewStyle: {
+        width: '100%',
+        height: '6%',
+        marginTop: '0.1%',
+        marginBottom: '0.1%',
         marginLeft: '1%',
         display: 'inline-flex',
         alignItems: 'center',
     },
-    marginLevel1: {
+    filterStyle: {
         display: 'inline-flex',
         alignItems: 'center',
+        marginLeft: '1%',
+        marginTop: '1%',
+        marginBottom: '1%',
     },
-    marginPatientLevel: {
+    searchBoxStyle: {
         position: 'relative',
         display: 'inline-flex',
-        leftMargin: '200%',
+        marginLeft: '38vw',
     },
     suggestionsContainerOpen: {
         position: "absolute",
         zIndex: 1,
         marginTop: theme.spacing.unit,
+    },
+    dateFilterPaddingStyle: {
+        marginLeft: '0.5%',
     },
 });
 
@@ -521,7 +535,7 @@ class Scheduler extends Component {
                         </Avatar>
                     }
                     onDelete={this.handleDelete('isToday')}
-                    className={classes.chip}
+                    className={classes.chipStyle}
                     color="primary"
                 />
             )
@@ -536,7 +550,7 @@ class Scheduler extends Component {
                         </Avatar>
                     }
                     onDelete={this.handleDelete('isTomorrow')}
-                    className={classes.chip}
+                    className={classes.chipStyle}
                     color="primary"
                 />
             )
@@ -559,7 +573,7 @@ class Scheduler extends Component {
                         </Avatar>
                     }
                     onDelete={this.handleDelete(value)}
-                    className={classes.chip}
+                    className={classes.chipStyle}
                     color="primary"
                 />
 
@@ -571,10 +585,10 @@ class Scheduler extends Component {
                     </Avatar>
                 }
                 onDelete={this.handleDelete('All Staff')}
-                className={classes.chip}
+                className={classes.chipStyle}
                 color="primary"
             />}
-            <div className={classes.marginPatientLevel}>
+            <div className={classes.searchBoxStyle}>
             {
                 this.state.chipSelectedPatient != '' ?
                     <Chip
@@ -585,7 +599,7 @@ class Scheduler extends Component {
                             </Avatar>
                         }
                         onDelete={this.handleDelete('selectedPatient')}
-                        className={classes.chip}
+                        className={classes.chipStyle}
                         color="primary"
                     /> : <div/>
             }
@@ -699,10 +713,10 @@ class Scheduler extends Component {
             </GoogleMap>
         ));
         return(
-            <div className={classes.bordered}>
-                <div className={classes.marginLevel}>
+            <div className={classes.rootLevelStyle}>
+                <div className={classes.topViewStyle}>
                     <FormLabel component="legend">Date:</FormLabel>
-                    <div className={classes.marginLevel1}>
+                    <div className={classes.dateFilterPaddingStyle}>
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -725,8 +739,8 @@ class Scheduler extends Component {
                         }
                         label="Tomorrow"
                     />
-                    </div>
-                    <div className={classes.marginPatientLevel}>
+                </div>
+                    <div className={classes.searchBoxStyle}>
                         <Autosuggest
                             {...autosuggestProps}
                             inputProps={{
@@ -751,24 +765,24 @@ class Scheduler extends Component {
                 </div>
                 <Divider />
                 <Divider />
-                <div className={classes.marginLevel}>
+                <div className={classes.filterStyle}>
                     <FormLabel component="legend">Filters:</FormLabel>
                     {this.renderFilterByView()}
                 </div>
                 <Divider />
                 <Divider />
                 <div className={classes.inlineBlock} >
-                    <div className={classes.root}>
+                    <div className={classes.leftNavStyle}>
                         <Paper style={{maxHeight: '100%', overflow: 'auto'}}>
                         <List component="div" disablePadding >
                                 <ListItem
                                     classes={{
-                                        default: classes.default,
-                                        button: classes.button
+                                        default: classes.listItemDefaultStyle,
+                                        button: classes.listItemButtonStyle
                                     }}
                                     button
                                     onClick={this.handleToggle('All Staff')}
-                                    className={classes.nested}>
+                                    className={classes.listItemNestedStyle}>
                                     <Checkbox
                                         checked={this.state.checkedMap['All Staff'] === true}
                                         tabIndex={-1}
@@ -783,20 +797,20 @@ class Scheduler extends Component {
                                         component="nav"
                                         dense={false}
                                         subheader={<ListSubheader classes={{
-                                            sticky: classes.sticky,
-                                            root: classes.headerRoot
+                                            sticky: classes.disciplineBkgColor,
+                                            root: classes.disciplineLabelStyle
                                         }} component="div">{value.role}s</ListSubheader>}
                                     />
                                     <List component="div" disablePadding >
                                         {(this.state.userRoleDetailsMap[value.role]).map(user => (
                                             <ListItem
                                                 classes={{
-                                                    default: classes.default,
-                                                    button: classes.button
+                                                    default: classes.listItemDefaultStyle,
+                                                    button: classes.listItemButtonStyle
                                                 }}
                                                 button
                                                 onClick={this.handleToggle(user.id)}
-                                                className={classes.nested}>
+                                                className={classes.listItemNestedStyle}>
                                                 <Checkbox
                                                     checked={this.state.checkedMap[user.id] === true}
                                                     tabIndex={-1}
@@ -814,8 +828,8 @@ class Scheduler extends Component {
 
                     </div>
                     <GoogleMapExample
-                        containerElement={ <div style={{ height: `100%`, width: '100%' }} /> }
-                        mapElement={ <div style={{ height: `72vh` }} /> }
+                        containerElement={ <div style={{ height: `10%`, width: '100%' }} /> }
+                        mapElement={ <div style={{ height: `74vh` }} /> }
                     />
                 </div>
             </div>
