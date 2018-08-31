@@ -1,9 +1,9 @@
 import React from 'react';
 import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton, SelectInput, BooleanInput , BooleanField, CardActions,
-    ListButton,
-    RefreshButton,} from 'react-admin';
+    ListButton, RefreshButton, FunctionField} from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
 import UserEdit from './UserEdit';
+import {Link} from 'react-router-dom';
 
 const UserPagination = () => {
     return (
@@ -96,6 +96,13 @@ const StaffEditActions = ({ basePath, data, resource }) => (
     </CardActions>
 );
 
+// Todo: Figure out a better way to do this
+const renderReportLink = (record) => {
+    return (
+        <Link to={`/reports?userID=${record.id}`}>View Reports</Link>
+    );
+};
+
 export const UserList = (props) => (
     <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false}>
         <Datagrid>
@@ -103,6 +110,7 @@ export const UserList = (props) => (
             <TextField label="Last Name" source="last_name" />
             <TextField label="Role" source="user_role" />
             <EmailField label="email" source="email" />
+            <FunctionField label="View Reports" render={renderReportLink} />
             <TextField label="Phone Number" source="contact_no" />
             <EditButton />
         </Datagrid>

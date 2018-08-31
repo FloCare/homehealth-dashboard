@@ -28,6 +28,12 @@ var SECRET_KEY = '3mtih1f4nf@$56$14sdwp48czyonlf25)9hk11=chgyi0#v(gg';// secret 
  * @param {Object} params The Data Provider request params, depending on the type
  * @returns {Object} { url, options } The HTTP request parameters
  */
+
+// Todo: Remove this hack
+function getQueryStringValue (key) {
+    return decodeURIComponent(window.location.href.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+}
+
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
     console.log('Converting Data Provider Call to HTTP Request on:');
     console.log('This called:', type);
@@ -86,6 +92,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'physicians':
                     ReactGA.pageview('/physicians/list');
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
+                case 'reports':
+                    ReactGA.pageview('/reports/list');
+                    const userID = getQueryStringValue('userID');
+                    query.userID = userID;
+                    return {url: `${API_URL}/phi/v1.0/reports/?${stringify(query)}`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -105,6 +116,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
                 case 'users':
                     return { url: `${API_URL}/users/v1.0/staff/${params.id}/`, options };
+                case 'reports':
+                    return {url: `${API_URL}/phi/v1.0/reports/${params.id}/`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -233,7 +246,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return{
                         url: `http://localhost:8000/mock/v1.0/mock/${params.data.npiID}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
-                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     }
                 case 'users':
                     var userData = undefined;
@@ -482,6 +494,19 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         data: physicianData,
                         total: 20
                     };
+                case 'reports':
+                    const reportsMetaData = json.map(item => {
+                        return ({
+                            id: item.id,
+                            createdAt: item.created_at,
+                            updatedAt: item.updated_at,
+                            userName: item.user.username
+                        });
+                    });
+                    return {
+                        data: reportsMetaData,
+                        total: reportsMetaData.length
+                    };
                 default:
                     return {
                         data: json.map(x => x),
@@ -579,6 +604,35 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "email": json.user.email,
                             "is_active": json.user.is_active
                         }
+                    };
+                case 'reports':
+                    const innerData = json.map(item => {
+                        let totalMiles = '';
+                        if (item.visit.odometerStart && typeof(item.visit.odometerStart) === 'number' &&
+                        item.visit.odometerEnd && typeof(item.visit.odometerEnd) === 'number'){
+                            totalMiles = (item.visit.odometerEnd - item.visit.odometerStart);
+                        } else {
+                            totalMiles = 'NA';
+                        }
+                        return ({
+                            'reportID': item.reportID,
+                            'userName': item.visit.user,
+                            'visitID': item.visit.visitID,
+                            'patientName': item.visit.patientName,
+                            'address': item.visit.address,
+                            'odometerStart': item.visit.odometerStart ? item.visit.odometerStart : '-',
+                            'odometerEnd': item.visit.odometerEnd ? item.visit.odometerEnd : '-',
+                            'milesComments': item.visit.milesComments ? item.visit.milesComments : '-',
+                            'totalMiles': totalMiles
+                        });
+                    });
+                    const data = {
+                        id: innerData[0].reportID,
+                        userName: innerData[0].userName,
+                        visits: innerData
+                    };
+                    return {
+                        data: data
                     };
                 default:
                     return {data: json};

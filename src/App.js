@@ -10,6 +10,10 @@ import UserCreate from './user/UserCreate';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
 import Scheduler from './scheduler';
+import {ViewReports} from './components/reports/ViewReports';
+import ShowReport from './components/reports/ShowReport';
+import appLayout from './components/appLayout';
+import {RESOURCE_PHI, RESOURCE_USERS, RESOURCE_PHYSICIANS, RESOURCE_REPORTS} from './constants';
 
 require('../node_modules/material-components-web/dist/material-components-web.min.css')
 // import { createMuiTheme } from '@material-ui/core/styles';
@@ -28,10 +32,11 @@ const App = () => (
         title={organizationName}
         authProvider={authProvider}
         dataProvider={dataProvider}
+        appLayout={appLayout}
     >
-        <Resource name="phi" options={{label: 'Patients'}} list={PatientList} edit={PatientEdit} create={PatientCreate} icon={PatientIcon} />
-        <Resource name="users" options={{label: 'Staff'}} list={UserList} edit={StaffEdit} create={UserCreate} icon={UserIcon} />
-        <Resource name="physicians"
+        <Resource name={RESOURCE_PHI} options={{label: 'Patients'}} list={PatientList} edit={PatientEdit} create={PatientCreate} icon={PatientIcon} />
+        <Resource name={RESOURCE_USERS} options={{label: 'Staff'}} list={UserList} edit={StaffEdit} create={UserCreate} icon={UserIcon} />
+        <Resource name={RESOURCE_PHYSICIANS}
                   options={{label: 'Physicians'}}
                   create={PhysicianCreate}
                   list={PhysicianList}
@@ -40,6 +45,7 @@ const App = () => (
                   options={{label: 'Scheduler'}}
                   list={Scheduler}
         />
+        <Resource name={RESOURCE_REPORTS} options={{label: 'Reports'}} list={ViewReports} show={ShowReport} />
     </Admin>
 );
 
