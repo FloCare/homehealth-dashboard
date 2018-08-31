@@ -2,9 +2,9 @@ import React from 'react'
 import {Create, DisabledInput, SimpleForm, TextInput, SaveButton, Toolbar } from 'react-admin'
 import Loadable from 'react-loading-overlay'
 import SimpleButton from '../components/common/Button'
-import {HttpStatus} from '../HttpStatusConstants'
+import {HttpStatus} from '../utils/HttpStatusConstants'
 import {SimpleDialog} from 'rmwc/Dialog'
-import {parseMobileNumber, capitalize} from '../parsingUtils'
+import {parseMobileNumber, capitalize} from '../utils/parsingUtils'
 import ReactGA from 'react-ga';
 import {API_URL} from '../dataProvider';
 

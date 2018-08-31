@@ -7,11 +7,12 @@ import {
 } from 'react-admin';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import { DateInput } from 'react-admin-date-inputs';
-import SearchBar from './SearchBar';
+import SearchBar from '../components/SearchBar';
 import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
-import CreateForm from './CreateForm';
-import EditForm from './EditForm';
+import CreateForm from './PatientCreate';
+import EditForm from './PatientEdit';
+import ReactGA from 'react-ga';
 
 // import {FetchUsers} from './connectionUtils';
 // import LocationSearchInput from './LocationSearchInput';
@@ -27,7 +28,7 @@ const PatientPagination = () => {
 
 export const PatientList = (props) => (
     props.options.label = 'Patients',
-    <List {...props} title="List of patients" pagination={<PatientPagination />}>
+    <List {...props} title="List of patients" pagination={<PatientPagination />} bulkActions={false}>
         <Datagrid>
             <TextField source="firstName" />
             <TextField source="lastName" />
@@ -38,7 +39,6 @@ export const PatientList = (props) => (
                         </SingleFieldList>
                     </ReferenceArrayField>
             <EditButton />
-            <DeleteButton />
         </Datagrid>
     </List>
 );
@@ -68,22 +68,13 @@ const validatePatientCreation = (values) => {
         errors.address = ['The street address has to be selected from the dropdown'];
     }
     var dateOfBirth = values.dateOfBirth;
-    var today = new Date().toISOString().slice(0,10); 
     if(dateOfBirth) {
         var dob = JSON.stringify(dateOfBirth);
         var dateMonthYearHifenSeparated = dob.substring(1, dob.length -1).split('T');
         var dateArray = dateMonthYearHifenSeparated[0].split('-');
-        var todayDateArray = today.split('-');
         var date = parseInt(dateArray[2]);
         var month = parseInt(dateArray[1]);
-        var year = parseInt(dateArray[0]);
-        if(year > parseInt(todayDateArray[0])) {
-            errors.dateOfBirth = ['Incorrect date entered'];
-        }
-        else if(year == parseInt(todayDateArray[0]) && month > parseInt(todayDateArray[1])) {
-            errors.dateOfBirth = ['Incorrect date entered'];
-        }
-        else if(year == parseInt(todayDateArray[0]) && month == parseInt(todayDateArray[1]) && date >= parseInt(todayDateArray[2])) {
+        if(date > 31 || month > 12) {
             errors.dateOfBirth = ['Incorrect date entered'];
         }
     }
@@ -140,7 +131,6 @@ const styles = {
 
 
 export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
-    console.log('Props inside of PatientEdit are:', props);
     return (
         <Edit title="Edit Patient" {...props}>
             <EditForm {...props} />
@@ -150,7 +140,7 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
 
 
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
-    <Create {...props} title="Create Patient">
+    <Create {...props} title="Add Patient">
         <CreateForm {...props} />
     </Create>
 ));

@@ -1,6 +1,6 @@
 import React from 'react';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import {ParseGooglePlacesAPIResponse} from './parsingUtils';
+import {ParseGooglePlacesAPIResponse} from './utils/parsingUtils';
 import TextField from '@material-ui/core/TextField';
 
 class SearchBar extends React.Component {

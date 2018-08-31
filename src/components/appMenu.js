@@ -5,7 +5,7 @@ import {withRouter} from 'react-router-dom';
 import {Responsive} from 'react-admin';
 import PatientIcon from '@material-ui/icons/Book';
 import UserIcon from '@material-ui/icons/Group';
-import {MENU_ITEM_USERS, MENU_ITEM_PHI} from '../constants';
+import {MENU_ITEM_USERS, MENU_ITEM_PHI} from '../utils/constants';
 
 // Todo: 'Responsive' component might need tweaking
 const appMenu = ({ resources, onMenuClick, logout }) => (

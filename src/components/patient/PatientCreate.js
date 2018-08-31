@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {
     SimpleForm, TextInput, ReferenceArrayInput, SelectArrayInput,
-    required, crudUpdate, DisabledInput, ReferenceInput, SelectInput, LongTextInput, AutocompleteInput
+    required, crudUpdate, crudCreate, DisabledInput, ReferenceInput, SelectInput, LongTextInput, AutocompleteInput
 } from 'react-admin';
 import { withStyles } from '@material-ui/core/styles';
 import {Field} from 'redux-form';
-import SearchBar from '../SearchBar';
+import SearchBar from '../components/SearchBar';
 import { DateInput, TimeInput, DateTimeInput } from 'react-admin-date-inputs';
 import {startUndoable as startUndoableAction} from 'ra-core';
 import {connect} from 'react-redux';
@@ -32,6 +32,7 @@ const styles = theme => ({
   },
   heading: {
     fontSize: theme.typography.pxToRem(14),
+    fontColor: 'black',
     flexBasis: '33.33%',
     flexShrink: 0,
   },
@@ -41,7 +42,21 @@ const styles = theme => ({
   },
   inlineBlock: { display: 'inline-flex', marginRight: '2rem' },
   inlineBlock1: { display: 'inline-flex', marginRight: '1rem' },
+  expandIcon: {
+    position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%) rotate(45deg)',
+  },
 });
+
+const Info = props => {
+    const {text, style, textColor} = props;
+    return (
+        <div style={style}>
+            <font size="2" color={textColor}>{text}</font>
+        </div>
+    );
+};
 
 const validatePatientCreation = (values) => {
     const errors = {};
@@ -51,7 +66,7 @@ const validatePatientCreation = (values) => {
     if (!values.lastName) {
         errors.lastName = ['Required'];
     }
-    var dateOfBirth = values.dob;
+    var dateOfBirth = values.dateOfBirth;
     var today = new Date().toISOString().slice(0,10); 
     if(dateOfBirth) {
         var dob = JSON.stringify(dateOfBirth);
@@ -62,13 +77,13 @@ const validatePatientCreation = (values) => {
         var month = parseInt(dateArray[1]);
         var year = parseInt(dateArray[0]);
         if(year > parseInt(todayDateArray[0])) {
-            errors.dob = ['Incorrect date entered'];
+            errors.dateOfBirth = ['Incorrect date entered'];
         }
         else if(year == parseInt(todayDateArray[0]) && month > parseInt(todayDateArray[1])) {
-            errors.dob = ['Incorrect date entered'];
+            errors.dateOfBirth = ['Incorrect date entered'];
         }
         else if(year == parseInt(todayDateArray[0]) && month == parseInt(todayDateArray[1]) && date >= parseInt(todayDateArray[2])) {
-            errors.dob = ['Incorrect date entered'];
+            errors.dateOfBirth = ['Incorrect date entered'];
         }
     }
     const primaryContact = values.primaryContact;
@@ -88,7 +103,7 @@ const validatePatientCreation = (values) => {
     else if (!primaryContact || primaryContact.length > 10) {
         errors.primaryContact = ['Contact Number too long'];
     }
-    if ((emergencyContactNumber && emergencyContactNumber.length > 1) && (isNaN(emergencyContactNumber))) {
+    if ((emergencyContactNumber && emergencyContactNumber.length > 1) && isNaN(emergencyContactNumber)) {
         errors.emergencyContactNumber = ['Contact Number can only contain numerics'];
     }
     return errors
@@ -97,73 +112,33 @@ const validatePatientCreation = (values) => {
 const Heading = props => {
     const {text} = props;
     return (
-        <div>
+        <div style={{marginBottom: 1}}>
             <h5>{text}</h5>
         </div>
     );
 };
 
-class EditForm extends Component {
+class CreateForm extends Component {
     constructor(props){
         super(props);
         this.state = {
             updatedFields: [],
             expanded: null
         };
-        this.onChange = this.onChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.getBasePath = this.getBasePath.bind(this);
     }
 
     componentDidMount() {
         ReactGA.initialize('UA-123730827-1');
-        ReactGA.pageview('/phi/edit');
+        ReactGA.pageview('/phi/create');
     }
 
-    getBasePath() {
-        const { location } = this.props;
-        return location.pathname
-            .split('/')
-            .slice(0, -1)
-            .join('/');
-    }
 
-    onChange(e, newValue, previousValue, name) {
-        const updatedFields = this.state.updatedFields.slice(0);
-        if (updatedFields.indexOf(name) > -1) {
-            return;
-        }
-        updatedFields.push(name);
-        // Mark all address fields dirty
-        // if (name === 'streetAddress') {
-        //     updatedFields.push('latitude', 'longitude');
-        // }
-        this.setState({updatedFields: updatedFields});
-    }
-
-      handleChange = panel => (event, expanded) => {
+    handleChange = panel => (event, expanded) => {
         this.setState({
           expanded: expanded ? panel : false,
         });
-      };
+    };
 
-    onSubmit(data, redirect){
-        console.log(data);
-        const {startUndoable} = this.props;
-
-        data.updatedFields = this.state.updatedFields;
-
-        startUndoable(
-            crudUpdate(
-                this.props.resource,
-                this.props.record.id,
-                data,
-                this.props.record,
-                this.getBasePath(),
-                redirect
-            )
-        );
-    }
 
     // Todo: Pass only relevant props to SimpleForm (Find out how Edit component does this)
     // Todo: Shouldn't have to pass onChange to each field
@@ -179,17 +154,17 @@ class EditForm extends Component {
             return null;
         }
         return (
-            <SimpleForm {...this.props} validate={validatePatientCreation} save={this.onSubmit}>
+            <SimpleForm {...this.props} validate={validatePatientCreation} redirect="list" >
                 <TextInput source="firstName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="lastName"  onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput source="primaryContact" label="Phone Number" onChange={this.onChange} />
                 <Field source="actualAddress" name="address" component={SearchBar} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
                 <LongTextInput source="apartmentNo" label="Apt., (Optional)" styles={{marginBottom: 10}} onChange={this.onChange} formClassName={classes.inlineBlock1}/>
-                <DateInput source="dob"  label="DOB (mm-dd-yyyy)(Optional)"
+                <DateInput source="dateOfBirth"  label="DOB (mm-dd-yyyy)(Optional)"
                      options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
                      onChange={this.onChange} />
                 <Heading text="Care Team"/>
-                <ReferenceArrayInput record={this.props.record} label="Staff" source="userIds" reference="users" sort={{ field: 'last_name', order: 'DESC' }}>
+                <ReferenceArrayInput record={this.props.record} label="Staff" source="users" reference="users" sort={{ field: 'last_name', order: 'DESC' }}>
                     <SelectArrayInput optionText="displayname" optionValue="id" />
                 </ReferenceArrayInput>
                 <div className={classes.root} >
@@ -198,7 +173,7 @@ class EditForm extends Component {
                         <Typography className={classes.heading}><b>Physician Details</b> (Optional)</Typography>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians" perPage={3}>
+                       <ReferenceInput label="Primary Physician" record={this.props.record} source="physician_id" reference="physicians" perPage={3}>
                             <AutocompleteInput optionText="displayname" optionValue="id" suggestionComponent={suggestionRenderer} />
                         </ReferenceInput>
                         <div className={classes.root1} />
@@ -222,32 +197,12 @@ class EditForm extends Component {
     }
 }
 
-// function mapStateToProps(state, props) {
-//     return {
-//         id: decodeURIComponent(props.match.params.id),
-//         record: state.admin.resources[props.resource]
-//             ? state.admin.resources[props.resource].data[
-//                   decodeURIComponent(props.match.params.id)
-//               ]
-//             : null,
-//     };
-// }
-
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         destroyTodo: () =>
-//             dispatch({
-//                 type: 'DESTROY_TODO'
-//             })
-//     }
-// };
-
-EditForm.propTypes = {
+CreateForm.propTypes = {
     startUndoable: PropTypes.func,
 };
 
-EditForm = withStyles(styles)(EditForm);
+CreateForm = withStyles(styles)(CreateForm);
 
 export default connect(null, {
     startUndoable: startUndoableAction,
-})(EditForm);
+})(CreateForm);
