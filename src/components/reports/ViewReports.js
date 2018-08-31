@@ -1,33 +1,16 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
-    Show, SimpleShowLayout, TextField, ReferenceInput, AutocompleteInput,
-    List, Datagrid, ArrayField, SingleFieldList, ChipField, ShowButton, EditButton
+    TextField, List, Datagrid, ShowButton
 } from 'react-admin';
-
-// Modal Properties
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        width: '25%'
-    }
-};
-
 
 const ViewReports = (props) => {
     return (
-        <List {...props} bulkActions={false}>
+        <List {...props} bulkActions={false} title="User Reports List (Most Recent First)">
             <Datagrid>
-                <TextField source="id" />
-                <TextField source="userName" />
-                <TextField source="createdAt" />
-                <TextField source="updatedAt" />
+                <TextField source="userName" label="UserName" />
+                <TextField source="createdAt" label="Report Created At" />
+                <TextField source="updatedAt" label="Report Updated At" />
                 <ShowButton />
-                <EditButton />
             </Datagrid>
         </List>
     );

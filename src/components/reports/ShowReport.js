@@ -6,14 +6,18 @@ import {
 import Modal from '@material-ui/core/Modal';
 import {withStyles} from '@material-ui/core/styles';
 import {push} from 'react-router-redux';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
     tableStyle: {
         width: 'max-content'
     },
+    buttonDivStyle: {
+    },
     modalStyle: {
-        // top: '25%',
-        // left: '25%',
+        top: '10%',
+        left: '10%',
         position: 'absolute',
         // width: theme.spacing.unit * 50,
         width: 'max-content',
@@ -30,9 +34,12 @@ const styles = theme => ({
     },
     headerRow: {
         backgroundColor: '#ccc',
+        color: 'red',
+        fontSize: 15
     },
     cellRow: {
         backgroundColor: '#ccc',
+        fontSize: 10
     }
 });
 
@@ -75,16 +82,21 @@ class ShowReport extends Component{
 
     closeModal() {
         this.setState({modalIsOpen: false});
+        this.props.history.goBack();
     }
 
     // Todo: Open the entire show component inside a modal
     render(){
         return (
-            <Show {...this.props}>
+            <Show {...this.props} title="Report">
                 <ModalComponent open={this.state.modalIsOpen} onClose={this.closeModal}>
                     <CustomShowLayout {...this.props} className={this.props.classes.modalStyle}>
-                        <TextField source="id" className={this.props.classes.headerRow} />
-                        <TextField source="userName" className={this.props.classes.headerRow} />
+                        <div onClick={this.closeModal} style={styles.buttonDivStyle}>
+                            <IconButton aria-label="Close" color="secondary">
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
+                        <TextField source="userName" label="User Name" />
                         <ArrayField source="visits">
                             <Datagrid className={this.props.classes.tableStyle}>
                                 <TextField source="patientName" label="Patient Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
