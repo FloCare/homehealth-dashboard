@@ -10,7 +10,7 @@ import {
     fetchUtils,
 } from 'react-admin';
 import {stringify} from 'query-string';
-import {parseMobileNumber, capitalize} from './parsingUtils';
+import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
 
 export const API_URL = 'https://app-9707.on-aptible.com';

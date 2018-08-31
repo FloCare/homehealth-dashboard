@@ -5,7 +5,7 @@ import {
 } from 'react-admin';
 import { withStyles } from '@material-ui/core/styles';
 import {Field} from 'redux-form';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../SearchBar';
 import { DateInput, TimeInput, DateTimeInput } from 'react-admin-date-inputs';
 import {startUndoable as startUndoableAction} from 'ra-core';
 import {connect} from 'react-redux';

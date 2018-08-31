@@ -25,9 +25,9 @@ import Avatar from '@material-ui/core/Avatar';
 import FaceIcon from '@material-ui/icons/Face';
 import PeopleIcon from '@material-ui/icons/Person';
 import DateIcon from '@material-ui/icons/DateRange';
-import {Images} from './utils/Images';
+import {Images} from '../../utils/Images';
 import {stringify} from 'query-string';
-import {getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject} from './utils/parsingUtils'
+import {getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject} from '../../utils/parsingUtils'
 
 const PATIENT_LIST_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
 //const PATIENT_LIST_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
