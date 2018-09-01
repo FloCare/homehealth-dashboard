@@ -608,21 +608,21 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                 case 'reports':
                     const innerData = json.map(item => {
                         let totalMiles = '';
-                        if (item.visit.odometerStart && typeof(item.visit.odometerStart) === 'number' &&
-                        item.visit.odometerEnd && typeof(item.visit.odometerEnd) === 'number'){
-                            totalMiles = (item.visit.odometerEnd - item.visit.odometerStart);
+                        if (item.visit.visitMiles.odometerStart && typeof(item.visit.visitMiles.odometerStart) === 'number' &&
+                        item.visit.visitMiles.odometerEnd && typeof(item.visit.visitMiles.odometerEnd) === 'number'){
+                            totalMiles = (item.visit.visitMiles.odometerEnd - item.visit.visitMiles.odometerStart);
                         } else {
                             totalMiles = 'NA';
                         }
                         return ({
-                            'reportID': item.reportID,
-                            'userName': item.visit.user,
-                            'visitID': item.visit.visitID,
-                            'patientName': item.visit.patientName,
-                            'address': item.visit.address,
-                            'odometerStart': item.visit.odometerStart ? item.visit.odometerStart : '-',
-                            'odometerEnd': item.visit.odometerEnd ? item.visit.odometerEnd : '-',
-                            'milesComments': item.visit.milesComments ? item.visit.milesComments : '-',
+                            'reportID': item.reportID ? item.reportID : '',
+                            'userName': item.visit.user ? item.visit.user : '',
+                            'visitID': item.visit.visitID ? item.visit.visitID : '',
+                            'patientName': item.visit.patientName ? item.visit.patientName : '',
+                            'address': item.visit.address ? item.visit.address : '',
+                            'odometerStart': item.visit.visitMiles.odometerStart ? item.visit.visitMiles.odometerStart : '-',
+                            'odometerEnd': item.visit.visitMiles.odometerEnd ? item.visit.visitMiles.odometerEnd : '-',
+                            'milesComments': item.visit.visitMiles.milesComments ? item.visit.visitMiles.milesComments : '-',
                             'totalMiles': totalMiles
                         });
                     });

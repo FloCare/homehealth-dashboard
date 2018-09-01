@@ -10,14 +10,21 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
+    textField: {
+        width: '100px !important',
+    },
     tableStyle: {
-        width: 'max-content'
+        // width: 'max-content'
     },
     buttonDivStyle: {
+        float: 'right'
     },
+
     modalStyle: {
         top: '10%',
         left: '10%',
+        right: '10%',
+        bottom: '10%',
         position: 'absolute',
         // width: theme.spacing.unit * 50,
         width: 'max-content',
@@ -31,15 +38,16 @@ const styles = theme => ({
         // top: '50%',
         // marginLeft: '-150px',
         // marginTop: '-150px',
+        container: {
+            display: 'flex',
+        },
     },
     headerRow: {
-        backgroundColor: '#ccc',
-        color: 'red',
-        fontSize: 15
+        color: '#2196f3',
+        fontSize: 16
     },
     cellRow: {
-        backgroundColor: '#ccc',
-        fontSize: 10
+        fontSize: 15
     }
 });
 
@@ -88,7 +96,7 @@ class ShowReport extends Component{
     // Todo: Open the entire show component inside a modal
     render(){
         return (
-            <Show {...this.props} title="Report">
+            <Show {...this.props} title="Report" direction="row" justify="center" alignItems="center">
                 <ModalComponent open={this.state.modalIsOpen} onClose={this.closeModal}>
                     <CustomShowLayout {...this.props} className={this.props.classes.modalStyle}>
                         <div onClick={this.closeModal} style={styles.buttonDivStyle}>
@@ -96,14 +104,13 @@ class ShowReport extends Component{
                                 <CloseIcon />
                             </IconButton>
                         </div>
-                        <TextField source="userName" label="User Name" />
-                        <ArrayField source="visits">
-                            <Datagrid className={this.props.classes.tableStyle}>
+                        <ArrayField source="visits" label="">
+                            <Datagrid>
                                 <TextField source="patientName" label="Patient Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
-                                <TextField source="address" label="Address" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
+                                <TextField source="address" label="Address" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} style={styles.textField}/>
                                 <TextField source="odometerStart" label="Odometer Start Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
                                 <TextField source="odometerEnd" label="Odometer End Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
-                                <TextField source="milesComment" label="Comments" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
+                                <TextField source="milesComments" label="Comments" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
                                 <TextField source="totalMiles" label="Total Miles Travelled" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
                             </Datagrid>
                         </ArrayField>
