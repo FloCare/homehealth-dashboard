@@ -66,11 +66,28 @@ const ModalComponent = (props) => {
 };
 
 const CustomShowLayout = (props) => {
-    return (
-        <SimpleShowLayout className={props.className} record={props.record}>
-            {props.children}
-        </SimpleShowLayout>
-    );
+    if(props.record && props.record.userName){
+        console.log('record is NOT null:', props.record);
+        return (
+            <SimpleShowLayout className={props.className} record={props.record}>
+                {props.children}
+            </SimpleShowLayout>
+        );
+    } else {
+        console.log('record is empty:', props.record);
+        // Todo: Differentiate between loading and data empty case ??
+        // Todo: Add close button here as well
+        // Todo: Fix styling for modal in empty case
+        return (
+            <SimpleShowLayout className={props.className} record={props.record}>
+                <div>
+                    <h2>
+                        No data found for this report
+                    </h2>
+                </div>
+            </SimpleShowLayout>
+        );
+    }
 };
 
 
@@ -96,7 +113,7 @@ class ShowReport extends Component{
     // Todo: Open the entire show component inside a modal
     render(){
         return (
-            <Show {...this.props} title="Report" direction="row" justify="center" alignItems="center">
+            <Show {...this.props} title="Report" direction="row" justify="center">
                 <ModalComponent open={this.state.modalIsOpen} onClose={this.closeModal}>
                     <CustomShowLayout {...this.props} className={this.props.classes.modalStyle}>
                         <div onClick={this.closeModal} style={styles.buttonDivStyle}>
@@ -106,12 +123,12 @@ class ShowReport extends Component{
                         </div>
                         <ArrayField source="visits" label="">
                             <Datagrid>
-                                <TextField source="patientName" label="Patient Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
-                                <TextField source="address" label="Address" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} style={styles.textField}/>
-                                <TextField source="odometerStart" label="Odometer Start Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
-                                <TextField source="odometerEnd" label="Odometer End Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
-                                <TextField source="milesComments" label="Comments" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
-                                <TextField source="totalMiles" label="Total Miles Travelled" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} />
+                                <TextField source="patientName" label="Patient Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false} />
+                                <TextField source="address" label="Address" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} style={styles.textField} sortable={false}/>
+                                <TextField source="odometerStart" label="Odometer Start Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
+                                <TextField source="odometerEnd" label="Odometer End Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
+                                <TextField source="milesComments" label="Comments" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
+                                <TextField source="totalMiles" label="Total Miles Travelled" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
                             </Datagrid>
                         </ArrayField>
                     </CustomShowLayout>

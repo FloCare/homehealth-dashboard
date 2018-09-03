@@ -5,11 +5,11 @@ import {
 
 const ViewReports = (props) => {
     return (
-        <List {...props} bulkActions={false} title="User Reports List (Most Recent First)">
+        <List {...props} bulkActions={false} title="User Reports List">
             <Datagrid>
-                <TextField source="userName" label="UserName" />
-                <TextField source="createdAt" label="Report Created At" />
-                <TextField source="updatedAt" label="Report Updated At" />
+                <TextField source="name" label="Name" sortable={false} />
+                <TextField source="createdAt" label="Report Created At" sortable={false} />
+                <TextField source="updatedAt" label="Report Updated At" sortable={false} />
                 <ShowButton />
             </Datagrid>
         </List>

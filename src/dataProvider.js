@@ -12,6 +12,7 @@ import {
 import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
+import {parseIsoDateToString} from './utils/parsingUtils';
 
 export const API_URL = 'https://app-9707.on-aptible.com';
 //export const API_URL = 'https://app-9781.on-aptible.com';
@@ -94,7 +95,13 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
                 case 'reports':
                     ReactGA.pageview('/reports/list');
+                    // console.log('======================');
+                    // console.log('Extracting userID out of URL ...');
+                    // console.log('======================');
                     const userID = getQueryStringValue('userID');
+                    // console.log('======================');
+                    // console.log('userID:', userID);
+                    // console.log('======================');
                     query.userID = userID;
                     return {url: `${API_URL}/phi/v1.0/reports/?${stringify(query)}`, options};
                 default:
@@ -428,7 +435,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  * @returns {Object} Data Provider response
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
-    console.log('Converting API Response to Data Provider:', params);
+    console.log('Converting API Response to Data Provider:', type, params);
     const {json, headers} = response;
     switch (type) {
 
@@ -496,11 +503,12 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     };
                 case 'reports':
                     const reportsMetaData = json.map(item => {
+                        const name = item.user.firstName ? item.user.firstName + (item.user.lastName ? ` ${item.user.lastName}` : '') : item.user.username;
                         return ({
                             id: item.id,
-                            createdAt: item.created_at,
-                            updatedAt: item.updated_at,
-                            userName: item.user.username
+                            createdAt: parseIsoDateToString(item.created_at),
+                            updatedAt: parseIsoDateToString(item.updated_at),
+                            name: name
                         });
                     });
                     return {
@@ -606,33 +614,66 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         }
                     };
                 case 'reports':
-                    const innerData = json.map(item => {
-                        let totalMiles = '';
-                        if (item.visit.visitMiles.odometerStart && typeof(item.visit.visitMiles.odometerStart) === 'number' &&
-                        item.visit.visitMiles.odometerEnd && typeof(item.visit.visitMiles.odometerEnd) === 'number'){
-                            totalMiles = (item.visit.visitMiles.odometerEnd - item.visit.visitMiles.odometerStart);
-                        } else {
-                            totalMiles = 'NA';
-                        }
-                        return ({
-                            'reportID': item.reportID ? item.reportID : '',
-                            'userName': item.visit.user ? item.visit.user : '',
-                            'visitID': item.visit.visitID ? item.visit.visitID : '',
-                            'patientName': item.visit.patientName ? item.visit.patientName : '',
-                            'address': item.visit.address ? item.visit.address : '',
-                            'odometerStart': item.visit.visitMiles.odometerStart ? item.visit.visitMiles.odometerStart : '-',
-                            'odometerEnd': item.visit.visitMiles.odometerEnd ? item.visit.visitMiles.odometerEnd : '-',
-                            'milesComments': item.visit.visitMiles.milesComments ? item.visit.visitMiles.milesComments : '-',
-                            'totalMiles': totalMiles
+                    if(json && json.length > 0) {
+                        const innerData = json.map(item => {
+                            let totalMiles = '-';
+                            let odometerStart = '-';
+                            let odometerEnd = '-';
+                            let milesComments = '-';
+                            if (item.visit.visitMiles) {
+                                odometerStart = item.visit.visitMiles.odometerStart ? parseFloat(item.visit.visitMiles.odometerStart).toFixed(2) : '-';
+                                odometerEnd = item.visit.visitMiles.odometerEnd ? parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) : '-';
+                                milesComments = item.visit.visitMiles.milesComments ? item.visit.visitMiles.milesComments : '-';
+
+                                if (item.visit.visitMiles.odometerStart && typeof(item.visit.visitMiles.odometerStart) === 'number' &&
+                                    item.visit.visitMiles.odometerEnd && typeof(item.visit.visitMiles.odometerEnd) === 'number') {
+                                    totalMiles = parseFloat(parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) - parseFloat(item.visit.visitMiles.odometerStart).toFixed(2)).toFixed(2);
+                                } else {
+                                    totalMiles = '-';
+                                }
+                            }
+                            return ({
+                                'reportID': item.reportID ? item.reportID : '',
+                                'userName': item.visit.user ? item.visit.user : '',
+                                'visitID': item.visit.visitID ? item.visit.visitID : '',
+                                'patientName': item.visit.patientName ? item.visit.patientName : '',
+                                'address': item.visit.address ? item.visit.address : '',
+                                'odometerStart': odometerStart,
+                                'odometerEnd': odometerEnd,
+                                'milesComments': milesComments,
+                                'totalMiles': totalMiles
+                            });
                         });
-                    });
-                    const data = {
-                        id: innerData[0].reportID,
-                        userName: innerData[0].userName,
-                        visits: innerData
-                    };
+                        // console.log('extracted innerData:', innerData);
+                        if(innerData && innerData.length > 0){
+                            const data = {
+                                id: innerData[0].reportID,
+                                userName: innerData[0].userName,
+                                visits: innerData
+                            };
+                            return {
+                                data: data
+                            };
+                        }
+                    }
+                    console.log('Sending empty response from data provider ...');
+                    // Todo: Handle empty responses here ???
                     return {
-                        data: data
+                        data: {
+                            id: '',
+                            userName: '',
+                            visits: [{
+                                'reportID': '',
+                                'userName': '',
+                                'visitID': '',
+                                'patientName': '',
+                                'address': '',
+                                'odometerStart': '',
+                                'odometerEnd': '',
+                                'milesComments': '',
+                                'totalMiles': ''
+                            }]
+                        }
                     };
                 default:
                     return {data: json};
@@ -660,8 +701,9 @@ export default (type, resource, params) => {
             if(error.toString().includes('HttpError: Unauthorized')) {
                 throw new Error('Timed out, please Login')
             }
-            localStorage.removeItem('access_token');
-            window.location.reload();
+            // Todo: Remove this hack
+            // localStorage.removeItem('access_token');
+            // window.location.reload();
             if(resource === 'users' && (type === 'CREATE' || type === 'UPDATE')) {
                 throw new Error(`User with this Email already registered`);
             }

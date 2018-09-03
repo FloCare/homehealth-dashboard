@@ -24,7 +24,7 @@ const appMenu = ({ resources, onMenuClick, logout }) => (
                 icon = <UserIcon />;
             }
             return (
-                <MenuItemLink to={`/${resource.name}`} primaryText={label} onClick={onMenuClick} leftIcon={icon} />
+                <MenuItemLink key={resource.name} to={`/${resource.name}`} primaryText={label} onClick={onMenuClick} leftIcon={icon} />
             );
         })}
         <Responsive
