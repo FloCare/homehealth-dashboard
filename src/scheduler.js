@@ -43,33 +43,58 @@ const VISIT_DATA_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/get-visits-
 
 const tenThousandFeetToDegrees = 0.0274321;
 
-let visitDoneLabel = new window.google.maps.MarkerImage(
-    Images.visitDoneLabel,
-    null, /* size is determined at runtime */
-    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
-    null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(84, 32)
-);
-let visitNotDoneLabel = new window.google.maps.MarkerImage(
-    Images.visitNotDoneLabel,
-    null, /* size is determined at runtime */
-    new window.google.maps.Point(-5, 0), /* origin is 0,0 */
-    null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(84, 32)
-);
-let patientIconLabel = new window.google.maps.MarkerImage(
-    Images.patientIconLabel,
-    null, /* size is determined at runtime */
-    new window.google.maps.Point(0, 0), /* origin is 0,0 */
-    null, /* anchor is bottom center of the scaled image */
-    new window.google.maps.Size(96, 32)
-);
+var visitDoneLabel = {
+    url: Images.visitDoneLabel,
+    scaledSize: new window.google.maps.Size(70, 70),
+    origin: new window.google.maps.Point(0, 0),
+    anchor: new window.google.maps.Point(32,65),
+    labelOrigin: new window.google.maps.Point(24,33)
+};
+
+var visitNotDoneLabel = {
+    url: Images.visitNotDoneLabel,
+    scaledSize: new window.google.maps.Size(70, 70),
+    origin: new window.google.maps.Point(0, 0),
+    anchor: new window.google.maps.Point(32,65),
+    labelOrigin: new window.google.maps.Point(24,33)
+};
+
+var patientIconLabel = {
+    url: Images.patientIconLabel,
+    scaledSize: new window.google.maps.Size(90, 30),
+    origin: new window.google.maps.Point(0, 0),
+    anchor: new window.google.maps.Point(32,90),
+    labelOrigin: new window.google.maps.Point(45,13)
+};
+
+// TODO Retained , will be removed in version-2
+// let visitDoneLabel = new window.google.maps.MarkerImage(
+//     Images.visitDoneLabel,
+//     null, /* size is determined at runtime */
+//     new window.google.maps.Point(-8, 0), /* origin is 0,0 */
+//     null, /* anchor is bottom center of the scaled image */
+//     new window.google.maps.Size(84, 32)
+// );
+// let visitNotDoneLabel = new window.google.maps.MarkerImage(
+//     Images.visitNotDoneLabel,
+//     null, /* size is determined at runtime */
+//     new window.google.maps.Point(-5, 0), /* origin is 0,0 */
+//     null, /* anchor is bottom center of the scaled image */
+//     new window.google.maps.Size(84, 32)
+// );
+// let patientIconLabel = new window.google.maps.MarkerImage(
+//     Images.patientIconLabel,
+//     null, /* size is determined at runtime */
+//     new window.google.maps.Point(0, 0), /* origin is 0,0 */
+//     null, /* anchor is bottom center of the scaled image */
+//     new window.google.maps.Size(96, 32)
+// );
 
 const styles = theme => ({
     leftNavStyle: {
         width: '100%',
         height: '74vh',
-        maxWidth: '20%',
+        maxWidth: '16%',
         borderRight: 'ridge',
     },
     listItemNestedStyle: {
@@ -77,6 +102,7 @@ const styles = theme => ({
     },
     listItemDefaultStyle: {
         paddingTop: 0,
+        paddingLeft: 0.1,
         paddingBottom: 0.001,
         height: '1%'
     },
@@ -107,7 +133,6 @@ const styles = theme => ({
     },
     rootLevelStyle: {
         borderLeft: 'ridge',
-        borderRight: 'ridge',
         borderBottom: 'ridge',
         marginTop: '0.1%',
         width: '100%',
@@ -123,7 +148,6 @@ const styles = theme => ({
     },
     topViewStyle: {
         width: '100%',
-        height: '6%',
         marginTop: '0.1%',
         marginBottom: '0.1%',
         marginLeft: '1%',
@@ -140,7 +164,7 @@ const styles = theme => ({
     searchBoxStyle: {
         position: 'relative',
         display: 'inline-flex',
-        marginLeft: '38vw',
+        marginLeft: '40vw',
     },
     suggestionsContainerOpen: {
         position: "absolute",
@@ -588,7 +612,6 @@ class Scheduler extends Component {
                 className={classes.chipStyle}
                 color="primary"
             />}
-            <div className={classes.searchBoxStyle}>
             {
                 this.state.chipSelectedPatient != '' ?
                     <Chip
@@ -603,7 +626,6 @@ class Scheduler extends Component {
                         color="primary"
                     /> : <div/>
             }
-            </div>
         </div>);
     }
 
