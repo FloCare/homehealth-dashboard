@@ -1,14 +1,21 @@
 import React from 'react';
 import {
-    TextField, List, Datagrid, ShowButton
+    TextField, List, Datagrid, ShowButton, ReferenceField
 } from 'react-admin';
+
+// const ReportTitle = (props) => {
+//     const record = null;
+//     console.log('props inside title:', props);
+//     return <span>Reports {record ? `"${record.userName}"` : ''}</span>;
+// };
 
 const ViewReports = (props) => {
     return (
-        <List {...props} bulkActions={false} title="User Reports List">
+        <List {...props} bulkActions={false} title="User Reports">
             <Datagrid>
-                <TextField source="name" label="Name" sortable={false} />
-                <TextField source="createdAt" label="Report Created At" sortable={false} />
+                <TextField source="name" label="User Name" sortable={false} />
+                <TextField source="reportName" label="Report Name" sortable={false} />
+                <TextField source="itemCount" label="Number of Visits" sortable={false} />
                 <TextField source="updatedAt" label="Report Updated At" sortable={false} />
                 <ShowButton />
             </Datagrid>

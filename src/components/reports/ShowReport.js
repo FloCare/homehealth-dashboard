@@ -10,16 +10,23 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 const styles = theme => ({
-    textField: {
-        width: '100px !important',
+    container: {
+        textAlign: 'center',
     },
-    tableStyle: {
-        // width: 'max-content'
+    textField: {
+        textAlign: 'center',
+        fontSize: 25
+    },
+    freeTextContainerStyle: {
+        width: '15%',
+        wordBreak: 'break-word'
+    },
+    freeTextStyle: {
+        fontSize: 15
     },
     buttonDivStyle: {
         float: 'right'
     },
-
     modalStyle: {
         top: '10%',
         left: '10%',
@@ -27,27 +34,21 @@ const styles = theme => ({
         bottom: '10%',
         position: 'absolute',
         // width: theme.spacing.unit * 50,
-        width: 'max-content',
+        width: '80%',
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
         padding: theme.spacing.unit * 4,
-        // width: 300,
-        // height: 300,
-        // position: 'absolute',
-        // left: '50%',
-        // top: '50%',
-        // marginLeft: '-150px',
-        // marginTop: '-150px',
         container: {
             display: 'flex',
         },
+        overflowY: 'auto',
     },
     headerRow: {
         color: '#2196f3',
         fontSize: 16
     },
     cellRow: {
-        fontSize: 15
+        fontSize: 15,
     }
 });
 
@@ -66,30 +67,33 @@ const ModalComponent = (props) => {
 };
 
 const CustomShowLayout = (props) => {
-    if(props.record && props.record.userName){
-        console.log('record is NOT null:', props.record);
-        return (
-            <SimpleShowLayout className={props.className} record={props.record}>
-                {props.children}
-            </SimpleShowLayout>
-        );
-    } else {
-        console.log('record is empty:', props.record);
-        // Todo: Differentiate between loading and data empty case ??
-        // Todo: Add close button here as well
-        // Todo: Fix styling for modal in empty case
-        return (
-            <SimpleShowLayout className={props.className} record={props.record}>
-                <div>
-                    <h2>
-                        No data found for this report
-                    </h2>
-                </div>
-            </SimpleShowLayout>
-        );
-    }
+    // if(props.record && props.record.userName){
+    console.log('record is NOT null:', props.record);
+    return (
+        <SimpleShowLayout className={props.className} record={props.record}>
+            {props.children}
+        </SimpleShowLayout>
+    );
+    // } else {
+    //     console.log('record is empty:', props.record);
+    //     // Todo: Differentiate between loading and data empty case ??
+    //     // Todo: Add close button here as well
+    //     // Todo: Fix styling for modal in empty case
+    //     return (
+    //         <SimpleShowLayout className={props.className} record={props.record}>
+    //             <div>
+    //                 <h2 className={props.container}>
+    //                     Loading data for the report ...
+    //                 </h2>
+    //             </div>
+    //         </SimpleShowLayout>
+    //     );
+    // }
 };
 
+const FreeTextField = withStyles(styles)(({classes, ...props}) => (
+    <TextField className={classes.freeTextStyle} {...props} />
+));
 
 class ShowReport extends Component{
     constructor(props){
@@ -113,22 +117,23 @@ class ShowReport extends Component{
     // Todo: Open the entire show component inside a modal
     render(){
         return (
-            <Show {...this.props} title="Report" direction="row" justify="center">
+            <Show {...this.props} direction="row" justify="center">
                 <ModalComponent open={this.state.modalIsOpen} onClose={this.closeModal}>
                     <CustomShowLayout {...this.props} className={this.props.classes.modalStyle}>
-                        <div onClick={this.closeModal} style={styles.buttonDivStyle}>
+                        <div onClick={this.closeModal} className={this.props.classes.buttonDivStyle}>
                             <IconButton aria-label="Close" color="secondary">
                                 <CloseIcon />
                             </IconButton>
                         </div>
-                        <ArrayField source="visits" label="">
+                        <TextField source="title" label="" className={this.props.classes.textField} />
+                        <ArrayField source="visits" label="" className={this.props.classes.container}>
                             <Datagrid>
                                 <TextField source="patientName" label="Patient Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false} />
-                                <TextField source="address" label="Address" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} style={styles.textField} sortable={false}/>
+                                <FreeTextField source="address" label="Address" sortable={false} headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.freeTextContainerStyle} />
                                 <TextField source="odometerStart" label="Odometer Start Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
                                 <TextField source="odometerEnd" label="Odometer End Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
-                                <TextField source="milesComments" label="Comments" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
                                 <TextField source="totalMiles" label="Total Miles Travelled" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
+                                <FreeTextField source="milesComments" label="Comments" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.freeTextContainerStyle} sortable={false}/>
                             </Datagrid>
                         </ArrayField>
                     </CustomShowLayout>

@@ -503,12 +503,16 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     };
                 case 'reports':
                     const reportsMetaData = json.map(item => {
-                        const name = item.user.firstName ? item.user.firstName + (item.user.lastName ? ` ${item.user.lastName}` : '') : item.user.username;
+                        // Todo: Name generation hardcoded
+                        const name = item.user.lastName? item.user.lastName + (item.user.firstName ? ` ${item.user.firstName}` : '') : item.user.username;
+                        const createdAt = parseIsoDateToString(item.created_at, false);
+                        const reportName = `${createdAt}_Miles_Report`;
                         return ({
                             id: item.id,
-                            createdAt: parseIsoDateToString(item.created_at),
+                            name: name,
+                            reportName: reportName,
+                            itemCount: item.itemCount,
                             updatedAt: parseIsoDateToString(item.updated_at),
-                            name: name
                         });
                     });
                     return {
@@ -634,6 +638,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             }
                             return ({
                                 'reportID': item.reportID ? item.reportID : '',
+                                'reportCreatedAt': item.reportCreatedAt ? item.reportCreatedAt : '',
                                 'userName': item.visit.user ? item.visit.user : '',
                                 'visitID': item.visit.visitID ? item.visit.visitID : '',
                                 'patientName': item.visit.patientName ? item.visit.patientName : '',
@@ -646,9 +651,14 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         });
                         // console.log('extracted innerData:', innerData);
                         if(innerData && innerData.length > 0){
+                            const userName = innerData[0].userName;
+                            const reportName = parseIsoDateToString(innerData[0].reportCreatedAt, false);
+                            const title = `${userName} ${reportName}_Miles_Report`;
                             const data = {
                                 id: innerData[0].reportID,
-                                userName: innerData[0].userName,
+                                userName: userName,
+                                reportName: reportName,
+                                title: title,
                                 visits: innerData
                             };
                             return {

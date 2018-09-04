@@ -112,7 +112,7 @@ const getTomorrowDateFromDateTimeObject = () => {
     return currentDate;
 }
 
-const parseIsoDateToString = (iso) => {
+const parseIsoDateToString = (iso, include_seconds=true) => {
     const date = new Date(iso);
     let year = date.getFullYear();
     let month = date.getMonth()+1;
@@ -136,6 +136,10 @@ const parseIsoDateToString = (iso) => {
     }
     if (minute < 10){
         minute = '0' + minute;
+    }
+    if (!include_seconds){
+        const formattedDate = `${year}-${month}-${dt}_${hour}:${minute}`;
+        return formattedDate;
     }
     const formattedDate = `[${year}-${month}-${dt}] [${hour}:${minute}:${second}]`;
     return formattedDate;
