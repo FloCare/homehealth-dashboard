@@ -112,4 +112,37 @@ const getTomorrowDateFromDateTimeObject = () => {
     return currentDate;
 }
 
-export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize, getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject};
+const parseIsoDateToString = (iso, include_seconds=true) => {
+    const date = new Date(iso);
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let dt = date.getDate();
+
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
+
+    if (dt < 10) {
+        dt = '0' + dt;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    if (second < 10) {
+        second = '0' + second;
+    }
+    if (hour < 10){
+        hour = '0' + hour;
+    }
+    if (minute < 10){
+        minute = '0' + minute;
+    }
+    if (!include_seconds){
+        const formattedDate = `${year}-${month}-${dt}_${hour}:${minute}`;
+        return formattedDate;
+    }
+    const formattedDate = `[${year}-${month}-${dt}] [${hour}:${minute}:${second}]`;
+    return formattedDate;
+};
+
+export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize, getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject, parseIsoDateToString};

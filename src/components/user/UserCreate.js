@@ -3,7 +3,7 @@ import {Create, DisabledInput, SimpleForm, TextInput, SaveButton, Toolbar, Selec
 import { withStyles } from '@material-ui/core/styles';
 import {startUndoable as startUndoableAction} from 'ra-core';
 import ReactGA from 'react-ga';
-import SimpleButton from '../components/common/Button';
+import SimpleButton from '../common/Button';
 import {connect} from "react-redux";
 import PropTypes from "prop-types";
 
