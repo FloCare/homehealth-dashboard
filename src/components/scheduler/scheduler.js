@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { withGoogleMap, GoogleMap, Marker, InfoWindow } from 'react-google-maps';
+import { withGoogleMap, GoogleMap, Marker, InfoWindow, Polyline } from 'react-google-maps';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
@@ -29,82 +29,70 @@ import {Images} from '../../utils/Images';
 import {stringify} from 'query-string';
 import {getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject} from '../../utils/parsingUtils'
 
-const PATIENT_LIST_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
+const PATIENT_LIST_API_URL = 'https://app-11293.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
 //const PATIENT_LIST_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
 //const PATIENT_LIST_API_URL = 'http://localhost:8000/phi/v1.0/patients/?format=json&size=100';
 
-const USER_DETAILS_API_URL = 'https://app-9707.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
+const USER_DETAILS_API_URL = 'https://app-11293.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
 //const USER_DETAILS_API_URL = 'https://app-9781.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
 //const USER_DETAILS_API_URL = 'http://localhost:8000/users/v1.0/org-access/?format=json&size=100';
 
-const VISIT_DATA_API_URL = 'https://app-9707.on-aptible.com/phi/v1.0/get-visits-for-org/';
+const VISIT_DATA_API_URL = 'https://app-11293.on-aptible.com/phi/v1.0/get-visits-for-org/';
 //const VISIT_DATA_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/get-visits-for-org/';
 //const VISIT_DATA_API_URL = 'http://localhost:8000/phi/v1.0/get-visits-for-org/';
 
 const tenThousandFeetToDegrees = 0.0274321;
 
-var visitDoneLabel = {
-    url: Images.visitDoneLabel,
-    scaledSize: new window.google.maps.Size(70, 70),
+var visitMarkerLabel1x = {
+    url: Images.visitMarkerLabel,
+    scaledSize: new window.google.maps.Size(65, 28),
     origin: new window.google.maps.Point(0, 0),
     anchor: new window.google.maps.Point(32,65),
-    labelOrigin: new window.google.maps.Point(24,33)
+    labelOrigin: new window.google.maps.Point(35,11)
 };
 
-var visitNotDoneLabel = {
-    url: Images.visitNotDoneLabel,
-    scaledSize: new window.google.maps.Size(70, 70),
+var visitMarkerLabel2x = {
+    url: Images.visitMarkerLabel,
+    scaledSize: new window.google.maps.Size(110, 28),
     origin: new window.google.maps.Point(0, 0),
     anchor: new window.google.maps.Point(32,65),
-    labelOrigin: new window.google.maps.Point(24,33)
+    labelOrigin: new window.google.maps.Point(55,11)
 };
 
-var patientIconLabel = {
-    url: Images.patientIconLabel,
-    scaledSize: new window.google.maps.Size(90, 30),
+var visitMarkerLabel3x = {
+    url: Images.visitMarkerLabel,
+    scaledSize: new window.google.maps.Size(160, 28),
     origin: new window.google.maps.Point(0, 0),
-    anchor: new window.google.maps.Point(32,90),
-    labelOrigin: new window.google.maps.Point(45,13)
+    anchor: new window.google.maps.Point(32,65),
+    labelOrigin: new window.google.maps.Point(80,11)
 };
 
-// TODO Retained , will be removed in version-2
-// let visitDoneLabel = new window.google.maps.MarkerImage(
-//     Images.visitDoneLabel,
-//     null, /* size is determined at runtime */
-//     new window.google.maps.Point(-8, 0), /* origin is 0,0 */
-//     null, /* anchor is bottom center of the scaled image */
-//     new window.google.maps.Size(84, 32)
-// );
-// let visitNotDoneLabel = new window.google.maps.MarkerImage(
-//     Images.visitNotDoneLabel,
-//     null, /* size is determined at runtime */
-//     new window.google.maps.Point(-5, 0), /* origin is 0,0 */
-//     null, /* anchor is bottom center of the scaled image */
-//     new window.google.maps.Size(84, 32)
-// );
-// let patientIconLabel = new window.google.maps.MarkerImage(
-//     Images.patientIconLabel,
-//     null, /* size is determined at runtime */
-//     new window.google.maps.Point(0, 0), /* origin is 0,0 */
-//     null, /* anchor is bottom center of the scaled image */
-//     new window.google.maps.Size(96, 32)
-// );
+var patientIconLabel = new window.google.maps.MarkerImage(
+    Images.patientIconLabel,
+    null, /* size is determined at runtime */
+    new window.google.maps.Point(0, 0), /* origin is 0,0 */
+    null, /* anchor is bottom center of the scaled image */
+    new window.google.maps.Size(96, 32)
+);
 
 const styles = theme => ({
     leftNavStyle: {
         width: '100%',
         height: '74vh',
-        maxWidth: '16%',
+        maxWidth: '18%',
         borderRight: 'ridge',
     },
     listItemNestedStyle: {
         paddingLeft: theme.spacing.unit * 4,
     },
+    root: {
+        alignItems: 'left',
+    },
     listItemDefaultStyle: {
-        paddingTop: 0,
+        paddingTop: 0.1,
         paddingLeft: 0.1,
-        paddingBottom: 0.001,
-        height: '1%'
+        paddingBottom: 0.1,
+        height: '5vh'
     },
     listItemButtonStyle: {
         '&:hover': {
@@ -121,7 +109,8 @@ const styles = theme => ({
         backgroundColor: '#D3D3D3'
     },
     disciplineLabelStyle: {
-        lineHeight: '32px',
+        lineHeight: '30px',
+        fontSize: 12
     },
     chipStyle: {
         margin: theme.spacing.unit,
@@ -174,6 +163,10 @@ const styles = theme => ({
     dateFilterPaddingStyle: {
         marginLeft: '0.5%',
     },
+    dense: {
+        fontSize: 14,
+        paddingLeft: 0.1
+    },
 });
 
 var suggestions = [];
@@ -203,19 +196,19 @@ function renderSuggestion(suggestion, { query, isHighlighted }) {
     const parts = parse(suggestion.name, matches);
 
     return (
-            <div style={{width: '160px', paddingLeft: '10px', marginBottom: '3px'}}>
-                {parts.map((part, index) => {
-                    return part.highlight ? (
-                        <span key={String(index)} style={{ fontWeight: 100 }}>
+        <div style={{width: '160px', paddingLeft: '10px', marginBottom: '3px'}}>
+            {parts.map((part, index) => {
+                return part.highlight ? (
+                    <span key={String(index)} style={{ fontWeight: 100 }}>
               {part.text}
             </span>
-                    ) : (
-                        <strong key={String(index)} style={{ fontWeight: 100 }}>
-                            {part.text}
-                        </strong>
-                    );
-                })}
-            </div>
+                ) : (
+                    <strong key={String(index)} style={{ fontWeight: 100 }}>
+                        {part.text}
+                    </strong>
+                );
+            })}
+        </div>
     );
 }
 
@@ -251,7 +244,9 @@ class Scheduler extends Component {
         userRoleDetailsMap: {},
         visitsMap: {},
         filteredVisitsMap: {},
+        duplicateVisitsMap: {},
         checkedMap: {},
+        markersMap: {},
         isToday: true,
         isTomorrow: false,
         selectedPatient: '',
@@ -260,7 +255,8 @@ class Scheduler extends Component {
         selectedPatientName: '',
         chipSelectedPatient: '',
         suggestions: [],
-        isOpen: {}
+        isOpen: {},
+        position : null
     };
 
     componentWillMount() {
@@ -282,7 +278,7 @@ class Scheduler extends Component {
             for (var i = 0; i < resp.length; i++) {
                 var patient = resp[i].patient;
                 list.push({ id: patient.id, name: patient.firstName+' '+patient.lastName,
-                            latitude: patient.address.latitude, longitude: patient.address.longitude});
+                    latitude: patient.address.latitude, longitude: patient.address.longitude});
             }
             this.setState({
                 patients: [...this.state.patients, ...list]
@@ -293,11 +289,13 @@ class Scheduler extends Component {
     }
 
     async fetchVisitData(date) {
+        const {checkedMap} = this.state;
+        console.log(checkedMap);
+        var isCheckedMapEmpty = this.isEmpty(checkedMap);
         var formattedDate = date;
         if(date === undefined) {
             formattedDate = getDateFromDateTimeObject();
         }
-        // TODO remove the hardcoded date which was added for testing
         const request = new Request(VISIT_DATA_API_URL+formattedDate+'/', {
             headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
             }),
@@ -311,30 +309,67 @@ class Scheduler extends Component {
         }).then((resp) => {
             var tempVisitsMap = {};
             var tempFilteredVisitsMap = {};
-            for(var i=0; i<resp.length; i++) {
-                var plannedStartTime = resp[i].plannedStartTime;
-                var s = new Date(plannedStartTime);
-                var nowUtc = new Date( s.getTime() + (s.getTimezoneOffset() * 60000));
-                var hh = nowUtc.getHours() < 10 ? '0' +
-                    nowUtc.getHours() : nowUtc.getHours();
-                var mi = nowUtc.getMinutes() < 10 ? '0' +
-                    nowUtc.getMinutes() : nowUtc.getMinutes();
-                tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
-                tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
-                    lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
-                    latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
-                    isDone: resp[i].isDone});
+            var tempDuplicateVisitsMap = {};
+            var dupVisitsMap = {};
+            var tempSingleVisitsMap = {};
+            var tempMarkersMap = {};
 
-                tempFilteredVisitsMap[resp[i].userID] = tempFilteredVisitsMap[resp[i].userID] || [];
-                tempFilteredVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
-                    lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
-                    latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
-                    isDone: resp[i].isDone});
+            for(var i=0; i<resp.length; i++) {
+                if(isCheckedMapEmpty === true || checkedMap[resp[i].userID] === true) {
+                    var plannedStartTime = resp[i].plannedStartTime;
+                    var s = new Date(plannedStartTime);
+                    var nowUtc = new Date( s.getTime());
+                    var hh = nowUtc.getHours() < 10 ? '0' +
+                        nowUtc.getHours() : nowUtc.getHours();
+                    var mi = nowUtc.getMinutes() < 10 ? '0' +
+                        nowUtc.getMinutes() : nowUtc.getMinutes();
+                    var res = resp[i];
+                    var lat = res.episode.patient.address.latitude;
+                    var lng = res.episode.patient.address.longitude;
+                    if(tempSingleVisitsMap[res.episode.patient.address.latitude] === undefined) {
+                        tempSingleVisitsMap[res.episode.patient.address.latitude] = res.episode.patient.address.longitude;
+                        tempDuplicateVisitsMap[lat.toString()+lng.toString()] = res.userID+ ":" + hh+"-"+mi + ":" + res.isDone;
+                    }
+                    else {
+                        var userID = tempDuplicateVisitsMap[lat.toString()+lng.toString()];
+                        var finalUserId = userID + ":" + res.userID+ ":" + hh+"-"+mi+ ":" + res.isDone;
+                        tempDuplicateVisitsMap[lat.toString()+lng.toString()] = finalUserId;
+                        tempMarkersMap[res.episode.patient.address.latitude] = false;
+                        dupVisitsMap[lat.toString()+lng.toString()] = finalUserId;
+                    }
+                }
+
+            }
+
+            for(var i=0; i<resp.length; i++) {
+                if(isCheckedMapEmpty === true || checkedMap[resp[i].userID] === true) {
+                    var plannedStartTime = resp[i].plannedStartTime;
+                    var s = new Date(plannedStartTime);
+                    var nowUtc = new Date( s.getTime());
+                    var hh = nowUtc.getHours() < 10 ? '0' +
+                        nowUtc.getHours() : nowUtc.getHours();
+                    var mi = nowUtc.getMinutes() < 10 ? '0' +
+                        nowUtc.getMinutes() : nowUtc.getMinutes();
+                    tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
+                    tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
+                        lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
+                        latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
+                        isDone: resp[i].isDone});
+
+                    tempFilteredVisitsMap[resp[i].userID] = tempFilteredVisitsMap[resp[i].userID] || [];
+                    tempFilteredVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
+                        lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
+                        latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
+                        isDone: resp[i].isDone});
+                }
+
 
             }
             this.setState({
                 visitsMap: tempVisitsMap,
-                filteredVisitsMap: tempFilteredVisitsMap
+                filteredVisitsMap: tempFilteredVisitsMap,
+                duplicateVisitMap : dupVisitsMap,
+                markersMap : tempMarkersMap
             });
             return resp;
         });
@@ -386,6 +421,16 @@ class Scheduler extends Component {
         });
     }
 
+    isEmpty(myObject) {
+        for(var key in myObject) {
+            if (myObject.hasOwnProperty(key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     handleDelete = data => () => {
         const {checkedMap, users, filteredVisitsMap, visitsMap} = this.state;
         var newChecked = {};
@@ -425,10 +470,10 @@ class Scheduler extends Component {
         }
         else if(data === 'selectedPatient') {
             this.setState({chipSelectedPatient: '',
-                            selectedPatient: '',
-                            selectedPatientLat: '',
-                            selectedPatientLong: '',
-                            selectedPatientName: ''
+                selectedPatient: '',
+                selectedPatientLat: '',
+                selectedPatientLong: '',
+                selectedPatientName: ''
             })
         }
         else {
@@ -443,7 +488,6 @@ class Scheduler extends Component {
     };
 
     handleChange = name => event => {
-        // TODO fetch today and tomorrow and pass the relevant param
         var formattedDate = getDateFromDateTimeObject();
         var tomorrow = getTomorrowDateFromDateTimeObject();
         if(name === 'isToday' && event.target.checked) {
@@ -458,7 +502,7 @@ class Scheduler extends Component {
         }
         this.setState({ [name]: event.target.checked, filteredVisitsMap: {} });
     };
-    
+
     handleToggle = value => () => {
         const {checkedMap, users, filteredVisitsMap, visitsMap} = this.state;
         var newChecked = {};
@@ -527,6 +571,7 @@ class Scheduler extends Component {
             if(patient.name === newValue) {
                 this.setState({
                     chipSelectedPatient: newValue,
+                    selectedPatient: newValue,
                     selectedPatientLat: patient.latitude,
                     selectedPatientLong: patient.longitude,
                     selectedPatientName: patient.name
@@ -629,10 +674,49 @@ class Scheduler extends Component {
         </div>);
     }
 
+    handleToggleOpen(lat, lng){
+
+        this.setState({
+            position : {
+                lat : lat,
+                lng : lng
+            }
+        })
+    }
+
+    swapArrayElements = function (a, x, y) {
+        if (a.length === 1) return a;
+        a.splice(y, 1, a.splice(x, 1, a[y])[0]);
+        return a;
+    };
+
+    // TODO re-visit this logic
+    reorderMarkerLabel(final) {
+        var label = '';
+        if(final.length === 3) {
+            this.swapArrayElements(final, 1, 2);
+        }
+
+        if(final.length === 6) {
+            this.swapArrayElements(final, 1, 2);
+            this.swapArrayElements(final, 4, 5);
+        }
+        else if(final.length === 9) {
+            this.swapArrayElements(final, 1, 2);
+            this.swapArrayElements(final, 4, 5);
+            this.swapArrayElements(final, 7, 8);
+        }
+        for(var i=0 ; i<final.length ; i++) {
+            if((final[i] === '| ' && i === 0) || final[i] === undefined)
+                continue;
+            label += final[i];
+        }
+        return label;
+    }
+
     render() {
         const { classes } = this.props;
-        const {filteredVisitsMap, userDetailsMap, showInfoWindow} = this.state;
-        var formattedDate = getDateFromDateTimeObject();
+        const {filteredVisitsMap, userDetailsMap, showInfoWindow, duplicateVisitMap, markersMap, checkedMap} = this.state;
         var visitMapKeys = Object.keys(filteredVisitsMap);
         var userDetailsMapKeys = Object.keys(userDetailsMap);
         const autosuggestProps = {
@@ -650,10 +734,10 @@ class Scheduler extends Component {
             var patLat = this.state.selectedPatientLat;
             var patLong = this.state.selectedPatientLong;
             const patientLatLng = new window.google.maps.LatLng(patLat, patLong);
-            const patientLatLngNorth = new window.google.maps.LatLng(patLat + tenThousandFeetToDegrees, patLong);
-            const patientLatLngEast = new window.google.maps.LatLng(patLat, patLong + tenThousandFeetToDegrees);
-            const patientLatLngSouth = new window.google.maps.LatLng(patLat - tenThousandFeetToDegrees, patLong);
-            const patientLatLngWest = new window.google.maps.LatLng(patLat, patLong - tenThousandFeetToDegrees);
+            const patientLatLngNorth = new window.google.maps.LatLng(patLat + 2*tenThousandFeetToDegrees, patLong);
+            const patientLatLngEast = new window.google.maps.LatLng(patLat, patLong + 2*tenThousandFeetToDegrees);
+            const patientLatLngSouth = new window.google.maps.LatLng(patLat - 2*tenThousandFeetToDegrees, patLong);
+            const patientLatLngWest = new window.google.maps.LatLng(patLat, patLong - 2*tenThousandFeetToDegrees);
             bounds.extend(patientLatLng);
             bounds.extend(patientLatLngNorth);
             bounds.extend(patientLatLngEast);
@@ -688,33 +772,113 @@ class Scheduler extends Component {
                 {(visitMapKeys.length > 0 && userDetailsMapKeys.length > 0) ? visitMapKeys.map(value => {
                     if(filteredVisitsMap[value] !== undefined) {
                         var markers = [];
+                        // TODO Revisit multiple clinicians single patient marker logic
                         for (var j = 0; j < filteredVisitsMap[value].length; j++) {
                             var lat = filteredVisitsMap[value][j].latitude;
                             var long = filteredVisitsMap[value][j].longitude;
                             var key = lat.toString()+long.toString();
-                            markers.push(<Marker
-                                position={{
-                                    lat: filteredVisitsMap[value][j].latitude,
-                                    lng: filteredVisitsMap[value][j].longitude
-                                }}
-                                key={key}
-                                label={{
-                                    text: userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
-                                    userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' ' + filteredVisitsMap[value][j].visitTime,
-                                    color: "white",
-                                    fontSize: "10px",
-                                    textAlign: "left"
-                                }}
-                                icon={filteredVisitsMap[value][j].isDone ? visitDoneLabel : visitNotDoneLabel}
-                                // onClick={(e) => {
-                                //     console.log(key);
-                                //     var markersMap = {};
-                                //     markersMap[key] = true;
-                                //     this.setState({ isOpen: markersMap })
-                                // }}
+                            if(duplicateVisitMap[key] != undefined) {
+                                var strSplit = duplicateVisitMap[key].split(':');
+                                var count = 0;
+                                var k = 0;
+                                var final = [];
+                                for(var i = strSplit.length-1; i >= 0 ; i--) {
+                                    var s = strSplit[i];
+                                    if(checkedMap[s] != undefined) {
+                                        if (i % 3 === 0) {
+                                            final[k] = userDetailsMap[s][0].firstName.charAt(0) + userDetailsMap[s][0].lastName.charAt(0)+ ' ';
+                                            count++;
+                                        }
+                                    }
+                                    else if(i % 3 === 1 && checkedMap[strSplit[i-1]] != undefined) {
+                                        var r = s.replace('-', ':');
+                                        final[k] = r+ ' ';
+                                    }
+                                    else if(i % 3 === 2 && checkedMap[strSplit[i-2]] != undefined) {
+                                        if(s === 'true') {
+                                            final[k] = '✓ ';
+                                        }
+                                        else {
+                                            final[k] = '⨉ ';
+                                        }
+                                    }
+                                    k++;
+                                }
+                                var markerLabel = this.reorderMarkerLabel(final);
+                                markers.push(<Marker
+                                    position={{
+                                        lat: lat,
+                                        lng: long
+                                    }}
+                                    key={key}
+                                    label={{
+                                        text: markerLabel,
+                                        color: "white",
+                                        fontSize: "10px",
+                                        textAlign: "left"
+                                    }}
+                                    icon={ count === 1 ? visitMarkerLabel1x : (count % 2 === 0 ? visitMarkerLabel2x : visitMarkerLabel3x)}
+                                    // onClick={() => this.handleToggleOpen(lat, long)}
+                                    // onClick={(e) => {
+                                    //     console.log(e);
+                                    //     markersMap[key] = true;
+                                    //     this.setState({ isOpen: markersMap })
+                                    // }}
 
-                            >
-                            </Marker>);
+                                >
+                                </Marker>);
+                            } else {
+                                if(filteredVisitsMap[value][j].isDone) {
+                                    markers.push(<Marker
+                                        position={{
+                                            lat: filteredVisitsMap[value][j].latitude,
+                                            lng: filteredVisitsMap[value][j].longitude
+                                        }}
+                                        key={key}
+                                        label={{
+                                            text: '✓  ' +userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
+                                            userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + '\n ' + filteredVisitsMap[value][j].visitTime,
+                                            color: "white",
+                                            fontSize: "10px",
+                                            textAlign: "left"
+                                        }}
+                                        icon={visitMarkerLabel1x}
+                                        // onClick={() => this.handleToggleOpen(lat, long)}
+                                        // onClick={(e) => {
+                                        //     console.log(e);
+                                        //     markersMap[key] = true;
+                                        //     this.setState({ isOpen: markersMap })
+                                        // }}
+
+                                    >
+                                    </Marker>);
+                                }
+                                else {
+                                    markers.push(<Marker
+                                        position={{
+                                            lat: filteredVisitsMap[value][j].latitude,
+                                            lng: filteredVisitsMap[value][j].longitude
+                                        }}
+                                        key={key}
+                                        label={{
+                                            text: '⨉ ' + userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
+                                            userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' ' + filteredVisitsMap[value][j].visitTime,
+                                            color: "white",
+                                            fontSize: "10px",
+                                            textAlign: "left"
+                                        }}
+                                        icon={visitMarkerLabel1x}
+                                        // onClick={() => this.handleToggleOpen(lat, long)}
+                                        // onClick={(e) => {
+                                        //     console.log(e);
+                                        //     markersMap[key] = true;
+                                        //     this.setState({ isOpen: markersMap })
+                                        // }}
+
+                                    >
+                                    </Marker>);
+                                }
+                            }
                         }
                         return markers;
                     }
@@ -731,7 +895,6 @@ class Scheduler extends Component {
                     icon={patientIconLabel}
                 /> : <Marker/>}
 
-
             </GoogleMap>
         ));
         return(
@@ -739,29 +902,29 @@ class Scheduler extends Component {
                 <div className={classes.topViewStyle}>
                     <FormLabel component="legend">Date:</FormLabel>
                     <div className={classes.dateFilterPaddingStyle}>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={this.state.isToday}
-                                onChange={this.handleChange('isToday')}
-                                value="isToday"
-                                color="primary"
-                            />
-                        }
-                        label="Today"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={this.state.isTomorrow}
-                                onChange={this.handleChange('isTomorrow')}
-                                value="isTomorrow"
-                                color="primary"
-                            />
-                        }
-                        label="Tomorrow"
-                    />
-                </div>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={this.state.isToday}
+                                    onChange={this.handleChange('isToday')}
+                                    value="isToday"
+                                    color="primary"
+                                />
+                            }
+                            label="Today"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={this.state.isTomorrow}
+                                    onChange={this.handleChange('isTomorrow')}
+                                    value="isTomorrow"
+                                    color="primary"
+                                />
+                            }
+                            label="Tomorrow"
+                        />
+                    </div>
                     <div className={classes.searchBoxStyle}>
                         <Autosuggest
                             {...autosuggestProps}
@@ -796,7 +959,7 @@ class Scheduler extends Component {
                 <div className={classes.inlineBlock} >
                     <div className={classes.leftNavStyle}>
                         <Paper style={{maxHeight: '100%', overflow: 'auto'}}>
-                        <List component="div" disablePadding >
+                            <List component="div" disablePadding >
                                 <ListItem
                                     classes={{
                                         default: classes.listItemDefaultStyle,
@@ -811,41 +974,46 @@ class Scheduler extends Component {
                                         disableRipple
                                         color="primary"
                                     />
-                                    <ListItemText inset primary="All Staff" />
+                                    <ListItemText classes={{
+                                        primary: classes.dense
+                                    }} inset primary="All Staff" />
                                 </ListItem>
-                            {(this.state.disciplines).map(value => (
-                                <div>
-                                    <List
-                                        component="nav"
-                                        dense={false}
-                                        subheader={<ListSubheader classes={{
-                                            sticky: classes.disciplineBkgColor,
-                                            root: classes.disciplineLabelStyle
-                                        }} component="div">{value.role}s</ListSubheader>}
-                                    />
-                                    <List component="div" disablePadding >
-                                        {(this.state.userRoleDetailsMap[value.role]).map(user => (
-                                            <ListItem
-                                                classes={{
-                                                    default: classes.listItemDefaultStyle,
-                                                    button: classes.listItemButtonStyle
-                                                }}
-                                                button
-                                                onClick={this.handleToggle(user.id)}
-                                                className={classes.listItemNestedStyle}>
-                                                <Checkbox
-                                                    checked={this.state.checkedMap[user.id] === true}
-                                                    tabIndex={-1}
-                                                    disableRipple
-                                                    color="primary"
-                                                />
-                                                <ListItemText inset primary={`${user.name}`} />
-                                            </ListItem>
-                                        ))}
-                                    </List>
-                                </div>
-                            ))}
-                        </List>
+                                {(this.state.disciplines).map(value => (
+                                    <div>
+                                        <List
+                                            component="nav"
+                                            dense={false}
+                                            subheader={<ListSubheader classes={{
+                                                sticky: classes.disciplineBkgColor,
+                                                root: classes.disciplineLabelStyle
+                                            }} component="div">{value.role}s</ListSubheader>}
+                                        />
+                                        <List component="div" disablePadding >
+                                            {(this.state.userRoleDetailsMap[value.role]).map(user => (
+                                                <ListItem
+                                                    classes={{
+                                                        default: classes.listItemDefaultStyle,
+                                                        root: classes.root,
+                                                        button: classes.listItemButtonStyle
+                                                    }}
+                                                    button
+                                                    onClick={this.handleToggle(user.id)}
+                                                    className={classes.listItemNestedStyle}>
+                                                    <Checkbox
+                                                        checked={this.state.checkedMap[user.id] === true}
+                                                        tabIndex={-1}
+                                                        disableRipple
+                                                        color="primary"
+                                                    />
+                                                    <ListItemText classes={{
+                                                        primary: classes.dense
+                                                    }} inset primary={`${user.name}`} />
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </div>
+                                ))}
+                            </List>
                         </Paper>
 
                     </div>
@@ -859,3 +1027,4 @@ class Scheduler extends Component {
     }
 };
 export default withStyles(styles)(Scheduler);
+
