@@ -625,12 +625,12 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             let odometerEnd = '-';
                             let milesComments = '-';
                             if (item.visit.visitMiles) {
-                                odometerStart = item.visit.visitMiles.odometerStart ? parseFloat(item.visit.visitMiles.odometerStart).toFixed(2) : '-';
-                                odometerEnd = item.visit.visitMiles.odometerEnd ? parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) : '-';
+                                odometerStart = (typeof(item.visit.visitMiles.odometerStart) === 'number') ? parseFloat(item.visit.visitMiles.odometerStart).toFixed(2) : '-';
+                                odometerEnd = (typeof(item.visit.visitMiles.odometerEnd) === 'number') ? parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) : '-';
                                 milesComments = item.visit.visitMiles.milesComments ? item.visit.visitMiles.milesComments : '-';
 
-                                if (item.visit.visitMiles.odometerStart && typeof(item.visit.visitMiles.odometerStart) === 'number' &&
-                                    item.visit.visitMiles.odometerEnd && typeof(item.visit.visitMiles.odometerEnd) === 'number') {
+                                if (typeof(item.visit.visitMiles.odometerStart) === 'number' &&
+                                    typeof(item.visit.visitMiles.odometerEnd) === 'number') {
                                     totalMiles = parseFloat(parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) - parseFloat(item.visit.visitMiles.odometerStart).toFixed(2)).toFixed(2);
                                 } else {
                                     totalMiles = '-';
