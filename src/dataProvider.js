@@ -10,13 +10,18 @@ import {
     fetchUtils,
 } from 'react-admin';
 import {stringify} from 'query-string';
-import {parseMobileNumber, capitalize} from './parsingUtils';
+import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
+import {parseIsoDateToString} from './utils/parsingUtils';
 
-//export const API_URL = 'https://app-9707.on-aptible.com';
-export const API_URL = 'https://app-9781.on-aptible.com';
+export const API_URL = 'https://app-11293.on-aptible.com';
+//export const API_URL = 'https://app-9781.on-aptible.com';
 //export const API_URL = 'http://localhost:8000';
+const REFRESH_API_URL = 'http://localhost:8000/api-token-refresh/';
 ReactGA.initialize('UA-123730827-1');
+var nJwt = require('njwt');
+var EXPIRY_TIME_CHECK = 600000; // 10 minutes
+var SECRET_KEY = '3mtih1f4nf@$56$14sdwp48czyonlf25)9hk11=chgyi0#v(gg';// secret key to match with the jwt secret key set in the backend
 
 /**
  * @param {String} type One of the constants appearing at the top if this file, e.g. 'UPDATE'
@@ -24,9 +29,44 @@ ReactGA.initialize('UA-123730827-1');
  * @param {Object} params The Data Provider request params, depending on the type
  * @returns {Object} { url, options } The HTTP request parameters
  */
+
+// Todo: Remove this hack
+function getQueryStringValue (key) {
+    return decodeURIComponent(window.location.href.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+}
+
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
     console.log('Converting Data Provider Call to HTTP Request on:');
-    console.log('This called:', type, resource, params);
+    console.log('This called:', type);
+    var accessToken = localStorage.getItem('access_token');
+    // nJwt.verify(accessToken, SECRET_KEY, function(err,verifiedJwt){
+    //     if(err){
+    //         localStorage.removeItem('access_token');
+    //         window.location.reload();
+    //     }else{
+    //         // Each time the user loads the page, we check if there is an existing non-expired token and if it's close to being expired, refresh it to extend the expiry.
+    //         // Currently being set to 10 minutes
+    //         if((verifiedJwt.body.exp * 1000) - Date.now() < EXPIRY_TIME_CHECK) {
+    //             console.log('refresh');
+    //             const request = new Request(REFRESH_API_URL, {
+    //                 method: 'POST',
+    //                 body: JSON.stringify({ token: accessToken, orig_iat: verifiedJwt.body.iat }),
+    //                 headers: new Headers({ 'Content-Type': 'application/json'
+    //                 }),
+    //             })
+    //             return fetch(request)
+    //                 .then(response => {
+    //                     if (response.status < 200 || response.status >= 300) {
+    //                         return Promise.reject();
+    //                     }
+    //                     return response.json();
+    //                 })
+    //                 .then(({ token }) => {
+    //                     localStorage.setItem('access_token', token);
+    //                 });
+    //         }
+    //     }
+    // });
 
     switch (type) {
         case GET_LIST: {
@@ -42,7 +82,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
             const options = {};
-            options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
+            options.headers = new Headers({Authorization: 'Token '+ accessToken});
             switch(resource) {
                 case 'users':
                     ReactGA.pageview('/staff/list');
@@ -53,6 +93,17 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'physicians':
                     ReactGA.pageview('/physicians/list');
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
+                case 'reports':
+                    ReactGA.pageview('/reports/list');
+                    // console.log('======================');
+                    // console.log('Extracting userID out of URL ...');
+                    // console.log('======================');
+                    const userID = getQueryStringValue('userID');
+                    // console.log('======================');
+                    // console.log('userID:', userID);
+                    // console.log('======================');
+                    query.userID = userID;
+                    return {url: `${API_URL}/phi/v1.0/reports/?${stringify(query)}`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -60,7 +111,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
         case GET_ONE:
             const options = {};
-            options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
+            options.headers = new Headers({Authorization: 'Token '+ accessToken});
             switch(resource) {
                 case 'phi':
                     ReactGA.event({
@@ -72,6 +123,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
                 case 'users':
                     return { url: `${API_URL}/users/v1.0/staff/${params.id}/`, options };
+                case 'reports':
+                    return {url: `${API_URL}/phi/v1.0/reports/${params.id}/`, options};
                 default:
                     throw new Error(`Unsupported fetch action type ${type}`);
             }
@@ -92,7 +145,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             };
             // console.log('Query params:', stringify(query));
             const options = {};
-            options.headers = new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')});
+            options.headers = new Headers({Authorization: 'Token '+ accessToken});
 
             switch(resource) {
                 case 'users':
@@ -185,7 +238,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
-                        options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                        options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     };
                 case 'physicians':
                     const updateBody = {
@@ -200,7 +253,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return{
                         url: `http://localhost:8000/mock/v1.0/mock/${params.data.npiID}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
-                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
                     }
                 case 'users':
                     var userData = undefined;
@@ -231,8 +283,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     }
                     return{
                         url: `${API_URL}/users/v1.0/staff/${params.id}/`,
-                        options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
-                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')})},
+                        options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ accessToken})},
+                    // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
                 }
                 default:
                     console.log('ERROR! Edit called on invalid resources.');
@@ -303,7 +355,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/?format=json`,
-                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(request) },
                     };
 
                 case 'users':
@@ -323,7 +375,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/users/v1.0/staff/?format=json`,
-                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(userRequest) },
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(userRequest) },
                     };
 
                 case 'physicians':
@@ -342,7 +394,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/phi/v1.0/physicians/?format=json`,
-                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}), body: JSON.stringify(request) },
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(request) },
                     };
                 default:
                     console.log('ERROR! CREATE called on invalid resources.');
@@ -355,7 +407,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'users':
                     return {
                         url: `${API_URL}/${resource}/v1.0/staff/${params.id}/`,
-                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
                     };
 
                 case 'phi':
@@ -365,7 +417,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return {
                         url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`,
-                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ localStorage.getItem('access_token')}) },
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
                     };
 
             }
@@ -383,7 +435,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
  * @returns {Object} Data Provider response
  */
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
-    console.log('Converting API Response to Data Provider:', params);
+    console.log('Converting API Response to Data Provider:', type, params);
     const {json, headers} = response;
     switch (type) {
 
@@ -449,6 +501,24 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         data: physicianData,
                         total: 20
                     };
+                case 'reports':
+                    const reportsMetaData = json.map(item => {
+                        // Todo: Name generation hardcoded
+                        const name = item.user.lastName? item.user.lastName + (item.user.firstName ? ` ${item.user.firstName}` : '') : item.user.username;
+                        const createdAt = parseIsoDateToString(item.created_at, false);
+                        const reportName = `${createdAt}_Miles_Report`;
+                        return ({
+                            id: item.id,
+                            name: name,
+                            reportName: reportName,
+                            itemCount: item.itemCount,
+                            updatedAt: parseIsoDateToString(item.updated_at),
+                        });
+                    });
+                    return {
+                        data: reportsMetaData,
+                        total: reportsMetaData.length
+                    };
                 default:
                     return {
                         data: json.map(x => x),
@@ -464,7 +534,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         localStorage.setItem('organizationName', json.organization.name);
                         // Hacky, react-router does advice to use window.location.reload()
                         // Invoke a refresh action provided by react-admin
-                        window.location.reload();
+                        //window.location.reload();
                     }
                     const usersData = json.users.map(user => {
                         return ({
@@ -547,6 +617,74 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "is_active": json.user.is_active
                         }
                     };
+                case 'reports':
+                    if(json && json.length > 0) {
+                        const innerData = json.map(item => {
+                            let totalMiles = '-';
+                            let odometerStart = '-';
+                            let odometerEnd = '-';
+                            let milesComments = '-';
+                            if (item.visit.visitMiles) {
+                                odometerStart = (typeof(item.visit.visitMiles.odometerStart) === 'number') ? parseFloat(item.visit.visitMiles.odometerStart).toFixed(2) : '-';
+                                odometerEnd = (typeof(item.visit.visitMiles.odometerEnd) === 'number') ? parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) : '-';
+                                milesComments = item.visit.visitMiles.milesComments ? item.visit.visitMiles.milesComments : '-';
+
+                                if (typeof(item.visit.visitMiles.odometerStart) === 'number' &&
+                                    typeof(item.visit.visitMiles.odometerEnd) === 'number') {
+                                    totalMiles = parseFloat(parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) - parseFloat(item.visit.visitMiles.odometerStart).toFixed(2)).toFixed(2);
+                                } else {
+                                    totalMiles = '-';
+                                }
+                            }
+                            return ({
+                                'reportID': item.reportID ? item.reportID : '',
+                                'reportCreatedAt': item.reportCreatedAt ? item.reportCreatedAt : '',
+                                'userName': item.visit.user ? item.visit.user : '',
+                                'visitID': item.visit.visitID ? item.visit.visitID : '',
+                                'patientName': item.visit.patientName ? item.visit.patientName : '',
+                                'address': item.visit.address ? item.visit.address : '',
+                                'odometerStart': odometerStart,
+                                'odometerEnd': odometerEnd,
+                                'milesComments': milesComments,
+                                'totalMiles': totalMiles
+                            });
+                        });
+                        // console.log('extracted innerData:', innerData);
+                        if(innerData && innerData.length > 0){
+                            const userName = innerData[0].userName;
+                            const reportName = parseIsoDateToString(innerData[0].reportCreatedAt, false);
+                            const title = `${userName} ${reportName}_Miles_Report`;
+                            const data = {
+                                id: innerData[0].reportID,
+                                userName: userName,
+                                reportName: reportName,
+                                title: title,
+                                visits: innerData
+                            };
+                            return {
+                                data: data
+                            };
+                        }
+                    }
+                    console.log('Sending empty response from data provider ...');
+                    // Todo: Handle empty responses here ???
+                    return {
+                        data: {
+                            id: '',
+                            userName: '',
+                            visits: [{
+                                'reportID': '',
+                                'userName': '',
+                                'visitID': '',
+                                'patientName': '',
+                                'address': '',
+                                'odometerStart': '',
+                                'odometerEnd': '',
+                                'milesComments': '',
+                                'totalMiles': ''
+                            }]
+                        }
+                    };
                 default:
                     return {data: json};
             }
@@ -570,6 +708,12 @@ export default (type, resource, params) => {
             return convertHTTPResponseToDataProvider(response, type, resource, params)
         })
         .catch((error) => {
+            if(error.toString().includes('HttpError: Unauthorized')) {
+                throw new Error('Timed out, please Login')
+            }
+            // Todo: Remove this hack
+            // localStorage.removeItem('access_token');
+            // window.location.reload();
             if(resource === 'users' && (type === 'CREATE' || type === 'UPDATE')) {
                 throw new Error(`User with this Email already registered`);
             }

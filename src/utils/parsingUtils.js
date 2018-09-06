@@ -76,4 +76,73 @@ const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize};
+// Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
+const getDateFromDateTimeObject = () => {
+    var formattedDate = new Date();
+    var dd = formattedDate.getDate();
+    var mm = formattedDate.getMonth()+1; //January is 0!
+    var yyyy = formattedDate.getFullYear();
+
+    if(dd<10) {
+        dd = '0'+dd
+    }
+
+    if(mm<10) {
+        mm = '0'+mm
+    }
+    formattedDate = yyyy+'-'+mm+'-'+dd;
+    return formattedDate;
+}
+
+// Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
+const getTomorrowDateFromDateTimeObject = () => {
+    var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+    var dd = currentDate.getDate()
+    var mm = currentDate.getMonth() + 1
+    var yyyy = currentDate.getFullYear()
+
+    if(dd<10) {
+        dd = '0'+dd
+    }
+
+    if(mm<10) {
+        mm = '0'+mm
+    }
+    currentDate = yyyy+'-'+mm+'-'+dd;
+    return currentDate;
+}
+
+const parseIsoDateToString = (iso, include_seconds=true) => {
+    const date = new Date(iso);
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let dt = date.getDate();
+
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
+
+    if (dt < 10) {
+        dt = '0' + dt;
+    }
+    if (month < 10) {
+        month = '0' + month;
+    }
+    if (second < 10) {
+        second = '0' + second;
+    }
+    if (hour < 10){
+        hour = '0' + hour;
+    }
+    if (minute < 10){
+        minute = '0' + minute;
+    }
+    if (!include_seconds){
+        const formattedDate = `${year}-${month}-${dt}_${hour}:${minute}`;
+        return formattedDate;
+    }
+    const formattedDate = `[${year}-${month}-${dt}] [${hour}:${minute}:${second}]`;
+    return formattedDate;
+};
+
+export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize, getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject, parseIsoDateToString};
