@@ -509,7 +509,7 @@ class Scheduler extends Component {
             else if(event.target.value === 'tomorrow') {
                 this.fetchVisitData(tomorrow)
             }
-        this.setState({ value: event.target.value });
+        this.setState({ value: event.target.value, position: null });
     };
 
     // handleChange = name => event => {
@@ -612,6 +612,7 @@ class Scheduler extends Component {
         else {
             this.setState({
                 [name]: newValue,
+                position: null
             });
         }
 
