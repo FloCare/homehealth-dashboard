@@ -8,6 +8,8 @@ import {
 } from 'react-admin';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Autosuggest from 'react-autosuggest';
 import match from 'autosuggest-highlight/match';
@@ -92,7 +94,7 @@ const styles = theme => ({
         paddingTop: 0.1,
         paddingLeft: 0.1,
         paddingBottom: 0.1,
-        height: '5vh'
+        height: '7vh',
     },
     listItemButtonStyle: {
         '&:hover': {
@@ -106,11 +108,14 @@ const styles = theme => ({
         display: 'inline-flex',
     },
     disciplineBkgColor: {
-        backgroundColor: '#D3D3D3'
+        backgroundColor: '#F6F6F6'
     },
     disciplineLabelStyle: {
         lineHeight: '30px',
         fontSize: 12
+    },
+    radioMarginStyle: {
+        marginLeft: -4
     },
     chipStyle: {
         margin: theme.spacing.unit,
@@ -236,6 +241,7 @@ function getSuggestionValue(suggestion) {
 class Scheduler extends Component {
 
     state = {
+        value: 'today',
         users: [],
         userDetailsMap: {},
         userIDNameMap: {},
@@ -290,7 +296,6 @@ class Scheduler extends Component {
 
     async fetchVisitData(date) {
         const {checkedMap} = this.state;
-        console.log(checkedMap);
         var isCheckedMapEmpty = this.isEmpty(checkedMap);
         var formattedDate = date;
         if(date === undefined) {
@@ -323,6 +328,10 @@ class Scheduler extends Component {
                         nowUtc.getHours() : nowUtc.getHours();
                     var mi = nowUtc.getMinutes() < 10 ? '0' +
                         nowUtc.getMinutes() : nowUtc.getMinutes();
+                    if(plannedStartTime === null) {
+                        hh = '00';
+                        mi = '00';
+                    }
                     var res = resp[i];
                     var lat = res.episode.patient.address.latitude;
                     var lng = res.episode.patient.address.longitude;
@@ -350,6 +359,10 @@ class Scheduler extends Component {
                         nowUtc.getHours() : nowUtc.getHours();
                     var mi = nowUtc.getMinutes() < 10 ? '0' +
                         nowUtc.getMinutes() : nowUtc.getMinutes();
+                    if(plannedStartTime === null) {
+                        hh = '00';
+                        mi = '00';
+                    }
                     tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
                     tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
                         lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
@@ -487,21 +500,33 @@ class Scheduler extends Component {
         }
     };
 
-    handleChange = name => event => {
-        var formattedDate = getDateFromDateTimeObject();
-        var tomorrow = getTomorrowDateFromDateTimeObject();
-        if(name === 'isToday' && event.target.checked) {
-            this.fetchVisitData(formattedDate)
-            this.setState({ [name]: event.target.checked });
-            this.setState({ 'isTomorrow': false });
-        }
-        else if(name === 'isTomorrow' && event.target.checked) {
-            this.fetchVisitData(tomorrow)
-            this.setState({ [name]: event.target.checked });
-            this.setState({ 'isToday': false });
-        }
-        this.setState({ [name]: event.target.checked, filteredVisitsMap: {} });
+    handleChange = event => {
+            var formattedDate = getDateFromDateTimeObject();
+            var tomorrow = getTomorrowDateFromDateTimeObject();
+            if(event.target.value === 'today') {
+                this.fetchVisitData(formattedDate)
+            }
+            else if(event.target.value === 'tomorrow') {
+                this.fetchVisitData(tomorrow)
+            }
+        this.setState({ value: event.target.value });
     };
+
+    // handleChange = name => event => {
+    //     var formattedDate = getDateFromDateTimeObject();
+    //     var tomorrow = getTomorrowDateFromDateTimeObject();
+    //     if(name === 'isToday' && event.target.checked) {
+    //         this.fetchVisitData(formattedDate)
+    //         this.setState({ [name]: event.target.checked });
+    //         this.setState({ 'isTomorrow': false });
+    //     }
+    //     else if(name === 'isTomorrow' && event.target.checked) {
+    //         this.fetchVisitData(tomorrow)
+    //         this.setState({ [name]: event.target.checked });
+    //         this.setState({ 'isToday': false });
+    //     }
+    //     this.setState({ [name]: event.target.checked, filteredVisitsMap: {} });
+    // };
 
     handleToggle = value => () => {
         const {checkedMap, users, filteredVisitsMap, visitsMap} = this.state;
@@ -632,7 +657,7 @@ class Scheduler extends Component {
         var keys = Object.keys(checkedMap);
         var users = this.state.users;
         return (<div >
-            {this.renderDateView()}
+            {/*{this.renderDateView()}*/}
             {(keys.length !== users.length && !keys.includes("All Staff")) ? keys.map(value => (
                 <Chip
                     label={userIDNameMap[`${value}`]}
@@ -709,6 +734,22 @@ class Scheduler extends Component {
         for(var i=0 ; i<final.length ; i++) {
             if((final[i] === '| ' && i === 0) || final[i] === undefined)
                 continue;
+            if(i === final.length-1 && final[i].includes('|')) {
+                var formattedTime = final[i].trim().substring(0, final[i].trim().length - 2);
+                if(formattedTime.includes('00:00')) {
+                    label += formattedTime.replace(/0/g, '-');
+                    continue;
+                }
+                else {
+                    label += formattedTime;
+                    continue;
+                }
+
+            }
+            if(final[i].includes('00:00')) {
+                label += final[i].replace(/0/g, '-');
+                continue;
+            }
             label += final[i];
         }
         return label;
@@ -792,14 +833,14 @@ class Scheduler extends Component {
                                     }
                                     else if(i % 3 === 1 && checkedMap[strSplit[i-1]] != undefined) {
                                         var r = s.replace('-', ':');
-                                        final[k] = r+ ' ';
+                                        final[k] = r+ ' | ';
                                     }
                                     else if(i % 3 === 2 && checkedMap[strSplit[i-2]] != undefined) {
                                         if(s === 'true') {
                                             final[k] = '✓ ';
                                         }
                                         else {
-                                            final[k] = '⨉ ';
+                                            final[k] = ' ';
                                         }
                                     }
                                     k++;
@@ -828,6 +869,10 @@ class Scheduler extends Component {
                                 >
                                 </Marker>);
                             } else {
+                                var visitTime = filteredVisitsMap[value][j].visitTime;
+                                if(visitTime.includes('00:00')) {
+                                    visitTime = visitTime.replace(/0/g, '-');
+                                }
                                 if(filteredVisitsMap[value][j].isDone) {
                                     markers.push(<Marker
                                         position={{
@@ -837,7 +882,7 @@ class Scheduler extends Component {
                                         key={key}
                                         label={{
                                             text: '✓  ' +userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
-                                            userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + '\n ' + filteredVisitsMap[value][j].visitTime,
+                                            userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + '\n ' + visitTime,
                                             color: "white",
                                             fontSize: "10px",
                                             textAlign: "left"
@@ -861,8 +906,8 @@ class Scheduler extends Component {
                                         }}
                                         key={key}
                                         label={{
-                                            text: '⨉ ' + userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
-                                            userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' ' + filteredVisitsMap[value][j].visitTime,
+                                            text: ' ' + userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
+                                            userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' ' + visitTime,
                                             color: "white",
                                             fontSize: "10px",
                                             textAlign: "left"
@@ -902,29 +947,45 @@ class Scheduler extends Component {
                 <div className={classes.topViewStyle}>
                     <FormLabel component="legend">Date:</FormLabel>
                     <div className={classes.dateFilterPaddingStyle}>
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={this.state.isToday}
-                                    onChange={this.handleChange('isToday')}
-                                    value="isToday"
-                                    color="primary"
-                                />
-                            }
-                            label="Today"
-                        />
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={this.state.isTomorrow}
-                                    onChange={this.handleChange('isTomorrow')}
-                                    value="isTomorrow"
-                                    color="primary"
-                                />
-                            }
-                            label="Tomorrow"
-                        />
+                    <RadioGroup
+                        aria-label="Gender"
+                        name="gender1"
+                        className={classes.group}
+                        value={this.state.value}
+                        onChange={this.handleChange}
+                        row={true}
+                    >
+                        <FormControlLabel classes={{
+                            root: classes.radioMarginStyle
+                        }} value="today" control={<Radio color="primary" />} label="Today" />
+                        <FormControlLabel value="tomorrow" control={<Radio color="primary" />} label="Tomorrow" />
+                    </RadioGroup>
                     </div>
+                    {/*<FormLabel component="legend">Date:</FormLabel>*/}
+                    {/*<div className={classes.dateFilterPaddingStyle}>*/}
+                        {/*<FormControlLabel*/}
+                            {/*control={*/}
+                                {/*<Checkbox*/}
+                                    {/*checked={this.state.isToday}*/}
+                                    {/*onChange={this.handleChange('isToday')}*/}
+                                    {/*value="isToday"*/}
+                                    {/*color="primary"*/}
+                                {/*/>*/}
+                            {/*}*/}
+                            {/*label="Today"*/}
+                        {/*/>*/}
+                        {/*<FormControlLabel*/}
+                            {/*control={*/}
+                                {/*<Checkbox*/}
+                                    {/*checked={this.state.isTomorrow}*/}
+                                    {/*onChange={this.handleChange('isTomorrow')}*/}
+                                    {/*value="isTomorrow"*/}
+                                    {/*color="primary"*/}
+                                {/*/>*/}
+                            {/*}*/}
+                            {/*label="Tomorrow"*/}
+                        {/*/>*/}
+                    {/*</div>*/}
                     <div className={classes.searchBoxStyle}>
                         <Autosuggest
                             {...autosuggestProps}
@@ -978,8 +1039,9 @@ class Scheduler extends Component {
                                         primary: classes.dense
                                     }} inset primary="All Staff" />
                                 </ListItem>
-                                {(this.state.disciplines).map(value => (
-                                    <div>
+                                {(this.state.disciplines).map(value => {
+                                    if(value.role != 'Admin')
+                                    return (<div>
                                         <List
                                             component="nav"
                                             dense={false}
@@ -988,7 +1050,7 @@ class Scheduler extends Component {
                                                 root: classes.disciplineLabelStyle
                                             }} component="div">{value.role}s</ListSubheader>}
                                         />
-                                        <List component="div" disablePadding >
+                                        <List component="div" disablePadding>
                                             {(this.state.userRoleDetailsMap[value.role]).map(user => (
                                                 <ListItem
                                                     classes={{
@@ -1007,12 +1069,12 @@ class Scheduler extends Component {
                                                     />
                                                     <ListItemText classes={{
                                                         primary: classes.dense
-                                                    }} inset primary={`${user.name}`} />
+                                                    }} inset primary={`${user.name}`}/>
                                                 </ListItem>
                                             ))}
                                         </List>
-                                    </div>
-                                ))}
+                                    </div>)
+                                })}
                             </List>
                         </Paper>
 
