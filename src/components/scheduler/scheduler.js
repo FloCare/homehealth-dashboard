@@ -699,13 +699,10 @@ class Scheduler extends Component {
         </div>);
     }
 
-    handleToggleOpen(lat, lng){
+    handleMarkerClick(value){
 
         this.setState({
-            position : {
-                lat : lat,
-                lng : lng
-            }
+            position : value
         })
     }
 
@@ -851,7 +848,7 @@ class Scheduler extends Component {
                                         lat: lat,
                                         lng: long
                                     }}
-                                    key={key}
+                                    key={value}
                                     label={{
                                         text: markerLabel,
                                         color: "white",
@@ -859,7 +856,7 @@ class Scheduler extends Component {
                                         textAlign: "left"
                                     }}
                                     icon={ count === 1 ? visitMarkerLabel1x : (count % 2 === 0 ? visitMarkerLabel2x : visitMarkerLabel3x)}
-                                    // onClick={() => this.handleToggleOpen(lat, long)}
+                                    onClick={() => this.handleMarkerClick(value)}
                                     // onClick={(e) => {
                                     //     console.log(e);
                                     //     markersMap[key] = true;
@@ -867,6 +864,12 @@ class Scheduler extends Component {
                                     // }}
 
                                 >
+                                    {
+                                        (this.state.position === value) &&
+                                        <InfoWindow>
+                                            <span>{filteredVisitsMap[value][j].name}</span>
+                                        </InfoWindow>
+                                    }
                                 </Marker>);
                             } else {
                                 var visitTime = filteredVisitsMap[value][j].visitTime;
@@ -879,7 +882,7 @@ class Scheduler extends Component {
                                             lat: filteredVisitsMap[value][j].latitude,
                                             lng: filteredVisitsMap[value][j].longitude
                                         }}
-                                        key={key}
+                                        key={value}
                                         label={{
                                             text: '✓  ' +userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
                                             userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + '\n ' + visitTime,
@@ -888,7 +891,7 @@ class Scheduler extends Component {
                                             textAlign: "left"
                                         }}
                                         icon={visitMarkerLabel1x}
-                                        // onClick={() => this.handleToggleOpen(lat, long)}
+                                        onClick={() => this.handleMarkerClick(value)}
                                         // onClick={(e) => {
                                         //     console.log(e);
                                         //     markersMap[key] = true;
@@ -896,6 +899,12 @@ class Scheduler extends Component {
                                         // }}
 
                                     >
+                                        {
+                                            (this.state.position === value) &&
+                                            <InfoWindow>
+                                                <span>{filteredVisitsMap[value][j].name}</span>
+                                            </InfoWindow>
+                                        }
                                     </Marker>);
                                 }
                                 else {
@@ -904,7 +913,7 @@ class Scheduler extends Component {
                                             lat: filteredVisitsMap[value][j].latitude,
                                             lng: filteredVisitsMap[value][j].longitude
                                         }}
-                                        key={key}
+                                        key={value}
                                         label={{
                                             text: ' ' + userDetailsMap[filteredVisitsMap[value][j].userID][0].firstName.charAt(0) +
                                             userDetailsMap[filteredVisitsMap[value][j].userID][0].lastName.charAt(0) + ' ' + visitTime,
@@ -913,7 +922,7 @@ class Scheduler extends Component {
                                             textAlign: "left"
                                         }}
                                         icon={visitMarkerLabel1x}
-                                        // onClick={() => this.handleToggleOpen(lat, long)}
+                                        onClick={() => this.handleMarkerClick(value)}
                                         // onClick={(e) => {
                                         //     console.log(e);
                                         //     markersMap[key] = true;
@@ -921,6 +930,12 @@ class Scheduler extends Component {
                                         // }}
 
                                     >
+                                        {
+                                            (this.state.position === value) &&
+                                            <InfoWindow>
+                                                <span>{filteredVisitsMap[value][j].name}</span>
+                                            </InfoWindow>
+                                        }
                                     </Marker>);
                                 }
                             }
