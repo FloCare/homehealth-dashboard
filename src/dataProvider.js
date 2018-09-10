@@ -452,7 +452,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             contact_no: user.contact_no,
                             user_role: user.user_role,
                             username: user.username,
-                            displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
+                            displayname: `${user.first_name}  ${user.last_name}, ${user.user_role}`,
                             is_active: user.is_active
                         });
                     });
@@ -544,7 +544,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             email: user.email,
                             contact_no: user.contact_no,
                             username: user.username,
-                            displayname: `${user.last_name}  ${user.first_name}, ${user.user_role}`,
+                            displayname: `${user.first_name}  ${user.last_name}, ${user.user_role}`,
                         });
                     });
                     return {
