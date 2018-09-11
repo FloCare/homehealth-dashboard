@@ -78,7 +78,9 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             const query = {
                 format: 'json',
                 query: q,
-                size: (q === undefined) ? 100: perPage
+                size: (q === undefined) ? 100: perPage,
+                sort: field,
+                order: order
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
             const options = {};
