@@ -104,7 +104,7 @@ const renderReportLink = (record) => {
 };
 
 export const UserList = (props) => (
-    <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false}>
+    <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
         <Datagrid>
             <TextField label="First Name" source="first_name" />
             <TextField label="Last Name" source="last_name" />
