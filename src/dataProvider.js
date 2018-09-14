@@ -14,9 +14,9 @@ import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
 import {parseIsoDateToString} from './utils/parsingUtils';
 
-export const API_URL = 'https://app-11293.on-aptible.com';
+//export const API_URL = 'https://app-11293.on-aptible.com';
 //export const API_URL = 'https://app-9781.on-aptible.com';
-//export const API_URL = 'http://localhost:8000';
+export const API_URL = 'http://localhost:8000';
 const REFRESH_API_URL = 'http://localhost:8000/api-token-refresh/';
 ReactGA.initialize('UA-123730827-1');
 var nJwt = require('njwt');
@@ -92,6 +92,10 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'phi':
                     ReactGA.pageview('/phi/list');
                     return { url: `${API_URL}/${resource}/v1.0/patients/?${stringify(query)}`, options};
+                    //Karthik
+                case 'stops':
+                    ReactGA.pageview('/stops/list');
+                    return { url: `${API_URL}/phi/v1.0/stops/?${stringify(query)}`, options};
                 case 'physicians':
                     ReactGA.pageview('/physicians/list');
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
@@ -123,6 +127,9 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
                 case 'physicians':
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
+                    //Karthik
+                case 'stops':
+                    return { url: `${API_URL}/phi/v1.0/stops/${params.id}/`, options };
                 case 'users':
                     return { url: `${API_URL}/users/v1.0/staff/${params.id}/`, options };
                 case 'reports':
@@ -256,6 +263,36 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         url: `http://localhost:8000/mock/v1.0/mock/${params.data.npiID}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody)},
                     }
+                    // Karthik
+                case 'stops':
+                    var body = {};
+                    const updFields = params.data.updatedFields;
+                    if (updFields.indexOf('address') > -1) {
+                        params.data.address = {
+                            "streetAddress": localStorage.getItem('streetAddress'),
+                            "zipCode": localStorage.getItem('postalCode'),
+                            "city": localStorage.getItem('cityName'),
+                            "state": localStorage.getItem('stateName'),
+                            "country": localStorage.getItem('countryName'),
+                            "latitude": localStorage.getItem('latitude'),
+                            "longitude": localStorage.getItem('longitude')
+                        };
+                    }
+                    else {
+                        params.data.address = {};
+                    }
+                    body.address = params.data.address;
+                    body.name = params.data.name;
+                    body.contactNumber = params.data.contactNumber;
+                    const stopsUpdateBody = {
+                        name: params.data.name,
+                        contactNumber: params.data.contactNumber,
+                        address: params.data.address
+                    }
+                    return{
+                        url: `http://localhost:8000/phi/v1.0/stops/${params.data.id}/`,
+                        options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
+                    }
                 case 'users':
                     var userData = undefined;
                     if(params.data.password === '') {
@@ -379,6 +416,44 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         url: `${API_URL}/users/v1.0/staff/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(userRequest) },
                     };
+                    // Karthik
+                case 'stops':
+
+                    if(localStorage.getItem('streetAddress') === null || localStorage.getItem('latitude') === null ||
+                        localStorage.getItem('longitude') === null) {
+                        throw new Error(`Select street address from the dropdown`);
+                        return;
+                    }
+                    params.data.address = {
+                        "streetAddress": localStorage.getItem('streetAddress'),
+                        "zipCode": localStorage.getItem('postalCode'),
+                        "city": localStorage.getItem('cityName'),
+                        "state": localStorage.getItem('stateName'),
+                        "country": localStorage.getItem('countryName'),
+                        "latitude": localStorage.getItem('latitude'),
+                        "longitude": localStorage.getItem('longitude')
+                    };
+                    console.log(params.data.address);
+                    const placeRequest = {
+                        name : params.data.name,
+                        contactNumber : params.data.contactNumber,
+                        address: params.data.address
+                    };
+                    ReactGA.event({
+                        category: 'PlaceCreated',
+                        action: 'place_created'
+                    });
+                    localStorage.removeItem('postalCode');
+                    localStorage.removeItem('cityName');
+                    localStorage.removeItem('stateName');
+                    localStorage.removeItem('countryName');
+                    localStorage.removeItem('latitude');
+                    localStorage.removeItem('longitude');
+                    localStorage.removeItem('streetAddress');
+                    return {
+                        url: `${API_URL}/phi/v1.0/stops/?format=json`,
+                        options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(placeRequest) },
+                    };
 
                 case 'physicians':
                     const request = {
@@ -444,6 +519,27 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         case GET_LIST:
             // console.log('EXECUTED GET_LIST for:', resource);
             switch(resource) {
+                // Karthik
+                case 'stops':
+                    const stopsData = json.map(stop => {
+                        return ({
+                            id: stop.stopID,
+                            name: stop.name,
+                            contactNumber: stop.contactNumber,
+                            displayAddress: `${stop.address.streetAddress},  ${stop.address.city}, ${stop.address.state}`,
+                            streetAddress: stop.address.streetAddress,
+                            zipCode: stop.address.zipCode,
+                            city: stop.address.city,
+                            state: stop.address.state,
+                            country: stop.address.country,
+                            latitude: stop.address.latitude,
+                            longitude: stop.address.longitude,
+                        });
+                    });
+                    return {
+                        data: stopsData,
+                        total: 20,
+                    };
                 case 'users':
                     const usersData = json.users.map(user => {
                         return ({
@@ -594,6 +690,22 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "physician_id": json.physicianId,
                         }
                     };
+                    // Karthik
+                case 'stops':
+                    return {
+                        data: {
+                            "id": json.stopID,
+                            "name": json.name,
+                            "contactNumber": json.contactNumber,
+                            "streetAddress": json.address.streetAddress,
+                            "latitude": json.address.latitude,
+                            "longitude": json.address.longitude,
+                            "city": json.address.city,
+                            "state": json.address.state,
+                            "country": json.address.country,
+                            "zipCode": json.address.zipCode,
+                        }
+                    };
                 case 'physicians':
                     return {
                         data: {
@@ -710,9 +822,9 @@ export default (type, resource, params) => {
             return convertHTTPResponseToDataProvider(response, type, resource, params)
         })
         .catch((error) => {
-            if(error.toString().includes('HttpError: Unauthorized')) {
-                throw new Error('Timed out, please Login')
-            }
+            // if(error.toString().includes('HttpError: Unauthorized')) {
+            //     throw new Error('Timed out, please Login')
+            // }
             // Todo: Remove this hack
             // localStorage.removeItem('access_token');
             // window.location.reload();
