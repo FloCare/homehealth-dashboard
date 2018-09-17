@@ -95,7 +95,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     //Karthik
                 case 'stops':
                     ReactGA.pageview('/stops/list');
-                    return { url: `${API_URL}/phi/v1.0/stops/?${stringify(query)}`, options};
+                    return { url: `${API_URL}/phi/v1.0/places/?${stringify(query)}`, options};
                 case 'physicians':
                     ReactGA.pageview('/physicians/list');
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
@@ -129,7 +129,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
                     //Karthik
                 case 'stops':
-                    return { url: `${API_URL}/phi/v1.0/stops/${params.id}/`, options };
+                    return { url: `${API_URL}/phi/v1.0/places/${params.id}/`, options };
                 case 'users':
                     return { url: `${API_URL}/users/v1.0/staff/${params.id}/`, options };
                 case 'reports':
@@ -283,14 +283,21 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     }
                     body.address = params.data.address;
                     body.name = params.data.name;
-                    body.contactNumber = params.data.contactNumber;
+                    body.contactNumber = params.data.contactNumber === '' ? null : params.data.contactNumber;
                     const stopsUpdateBody = {
                         name: params.data.name,
                         contactNumber: params.data.contactNumber,
                         address: params.data.address
                     }
+                    localStorage.removeItem('postalCode');
+                    localStorage.removeItem('cityName');
+                    localStorage.removeItem('stateName');
+                    localStorage.removeItem('countryName');
+                    localStorage.removeItem('latitude');
+                    localStorage.removeItem('longitude');
+                    localStorage.removeItem('streetAddress');
                     return{
-                        url: `http://localhost:8000/phi/v1.0/stops/${params.data.id}/`,
+                        url: `http://localhost:8000/phi/v1.0/places/${params.data.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     }
                 case 'users':
@@ -451,7 +458,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('longitude');
                     localStorage.removeItem('streetAddress');
                     return {
-                        url: `${API_URL}/phi/v1.0/stops/?format=json`,
+                        url: `${API_URL}/phi/v1.0/places/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(placeRequest) },
                     };
 
@@ -487,6 +494,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
                     };
 
+                case 'stops':
+                    return {
+                        url: `${API_URL}/phi/v1.0/places/${params.id}/`,
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
+                    };
                 case 'phi':
                     ReactGA.event({
                       category: 'PatientDeleted',
@@ -523,7 +535,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                 case 'stops':
                     const stopsData = json.map(stop => {
                         return ({
-                            id: stop.stopID,
+                            id: stop.placeID,
                             name: stop.name,
                             contactNumber: stop.contactNumber,
                             displayAddress: `${stop.address.streetAddress},  ${stop.address.city}, ${stop.address.state}`,
@@ -694,7 +706,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                 case 'stops':
                     return {
                         data: {
-                            "id": json.stopID,
+                            "id": json.placeID,
                             "name": json.name,
                             "contactNumber": json.contactNumber,
                             "streetAddress": json.address.streetAddress,
