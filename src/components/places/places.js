@@ -17,7 +17,7 @@ const PlacesPagination = () => {
 
 export const PlacesList = (props) => (
     props.options.label = 'Stops',
-    <List {...props} title="List of stops" pagination={<PlacesPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
+    <List {...props} title="List of places" pagination={<PlacesPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
         <Datagrid>
             <TextField source="name" />
             <TextField source="contactNumber" />
@@ -35,7 +35,7 @@ const styles = {
 
 export const PlacesEdit = withStyles(styles)(({ classes, ...props }) => {
     return (
-        <Edit title="Edit Stop" {...props}>
+        <Edit title="Edit Place" {...props}>
             <EditForm {...props} />
         </Edit>
     );
@@ -43,7 +43,7 @@ export const PlacesEdit = withStyles(styles)(({ classes, ...props }) => {
 
 
 export const PlacesCreate = withStyles(styles)(({ classes, ...props }) => (
-    <Create {...props} title="Add Stop">
+    <Create {...props} title="Add Place">
         <CreateForm {...props} />
     </Create>
 ));

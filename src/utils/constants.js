@@ -1,6 +1,7 @@
 export const MENU_ITEM_PHI = 'Patients';
 export const MENU_ITEM_USERS = 'Staff';
-export const MENU_ITEM_STOPS = 'Stops';
+export const MENU_ITEM_STOPS = 'Places';
+export const MENU_ITEM_SCHEDULER = 'Scheduler';
 
 export const RESOURCE_PHI = 'phi';
 export const RESOURCE_USERS = 'users';
