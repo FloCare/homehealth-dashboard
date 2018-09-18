@@ -28,10 +28,10 @@ const PatientPagination = () => {
 
 export const PatientList = (props) => (
     props.options.label = 'Patients',
-    <List {...props} title="List of patients" pagination={<PatientPagination />} bulkActions={false}>
+    <List {...props} title="List of patients" pagination={<PatientPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
         <Datagrid>
-            <TextField source="firstName" />
             <TextField source="lastName" />
+            <TextField source="firstName" />
             <ReferenceArrayField
                         label="Staff" reference="users" source="userIds">
                         <SingleFieldList>
