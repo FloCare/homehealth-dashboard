@@ -129,6 +129,7 @@ class ShowReport extends Component{
                         <ArrayField source="visits" label="" className={this.props.classes.container}>
                             <Datagrid>
                                 <TextField source="name" label="Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false} />
+                                <TextField source="dateOfVisit" label="Visit Date" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
                                 <FreeTextField source="address" label="Address" sortable={false} headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.freeTextContainerStyle} />
                                 <TextField source="odometerStart" label="Odometer Start Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
                                 <TextField source="odometerEnd" label="Odometer End Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>

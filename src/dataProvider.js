@@ -1,4 +1,5 @@
 // in src/dataProvider
+import moment from 'moment/moment';
 import {
     GET_LIST,
     GET_ONE,
@@ -774,6 +775,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 'visitID': item.visit.visitID ? item.visit.visitID : '',
                                 'name': item.visit.name ? item.visit.name : '',
                                 'address': item.visit.address ? item.visit.address : '',
+                                'dateOfVisit': item.visit.midnightEpochOfVisit ? moment(item.visit.midnightEpochOfVisit, 'x').format("MM-DD-YYYY"): '',
                                 'odometerStart': odometerStart,
                                 'odometerEnd': odometerEnd,
                                 'milesComments': milesComments,
