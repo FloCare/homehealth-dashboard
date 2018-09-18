@@ -20,8 +20,8 @@ export const PlacesList = (props) => (
     <List {...props} title="List of places" pagination={<PlacesPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
         <Datagrid>
             <TextField source="name" />
-            <TextField source="contactNumber" />
-            <TextField source="displayAddress" label="Address"/>
+            <TextField source="contactNumber" sortable={false}/>
+            <TextField source="displayAddress" label="Address" sortable={false}/>
             <EditButton />
         </Datagrid>
     </List>
