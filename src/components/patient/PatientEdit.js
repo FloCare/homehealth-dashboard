@@ -189,7 +189,7 @@ class EditForm extends Component {
                      options={{ format: 'MM-DD-YYYY', openToYearSelection: true, clearable: true, keyboard: true, mask: [/[0-1]/, /[0-9]/, '-', /[0-3]/, /[0-9]/, '-', /[1-2]/, /\d/, /\d/, /\d/] }}
                      onChange={this.onChange} />
                 <Heading text="Care Team"/>
-                <ReferenceArrayInput record={this.props.record} label="Staff" source="userIds" reference="users" sort={{ field: 'last_name', order: 'DESC' }}>
+                <ReferenceArrayInput record={this.props.record} label="Staff" source="userIds" reference="users" sort={{ field: 'first_name', order: 'ASC' }}>
                     <SelectArrayInput optionText="displayname" optionValue="id" />
                 </ReferenceArrayInput>
                 <div className={classes.root} >

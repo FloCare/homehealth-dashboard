@@ -108,10 +108,10 @@ export const UserList = (props) => (
         <Datagrid>
             <TextField label="First Name" source="first_name" />
             <TextField label="Last Name" source="last_name" />
-            <TextField label="Role" source="user_role" />
-            <EmailField label="email" source="email" />
+            <TextField label="Role" source="user_role" sortable={false}/>
+            <EmailField label="email" source="email" sortable={false}/>
             <FunctionField label="View Reports" render={renderReportLink} />
-            <TextField label="Phone Number" source="contact_no" />
+            <TextField label="Phone Number" source="contact_no" sortable={false}/>
             <EditButton />
         </Datagrid>
     </List>
