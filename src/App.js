@@ -34,14 +34,14 @@ const App = () => (
         dataProvider={dataProvider}
         appLayout={appLayout}
     >
-        <Resource name={RESOURCE_PHI} options={{label: 'Patients'}} list={PatientList} edit={PatientEdit} create={PatientCreate} icon={PatientIcon} />
-        <Resource name={RESOURCE_USERS} options={{label: 'Staff'}} list={UserList} edit={StaffEdit} create={UserCreate} icon={UserIcon} />
-        <Resource name={RESOURCE_STOPS} options={{label: 'Stops'}} list={PlacesList} edit={PlacesEdit} create={PlacesCreate} icon={UserIcon} />
+        <Resource name={RESOURCE_PHI} options={{label: 'Patients'}} list={PatientList} edit={PatientEdit} create={PatientCreate} />
+        <Resource name={RESOURCE_USERS} options={{label: 'Staff'}} list={UserList} edit={StaffEdit} create={UserCreate} />
+        <Resource name={RESOURCE_STOPS} options={{label: 'Stops'}} list={PlacesList} edit={PlacesEdit} create={PlacesCreate} />
         <Resource name={RESOURCE_PHYSICIANS}
                   options={{label: 'Physicians'}}
                   create={PhysicianCreate}
                   list={PhysicianList}
-                  icon={UserIcon} />
+                   />
         <Resource name="scheduler"
                   options={{label: 'Scheduler'}}
                   list={Scheduler}

@@ -297,7 +297,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('longitude');
                     localStorage.removeItem('streetAddress');
                     return{
-                        url: `http://localhost:8000/phi/v1.0/places/${params.data.id}/`,
+                        url: `${API_URL}/phi/v1.0/places/${params.data.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     }
                 case 'users':

@@ -4,8 +4,9 @@ import {MenuItemLink, getResources} from 'react-admin';
 import {withRouter} from 'react-router-dom';
 import {Responsive} from 'react-admin';
 import PatientIcon from '@material-ui/icons/Book';
+import PlaceIcon from '@material-ui/icons/Place';
 import UserIcon from '@material-ui/icons/Group';
-import {MENU_ITEM_USERS, MENU_ITEM_PHI} from '../utils/constants';
+import {MENU_ITEM_USERS, MENU_ITEM_PHI, MENU_ITEM_STOPS} from '../utils/constants';
 
 // Todo: 'Responsive' component might need tweaking
 const appMenu = ({ resources, onMenuClick, logout }) => (
@@ -19,6 +20,9 @@ const appMenu = ({ resources, onMenuClick, logout }) => (
             } else if (resource.name === 'users'){
                 label = MENU_ITEM_USERS;
                 icon = <UserIcon />;
+            } else if (resource.name === 'stops'){
+                label = MENU_ITEM_STOPS;
+                icon = <PlaceIcon />;
             } else {
                 label = resource.name.charAt(0).toUpperCase() + resource.name.slice(1);
                 icon = <UserIcon />;
