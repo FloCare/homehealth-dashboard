@@ -77,7 +77,6 @@ class EditForm extends Component {
       };
 
     onSubmit(data, redirect){
-        console.log(data);
         const {startUndoable} = this.props;
 
         data.updatedFields = this.state.updatedFields;
