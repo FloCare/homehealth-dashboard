@@ -14,11 +14,11 @@ import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
 import {parseIsoDateToString} from './utils/parsingUtils';
+import {BASE_URL} from './utils/constants';
 
-//export const API_URL = 'https://app-11293.on-aptible.com';
-export const API_URL = 'https://app-9781.on-aptible.com';
-//export const API_URL = 'http://localhost:8000';
-const REFRESH_API_URL = 'http://localhost:8000/api-token-refresh/';
+export const API_URL = BASE_URL;
+const REFRESH_API_URL = `${BASE_URL}/api-token-refresh/`;
+
 ReactGA.initialize('UA-123730827-1');
 var nJwt = require('njwt');
 var EXPIRY_TIME_CHECK = 600000; // 10 minutes
@@ -102,13 +102,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
                 case 'reports':
                     ReactGA.pageview('/reports/list');
-                    // console.log('======================');
-                    // console.log('Extracting userID out of URL ...');
-                    // console.log('======================');
                     const userID = getQueryStringValue('userID');
-                    // console.log('======================');
-                    // console.log('userID:', userID);
-                    // console.log('======================');
                     query.userID = userID;
                     return {url: `${API_URL}/phi/v1.0/reports/?${stringify(query)}`, options};
                 default:
@@ -262,8 +256,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return{
                         url: `${API_URL}/phi/v1.0/physicians/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody), headers: new Headers({Authorization: 'Token '+ accessToken})},
-                    }
-                    // Karthik
+                    };
                 case 'stops':
                     var body = {};
                     const updFields = params.data.updatedFields;
