@@ -116,6 +116,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         }
 
         case GET_ONE:
+            console.log('INSIDE GET ONE');
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ accessToken});
             switch(resource) {
@@ -251,17 +252,16 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     };
                 case 'physicians':
                     const updateBody = {
-                        physician: {
                             npi : params.data.npiID,
                             firstName : params.data.firstName,
                             lastName : params.data.lastName,
                             phone1 : params.data.phone1,
                             phone2 : params.data.phone2,
                             fax : params.data.fax,
-                        }};
+                        };
                     return{
-                        url: `http://localhost:8000/mock/v1.0/mock/${params.data.npiID}/`,
-                        options: { method: 'PUT', body: JSON.stringify(updateBody)},
+                        url: `${API_URL}/phi/v1.0/physicians/${params.id}/`,
+                        options: { method: 'PUT', body: JSON.stringify(updateBody), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     }
                     // Karthik
                 case 'stops':
@@ -493,6 +493,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         url: `${API_URL}/${resource}/v1.0/staff/${params.id}/`,
                         options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
                     };
+                case 'physicians':
+                    return {
+                        url: `${API_URL}/phi/v1.0/physicians/${params.id}/`,
+                        options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
+                    };
 
                 case 'stops':
                     return {
@@ -722,6 +727,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     return {
                         data: {
                             "id": json.physicianID,
+                            "npi": json.npi,
                             "firstName": json.firstName,
                             "lastName": json.lastName,
                             "phone1": json.phone1,

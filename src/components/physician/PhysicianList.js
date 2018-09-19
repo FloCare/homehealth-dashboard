@@ -13,6 +13,7 @@ export const PhysicianList = (props) => (
       <TextField source="firstName" label="First Name"/>
       <TextField source="lastName" label="Last Name"/>
       <TextField source="phone1" label="Office Phone" sortable={false}/>
+        <EditButton />
     </Datagrid>
   </List>
 )

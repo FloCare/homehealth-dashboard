@@ -17,6 +17,25 @@ const Heading = props => {
   )
 }
 
+const validatePhysicianCreation = (values) => {
+    const errors = {};
+    if (!values.name) {
+        errors.name = ['Required'];
+    }
+    const contactNumber = values.phone2;
+    if (contactNumber &&  isNaN(contactNumber)) {
+        errors.phone2 = ['Contact Number can only contain numerics'];
+    }
+    else if (contactNumber && contactNumber.length < 10) {
+        errors.phone2 = ['Contact Number too short'];
+    }
+    else if (contactNumber && contactNumber.length > 10) {
+        errors.phone2 = ['Contact Number too long'];
+    }
+    return errors
+};
+
+
 const styles = {
   inlineBlock: { display: 'inline-flex', alignItems: 'center' },
   inlineElementStyle: { marginRight: 20 }
@@ -133,7 +152,7 @@ export default class PhysicianCreate extends React.Component {
           cancelLabel={null}
         />
         <Create {...props} record={physicianData} title="Add Physician">
-          <SimpleForm toolbar={<PhysicianCreateToolbar/>} redirect="list">
+          <SimpleForm toolbar={<PhysicianCreateToolbar/>} validate={validatePhysicianCreation} redirect="list">
 
             <div style={styles.inlineBlock}>
               <TextInput source="npiID" label="NPI Id" style={styles.inlineElementStyle}
@@ -151,7 +170,7 @@ export default class PhysicianCreate extends React.Component {
                   <div style={styles.inlineBlock}>
                     <DisabledInput source="phone1" label="Phone1" style={styles.inlineElementStyle}/>
                     <DisabledInput source="fax" label="Fax No" style={styles.inlineElementStyle}/>
-                    <TextInput source="phone2" label="Phone2" />
+                    <TextInput source="phone2" label="Phone2 (Optional)" />
                   </div>
                 </div>
             }
