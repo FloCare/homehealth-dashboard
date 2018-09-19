@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "moment": "^2.22.2",
     "prop-types": "^15.6.2",
     "ra-core": "^2.1.0",
     "react": "^16.4.0",
@@ -30,4 +31,3 @@
     "react-google-maps": "9.4.5"
   }
 }
-
