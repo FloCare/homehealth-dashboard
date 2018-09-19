@@ -6,6 +6,7 @@ import { PatientList, PatientCreate, PatientEdit } from './components/patient/pa
 import { PlacesList, PlacesCreate, PlacesEdit } from './components/places/places';
 import PhysicianCreate from './components/physician/PhysicianCreate'
 import {PhysicianList} from './components/physician/PhysicianList'
+import {PhysicianEdit} from './components/physician/PhysicianEdit'
 import { UserList, StaffEdit } from './components/user/users';
 import UserCreate from './components/user/UserCreate';
 import authProvider from './authProvider';
@@ -40,6 +41,7 @@ const App = () => (
         <Resource name={RESOURCE_PHYSICIANS}
                   options={{label: 'Physicians'}}
                   create={PhysicianCreate}
+                  edit={PhysicianEdit}
                   list={PhysicianList}
                    />
         <Resource name="scheduler"
