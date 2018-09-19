@@ -775,17 +775,28 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 'totalMiles': totalMiles
                             });
                         });
+
                         // console.log('extracted innerData:', innerData);
                         if(innerData && innerData.length > 0){
+                            let totalMilesTravelled = 0;
+                            for (let i = 0; i < innerData.length; i++) {
+                                const miles = innerData[i].totalMiles;
+                                if (miles && parseFloat(miles)){
+                                    totalMilesTravelled += parseFloat(miles);
+                                }
+                            }
+
                             const userName = innerData[0].userName;
                             const reportName = parseIsoDateToString(innerData[0].reportCreatedAt, false);
                             const title = `${userName} ${reportName}_Miles_Report`;
+
                             const data = {
                                 id: innerData[0].reportID,
                                 userName: userName,
                                 reportName: reportName,
                                 title: title,
-                                visits: innerData
+                                visits: innerData,
+                                totalMilesTravelled: parseFloat(totalMilesTravelled).toFixed(2)
                             };
                             return {
                                 data: data
