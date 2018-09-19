@@ -116,7 +116,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
         }
 
         case GET_ONE:
-            console.log('INSIDE GET ONE');
             const options = {};
             options.headers = new Headers({Authorization: 'Token '+ accessToken});
             switch(resource) {
