@@ -1,4 +1,5 @@
 // in src/dataProvider
+import moment from 'moment/moment';
 import {
     GET_LIST,
     GET_ONE,
@@ -13,11 +14,11 @@ import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
 import {parseIsoDateToString} from './utils/parsingUtils';
+import {BASE_URL} from './utils/constants';
 
-//export const API_URL = 'https://app-11293.on-aptible.com';
-export const API_URL = 'https://app-9781.on-aptible.com';
-//export const API_URL = 'http://localhost:8000';
-//const REFRESH_API_URL = 'http://localhost:8000/api-token-refresh/';
+export const API_URL = BASE_URL;
+const REFRESH_API_URL = `${BASE_URL}/api-token-refresh/`;
+
 ReactGA.initialize('UA-123730827-1');
 var nJwt = require('njwt');
 var EXPIRY_TIME_CHECK = 600000; // 10 minutes
@@ -101,13 +102,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/phi/v1.0/physicians/?${stringify(query)}`, options};
                 case 'reports':
                     ReactGA.pageview('/reports/list');
-                    // console.log('======================');
-                    // console.log('Extracting userID out of URL ...');
-                    // console.log('======================');
                     const userID = getQueryStringValue('userID');
-                    // console.log('======================');
-                    // console.log('userID:', userID);
-                    // console.log('======================');
                     query.userID = userID;
                     return {url: `${API_URL}/phi/v1.0/reports/?${stringify(query)}`, options};
                 default:
@@ -261,8 +256,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return{
                         url: `${API_URL}/phi/v1.0/physicians/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody), headers: new Headers({Authorization: 'Token '+ accessToken})},
-                    }
-                    // Karthik
+                    };
                 case 'stops':
                     var body = {};
                     const updFields = params.data.updatedFields;
@@ -774,23 +768,35 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 'visitID': item.visit.visitID ? item.visit.visitID : '',
                                 'name': item.visit.name ? item.visit.name : '',
                                 'address': item.visit.address ? item.visit.address : '',
+                                'dateOfVisit': item.visit.midnightEpochOfVisit ? moment(item.visit.midnightEpochOfVisit, 'x').format("MM-DD-YYYY"): '',
                                 'odometerStart': odometerStart,
                                 'odometerEnd': odometerEnd,
                                 'milesComments': milesComments,
                                 'totalMiles': totalMiles
                             });
                         });
+
                         // console.log('extracted innerData:', innerData);
                         if(innerData && innerData.length > 0){
+                            let totalMilesTravelled = 0;
+                            for (let i = 0; i < innerData.length; i++) {
+                                const miles = innerData[i].totalMiles;
+                                if (miles && parseFloat(miles)){
+                                    totalMilesTravelled += parseFloat(miles);
+                                }
+                            }
+
                             const userName = innerData[0].userName;
                             const reportName = parseIsoDateToString(innerData[0].reportCreatedAt, false);
                             const title = `${userName} ${reportName}_Miles_Report`;
+
                             const data = {
                                 id: innerData[0].reportID,
                                 userName: userName,
                                 reportName: reportName,
                                 title: title,
-                                visits: innerData
+                                visits: innerData,
+                                totalMilesTravelled: parseFloat(totalMilesTravelled).toFixed(2)
                             };
                             return {
                                 data: data
