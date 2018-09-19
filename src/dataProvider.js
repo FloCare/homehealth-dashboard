@@ -255,7 +255,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                             firstName : params.data.firstName,
                             lastName : params.data.lastName,
                             phone1 : params.data.phone1,
-                            phone2 : params.data.phone2,
+                            phone2 : params.data.phone2 === '' ? null : params.data.phone2,
                             fax : params.data.fax,
                         };
                     return{
@@ -648,7 +648,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         localStorage.setItem('organizationName', json.organization.name);
                         // Hacky, react-router does advice to use window.location.reload()
                         // Invoke a refresh action provided by react-admin
-                        //window.location.reload();
+                        window.location.reload();
                     }
                     const usersData = json.users.map(user => {
                         return ({
