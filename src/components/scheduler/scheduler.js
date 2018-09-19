@@ -31,16 +31,16 @@ import {Images} from '../../utils/Images';
 import {stringify} from 'query-string';
 import {getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject} from '../../utils/parsingUtils'
 
-const PATIENT_LIST_API_URL = 'https://app-11293.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
-//const PATIENT_LIST_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
+//const PATIENT_LIST_API_URL = 'https://app-11293.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
+const PATIENT_LIST_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/patients/?format=json&size=100';
 //const PATIENT_LIST_API_URL = 'http://localhost:8000/phi/v1.0/patients/?format=json&size=100';
 
-const USER_DETAILS_API_URL = 'https://app-11293.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
-//const USER_DETAILS_API_URL = 'https://app-9781.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
+//const USER_DETAILS_API_URL = 'https://app-11293.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
+const USER_DETAILS_API_URL = 'https://app-9781.on-aptible.com/users/v1.0/org-access/?format=json&size=100';
 //const USER_DETAILS_API_URL = 'http://localhost:8000/users/v1.0/org-access/?format=json&size=100';
 
-const VISIT_DATA_API_URL = 'https://app-11293.on-aptible.com/phi/v1.0/get-visits-for-org/';
-//const VISIT_DATA_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/get-visits-for-org/';
+//const VISIT_DATA_API_URL = 'https://app-11293.on-aptible.com/phi/v1.0/get-visits-for-org/';
+const VISIT_DATA_API_URL = 'https://app-9781.on-aptible.com/phi/v1.0/get-visits-for-org/';
 //const VISIT_DATA_API_URL = 'http://localhost:8000/phi/v1.0/get-visits-for-org/';
 
 const tenThousandFeetToDegrees = 0.0274321;

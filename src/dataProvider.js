@@ -14,9 +14,9 @@ import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
 import {parseIsoDateToString} from './utils/parsingUtils';
 
-//export const API_URL = 'https://app-11293.on-aptible.com';
+export const API_URL = 'https://app-11293.on-aptible.com';
 //export const API_URL = 'https://app-9781.on-aptible.com';
-export const API_URL = 'http://localhost:8000';
+//export const API_URL = 'http://localhost:8000';
 const REFRESH_API_URL = 'http://localhost:8000/api-token-refresh/';
 ReactGA.initialize('UA-123730827-1');
 var nJwt = require('njwt');
