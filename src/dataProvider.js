@@ -246,7 +246,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     };
                 case 'physicians':
                     const updateBody = {
-                            npi : params.data.npiID,
+                            npi : params.data.npi,
                             firstName : params.data.firstName,
                             lastName : params.data.lastName,
                             phone1 : params.data.phone1,
