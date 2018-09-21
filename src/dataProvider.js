@@ -38,7 +38,6 @@ function getQueryStringValue (key) {
 
 const convertDataProviderRequestToHTTP = (type, resource, params) => {
     console.log('Converting Data Provider Call to HTTP Request on:');
-    console.log('This called:', type);
     var accessToken = localStorage.getItem('access_token');
     // nJwt.verify(accessToken, SECRET_KEY, function(err,verifiedJwt){
     //     if(err){
@@ -80,12 +79,14 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 format: 'json',
                 query: q,
                 size: (q === undefined) ? 100: perPage,
+                perPage: perPage,
                 sort: field,
-                order: order
+                order: order,
+                page: page
                 // range: JSON.stringify([(page - 1) * perPage, page * perPage - 1])
             };
             const options = {};
-            options.headers = new Headers({Authorization: 'Token '+ accessToken});
+            options.headers = new Headers({Authorization: 'Token '+ accessToken, 'Access-Control-Request-Headers': 'content-range'});
             switch(resource) {
                 case 'users':
                     ReactGA.pageview('/staff/list');
@@ -93,7 +94,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'phi':
                     ReactGA.pageview('/phi/list');
                     return { url: `${API_URL}/${resource}/v1.0/patients/?${stringify(query)}`, options};
-                    //Karthik
                 case 'stops':
                     ReactGA.pageview('/stops/list');
                     return { url: `${API_URL}/phi/v1.0/places/?${stringify(query)}`, options};
@@ -122,7 +122,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
                 case 'physicians':
                     return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
-                    //Karthik
                 case 'stops':
                     return { url: `${API_URL}/phi/v1.0/places/${params.id}/`, options };
                 case 'users':
@@ -416,7 +415,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         url: `${API_URL}/users/v1.0/staff/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(userRequest) },
                     };
-                    // Karthik
                 case 'stops':
 
                     if(localStorage.getItem('streetAddress') === null || localStorage.getItem('latitude') === null ||
@@ -433,7 +431,6 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         "latitude": localStorage.getItem('latitude'),
                         "longitude": localStorage.getItem('longitude')
                     };
-                    console.log(params.data.address);
                     const placeRequest = {
                         name : params.data.name,
                         contactNumber : params.data.contactNumber,
@@ -529,7 +526,6 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
         case GET_LIST:
             // console.log('EXECUTED GET_LIST for:', resource);
             switch(resource) {
-                // Karthik
                 case 'stops':
                     const stopsData = json.map(stop => {
                         return ({
@@ -589,7 +585,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     return {
                         //data: json.map(x => x),
                         data: data,
-                        total: 20
+                        total: parseInt(headers.get('content-range'))
                     };
                 case 'physicians':
                     const physicianData = json.map(item => {
@@ -700,7 +696,6 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             "physician_id": json.physicianId,
                         }
                     };
-                    // Karthik
                 case 'stops':
                     return {
                         data: {
