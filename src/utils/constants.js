@@ -1,6 +1,6 @@
 // export const BASE_URL = 'https://app-11293.on-aptible.com';
-//export const BASE_URL = 'INSERT_BACKEND_URL';
-export const BASE_URL = 'http://localhost:8000';
+export const BASE_URL = 'INSERT_BACKEND_URL';
+// export const BASE_URL = 'http://localhost:8000';
 
 export const MENU_ITEM_PHI = 'Patients';
 export const MENU_ITEM_USERS = 'Staff';
