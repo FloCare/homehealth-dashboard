@@ -3,7 +3,7 @@ import {List, Datagrid, TextField, EditButton, DeleteButton} from 'react-admin';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
-    SingleFieldList, ChipField, ReferenceInput, SelectInput, AutocompleteInput
+    SingleFieldList, ChipField, ReferenceInput, SelectInput, AutocompleteInput, Pagination, Filter
 } from 'react-admin';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import { DateInput } from 'react-admin-date-inputs';
@@ -26,9 +26,21 @@ const PatientPagination = () => {
     );
 };
 
+const PatientFilter = (props) => (
+    <Filter {...props}>
+        <TextInput label="Search" source="q" alwaysOn />
+    </Filter>
+);
+
+const PostPagination = props => <Pagination rowsPerPageOptions={[10, 25, 50, 100]} {...props} />
+
 export const PatientList = (props) => (
     props.options.label = 'Patients',
-    <List {...props} title="List of patients" pagination={<PatientPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
+    <List {...props} title="List of patients" pagination={<PostPagination />}
+          bulkActions={false}
+          sort={{ order: 'ASC' }}
+          perPage={10}
+          filters={<PatientFilter />}>
         <Datagrid>
             <TextField source="lastName" />
             <TextField source="firstName" />
@@ -42,15 +54,6 @@ export const PatientList = (props) => (
         </Datagrid>
     </List>
 );
-
-// const PatientFilter = (props) => (
-//     <Filter {...props}>
-//         <TextInput label="Search" source="q" alwaysOn />
-//         <ReferenceInput label="User" source="userId" reference="users" allowEmpty>
-//             <SelectInput optionText="name" />
-//         </ReferenceInput>
-//     </Filter>
-// );
 
 // const PatientTitle = ({ record }) => {
 //     return <span>Patient {record ? `"${record.title}"` : ''}</span>;
