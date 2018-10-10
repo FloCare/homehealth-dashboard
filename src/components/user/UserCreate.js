@@ -147,6 +147,7 @@ class UserCreate extends React.Component {
                         { id: 'COTA', name: 'COTA' },
                         { id: 'OT', name: 'OT' },
                         { id: 'BSW', name: 'BSW' },
+                        { id: 'Speech Therapy - SLP', name: 'Speech Therapy - SLP' },
                     ]} style={styles.inlineElementStyle} onChange={this.onChange}/>
                 </div>
                 <Heading text="App credentials"/>
