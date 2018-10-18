@@ -8,7 +8,9 @@ import {withStyles} from '@material-ui/core/styles';
 import {push} from 'react-router-redux';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
+import {CSVLink} from 'react-csv';
 import styles from './styles';
+import SimpleButton from '../common/Button';
 
 const ModalComponent = (props) => {
     const childWithProp = React.Children.map(props.children, (child) => {
@@ -25,7 +27,6 @@ const ModalComponent = (props) => {
 };
 
 const CustomShowLayout = (props) => {
-    // console.log('record is NOT null:', props.record);
     return (
         <SimpleShowLayout className={props.className} record={props.record}>
             {props.children}
@@ -46,11 +47,53 @@ const TotalMilesField = withStyles(styles)(({classes, ...props}) => {
     );
 });
 
+
+class DownloadCSV extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            data: '',
+            reportName: ''
+        };
+    }
+
+    componentWillReceiveProps (nextProps, nextState){
+        let data = '';
+        let reportName = '';
+        if(nextProps.record){
+            reportName = `${nextProps.record.userName}-${nextProps.record.reportName}.csv`;
+            const visits = nextProps.record.visits;
+            const totalMilesTravelled = nextProps.record.totalMilesTravelled;
+
+            data = [['Name', 'Visit Date', 'Address', 'Odometer Start', 'Odometer End', 'Total Miles', 'Comments'],];
+            if(visits){
+                visits.forEach((item) => {
+                    data.push([item.name, item.dateOfVisit, item.address, item.odometerStart, item.odometerEnd, item.totalMiles, item.milesComments]);
+                });
+            }
+            data.push(['','','','','',totalMilesTravelled,'']);
+        }
+        this.setState({data, reportName});
+    }
+
+    render(){
+        return (
+            <div className={this.props.className}>
+                <CSVLink data={this.state.data} filename={this.state.reportName} style={{color: '#fff', fontSize: 12, textDecoration: 'none'}}>
+                    <SimpleButton text="Download Report" style={{borderRadius: 20, padding: 10}}/>
+                </CSVLink>
+            </div>
+        );
+    }
+}
+
+
 class ShowReport extends Component{
     constructor(props){
         super(props);
         this.state = {
-            modalIsOpen: true
+            modalIsOpen: true,
+            csvData: ''
         };
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
@@ -76,6 +119,7 @@ class ShowReport extends Component{
                             </IconButton>
                         </div>
                         <TextField source="title" label="" className={this.props.classes.textField} />
+                        <DownloadCSV className={this.props.classes.buttonDivStyle} record={this.props.record} />
                         <ArrayField source="visits" label="" className={this.props.classes.container}>
                             <Datagrid>
                                 <TextField source="name" label="Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false} />
