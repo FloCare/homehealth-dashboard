@@ -739,6 +739,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     };
                 case 'reports':
                     if(json && json.length > 0) {
+                        let reportStartDate = null;
+                        let reportEndDate = null;
                         const innerData = json.map(item => {
                             let totalMiles = '-';
                             let odometerStart = '-';
@@ -756,6 +758,15 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                     totalMiles = '-';
                                 }
                             }
+                            const midnightEpoch = item.visit.midnightEpochOfVisit;
+                            if(midnightEpoch){
+                                if(reportStartDate === null || (midnightEpoch < reportStartDate)){
+                                    reportStartDate = midnightEpoch;
+                                }
+                                if(reportEndDate === null || (midnightEpoch > reportEndDate)){
+                                    reportEndDate = midnightEpoch;
+                                }
+                            }
                             return ({
                                 'reportID': item.reportID ? item.reportID : '',
                                 'reportCreatedAt': item.reportCreatedAt ? item.reportCreatedAt : '',
@@ -763,7 +774,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 'visitID': item.visit.visitID ? item.visit.visitID : '',
                                 'name': item.visit.name ? item.visit.name : '',
                                 'address': item.visit.address ? item.visit.address : '',
-                                'dateOfVisit': item.visit.midnightEpochOfVisit ? moment(item.visit.midnightEpochOfVisit, 'x').format("MM-DD-YYYY"): '',
+                                'dateOfVisit': midnightEpoch ? moment(midnightEpoch, 'x').format("MM-DD-YYYY"): '',
                                 'odometerStart': odometerStart,
                                 'odometerEnd': odometerEnd,
                                 'milesComments': milesComments,
@@ -791,7 +802,9 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 reportName: reportName,
                                 title: title,
                                 visits: innerData,
-                                totalMilesTravelled: parseFloat(totalMilesTravelled).toFixed(2)
+                                totalMilesTravelled: parseFloat(totalMilesTravelled).toFixed(2),
+                                reportStartDate: moment(reportStartDate, 'x').format('MM-DD-YYYY'),
+                                reportEndDate: moment(reportEndDate, 'x').format('MM-DD-YYYY')
                             };
                             return {
                                 data: data

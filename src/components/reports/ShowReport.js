@@ -38,6 +38,16 @@ const FreeTextField = withStyles(styles)(({classes, ...props}) => (
     <TextField className={classes.freeTextStyle} {...props} />
 ));
 
+const ReportPeriod = withStyles(styles)(({classes, ...props}) => {
+    const {record, source1, source2, label} = props;
+    return (
+        <div className={classes.reportPeriodDivStyle}>
+            <span>{label}:  </span>
+            <span>{record[source1]} - {record[source2]}</span>
+        </div>
+    );
+});
+
 const TotalMilesField = withStyles(styles)(({classes, ...props}) => {
     const {record, source, label} = props;
     return (
@@ -79,7 +89,7 @@ class DownloadCSV extends Component{
     render(){
         return (
             <div className={this.props.className}>
-                <CSVLink data={this.state.data} filename={this.state.reportName} style={{color: '#fff', fontSize: 12, textDecoration: 'none'}}>
+                <CSVLink target='_self' data={this.state.data} filename={this.state.reportName} style={{color: '#fff', fontSize: 12, textDecoration: 'none'}}>
                     <SimpleButton text="Download Report" style={{borderRadius: 20, padding: 10}}/>
                 </CSVLink>
             </div>
@@ -119,6 +129,7 @@ class ShowReport extends Component{
                             </IconButton>
                         </div>
                         <TextField source="title" label="" className={this.props.classes.textField} />
+                        <ReportPeriod source1="reportStartDate" source2="reportEndDate" label="Report Time Period" record={this.props.record}/>
                         <DownloadCSV className={this.props.classes.buttonDivStyle} record={this.props.record} />
                         <ArrayField source="visits" label="" className={this.props.classes.container}>
                             <Datagrid>
