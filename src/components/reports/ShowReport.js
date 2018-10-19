@@ -39,11 +39,11 @@ const FreeTextField = withStyles(styles)(({classes, ...props}) => (
 ));
 
 const ReportPeriod = withStyles(styles)(({classes, ...props}) => {
-    const {record, source1, source2, label} = props;
+    const {record, startDate, endDate, label} = props;
     return (
         <div className={classes.reportPeriodDivStyle}>
             <span>{label}:  </span>
-            <span>{record[source1]} - {record[source2]}</span>
+            <span>{record[startDate]} - {record[endDate]}</span>
         </div>
     );
 });
@@ -103,7 +103,6 @@ class ShowReport extends Component{
         super(props);
         this.state = {
             modalIsOpen: true,
-            csvData: ''
         };
         this.openModal = this.openModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
@@ -129,7 +128,7 @@ class ShowReport extends Component{
                             </IconButton>
                         </div>
                         <TextField source="title" label="" className={this.props.classes.textField} />
-                        <ReportPeriod source1="reportStartDate" source2="reportEndDate" label="Report Time Period" record={this.props.record}/>
+                        <ReportPeriod startDate="reportStartDate" endDate="reportEndDate" label="Report Time Period" record={this.props.record}/>
                         <DownloadCSV className={this.props.classes.buttonDivStyle} record={this.props.record} />
                         <ArrayField source="visits" label="" className={this.props.classes.container}>
                             <Datagrid>

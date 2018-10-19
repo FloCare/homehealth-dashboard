@@ -758,7 +758,10 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                     totalMiles = '-';
                                 }
                             }
-                            const midnightEpoch = item.visit.midnightEpochOfVisit;
+                            let midnightEpoch = item.visit.midnightEpochOfVisit;
+                            if (typeof(midnightEpoch) === 'string'){
+                                midnightEpoch = parseInt(midnightEpoch);
+                            }
                             if(midnightEpoch){
                                 if(reportStartDate === null || (midnightEpoch < reportStartDate)){
                                     reportStartDate = midnightEpoch;
@@ -803,8 +806,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 title: title,
                                 visits: innerData,
                                 totalMilesTravelled: parseFloat(totalMilesTravelled).toFixed(2),
-                                reportStartDate: moment(reportStartDate, 'x').format('MM-DD-YYYY'),
-                                reportEndDate: moment(reportEndDate, 'x').format('MM-DD-YYYY')
+                                reportStartDate: reportStartDate ? moment(reportStartDate, 'x').format('MMMM Do YYYY') : '',
+                                reportEndDate: reportEndDate ? moment(reportEndDate, 'x').format('MMMM Do YYYY'): '',
                             };
                             return {
                                 data: data
