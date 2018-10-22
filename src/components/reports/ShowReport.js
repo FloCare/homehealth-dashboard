@@ -75,13 +75,13 @@ class DownloadCSV extends Component{
             const visits = nextProps.record.visits;
             const totalMilesTravelled = nextProps.record.totalMilesTravelled;
 
-            data = [['Name', 'Visit Date', 'Address', 'Odometer Start', 'Odometer End', 'Total Miles', 'Comments'],];
+            data = [['Name', 'Visit Date', 'Address', 'Miles Computed', 'Extra Miles', 'Comments'],];
             if(visits){
                 visits.forEach((item) => {
-                    data.push([item.name, item.dateOfVisit, item.address, item.odometerStart, item.odometerEnd, item.totalMiles, item.milesComments]);
+                    data.push([item.name, item.dateOfVisit, item.address, item.computedMiles, item.extraMiles, item.milesComments]);
                 });
             }
-            data.push(['','','','','',totalMilesTravelled,'']);
+            data.push(['','','',totalMilesTravelled,'','']);
         }
         this.setState({data, reportName});
     }
@@ -135,9 +135,10 @@ class ShowReport extends Component{
                                 <TextField source="name" label="Name" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false} />
                                 <TextField source="dateOfVisit" label="Visit Date" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
                                 <FreeTextField source="address" label="Address" sortable={false} headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.freeTextContainerStyle} />
-                                <TextField source="odometerStart" label="Odometer Start Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
-                                <TextField source="odometerEnd" label="Odometer End Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
-                                <TextField source="totalMiles" label="Miles Travelled" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
+                                {/*<TextField source="odometerStart" label="Odometer Start Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>*/}
+                                {/*<TextField source="odometerEnd" label="Odometer End Reading" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>*/}
+                                <TextField source="computedMiles" label="Miles Computed" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
+                                <TextField source="extraMiles" label="Extra Miles" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.cellRow} sortable={false}/>
                                 <FreeTextField source="milesComments" label="Comments" headerClassName={this.props.classes.headerRow} cellClassName={this.props.classes.freeTextContainerStyle} sortable={false}/>
                             </Datagrid>
                         </ArrayField>

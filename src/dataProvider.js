@@ -742,7 +742,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         let reportStartDate = null;
                         let reportEndDate = null;
                         const innerData = json.map(item => {
-                            let totalMiles = '-';
+                            let computedMiles = '-';
+                            let extraMiles = '-';
                             let odometerStart = '-';
                             let odometerEnd = '-';
                             let milesComments = '-';
@@ -751,11 +752,15 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 odometerEnd = (typeof(item.visit.visitMiles.odometerEnd) === 'number') ? parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) : '-';
                                 milesComments = item.visit.visitMiles.milesComments ? item.visit.visitMiles.milesComments : '-';
 
-                                if (typeof(item.visit.visitMiles.odometerStart) === 'number' &&
-                                    typeof(item.visit.visitMiles.odometerEnd) === 'number') {
-                                    totalMiles = parseFloat(parseFloat(item.visit.visitMiles.odometerEnd).toFixed(2) - parseFloat(item.visit.visitMiles.odometerStart).toFixed(2)).toFixed(2);
+                                if (typeof(item.visit.visitMiles.computedMiles) === 'number'){
+                                    computedMiles = parseFloat(item.visit.visitMiles.computedMiles).toFixed(2);
                                 } else {
-                                    totalMiles = '-';
+                                    computedMiles = '-';
+                                }
+                                if (typeof(item.visit.visitMiles.extraMiles) === 'number'){
+                                    extraMiles = parseFloat(item.visit.visitMiles.extraMiles).toFixed(2);
+                                } else {
+                                    extraMiles = '-';
                                 }
                             }
                             let midnightEpoch = item.visit.midnightEpochOfVisit;
@@ -781,7 +786,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 'odometerStart': odometerStart,
                                 'odometerEnd': odometerEnd,
                                 'milesComments': milesComments,
-                                'totalMiles': totalMiles
+                                'computedMiles': computedMiles,
+                                'extraMiles': extraMiles
                             });
                         });
 
@@ -789,9 +795,13 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                         if(innerData && innerData.length > 0){
                             let totalMilesTravelled = 0;
                             for (let i = 0; i < innerData.length; i++) {
-                                const miles = innerData[i].totalMiles;
+                                const miles = innerData[i].computedMiles;
                                 if (miles && parseFloat(miles)){
                                     totalMilesTravelled += parseFloat(miles);
+                                }
+                                const extraMiles = innerData[i].extraMiles;
+                                if (extraMiles && parseFloat(extraMiles)){
+                                    totalMilesTravelled += parseFloat(extraMiles);
                                 }
                             }
 
@@ -829,7 +839,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 'odometerStart': '',
                                 'odometerEnd': '',
                                 'milesComments': '',
-                                'totalMiles': ''
+                                'computedMiles': '',
+                                'extraMiles': ''
                             }]
                         }
                     };
