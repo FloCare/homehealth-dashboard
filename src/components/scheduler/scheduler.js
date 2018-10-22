@@ -85,8 +85,6 @@ const styles = theme => ({
     },
     listItemDefaultStyle: {
         paddingTop: '1vh',
-        paddingLeft: 0.1,
-        paddingBottom: 0.1,
         height: '7vh',
     },
     listItemButtonStyle: {
