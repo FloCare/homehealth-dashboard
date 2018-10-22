@@ -768,6 +768,7 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                                 midnightEpoch = parseInt(midnightEpoch);
                             }
                             if(midnightEpoch){
+                                midnightEpoch = moment(midnightEpoch).subtract(moment().utcOffset(), 'minutes').valueOf();
                                 if(reportStartDate === null || (midnightEpoch < reportStartDate)){
                                     reportStartDate = midnightEpoch;
                                 }
