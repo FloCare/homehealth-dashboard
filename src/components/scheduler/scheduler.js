@@ -84,7 +84,7 @@ const styles = theme => ({
         alignItems: 'left',
     },
     listItemDefaultStyle: {
-        paddingTop: 0.1,
+        paddingTop: '1vh',
         paddingLeft: 0.1,
         paddingBottom: 0.1,
         height: '7vh',
@@ -1064,7 +1064,6 @@ class Scheduler extends Component {
                                                 <ListItem
                                                     classes={{
                                                         default: classes.listItemDefaultStyle,
-                                                        root: classes.root,
                                                         button: classes.listItemButtonStyle
                                                     }}
                                                     button
