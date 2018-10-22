@@ -70,7 +70,7 @@ class DownloadCSV extends Component{
     componentWillReceiveProps (nextProps, nextState){
         let data = '';
         let reportName = '';
-        if(nextProps.record && !this.props.record){
+        if(nextProps.record){
             reportName = `${nextProps.record.userName}-${nextProps.record.reportName}.csv`;
             const visits = nextProps.record.visits;
             const totalMilesTravelled = nextProps.record.totalMilesTravelled;
