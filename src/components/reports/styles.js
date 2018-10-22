@@ -39,6 +39,11 @@ const styles = theme => ({
     cellRow: {
         fontSize: 15,
     },
+    reportPeriodDivStyle: {
+        textAlign: 'center',
+        justifyContent: 'center',
+        fontSize: 15,
+    },
     totalMilesDivStyle: {
         textAlign: 'center',
         justifyContent: 'center',
