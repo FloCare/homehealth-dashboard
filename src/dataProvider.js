@@ -185,12 +185,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         const field = updatedFields[i];
                         if(field === 'dob') {
                             var date = params.data[field];
-                            var month = date.getUTCMonth() + 1; //months from 1-12
-                            var day = date.getUTCDate() + 1;
-                            var year = date.getUTCFullYear();
-                            if(day<10)  { day='0'+day } 
-                            if(month<10)  { month='0'+month }
-                            body.patient[field] = year+'-'+month+'-'+day;
+                            body.patient[field] = moment(date).format("YYYY-MM-DD");
                         }
                         else if(field != 'apartmentNo')
                             body.patient[field] = params.data[field];
@@ -355,12 +350,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     request.patient.emergencyContactRelationship = params.data.emergencyContactRelationship;
                     if(params.data.dateOfBirth != null) {
                         var date = params.data.dateOfBirth;
-                        var month = date.getUTCMonth() + 1; //months from 1-12
-                        var day = date.getUTCDate() + 1;
-                        var year = date.getUTCFullYear();
-                        if(day<10)  { day='0'+day } 
-                        if(month<10)  { month='0'+month }
-                        request.patient.dob = year+'-'+month+'-'+day;
+                        request.patient.dob = moment(date).format("YYYY-MM-DD");
                     }
                     request.users = params.data.users;
                     request.physicianId = params.data.physician_id;
