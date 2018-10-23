@@ -13,7 +13,7 @@ import {
 import {stringify} from 'query-string';
 import {parseMobileNumber, capitalize} from './utils/parsingUtils';
 import ReactGA from 'react-ga';
-import {parseIsoDateToString} from './utils/parsingUtils';
+import {getReportName, parseIsoDateToString} from './utils/parsingUtils';
 import {BASE_URL} from './utils/constants';
 
 export const API_URL = BASE_URL;
@@ -599,8 +599,9 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                     const reportsMetaData = json.map(item => {
                         // Todo: Name generation hardcoded
                         const name = item.user.lastName? item.user.lastName + (item.user.firstName ? ` ${item.user.firstName}` : '') : item.user.username;
-                        const createdAt = parseIsoDateToString(item.created_at, false);
-                        const reportName = `${createdAt}_Miles_Report`;
+                        // const createdAt = parseIsoDateToString(item.created_at, false);
+                        // const reportName = `${createdAt}_Miles_Report`;
+                        const reportName = getReportName(item.created_at);
                         return ({
                             id: item.id,
                             name: name,
@@ -797,8 +798,10 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
                             }
 
                             const userName = innerData[0].userName;
-                            const reportName = parseIsoDateToString(innerData[0].reportCreatedAt, false);
-                            const title = `${userName} ${reportName}_Miles_Report`;
+                            // const reportName = parseIsoDateToString(innerData[0].reportCreatedAt, false);
+                            const reportName = getReportName(innerData[0].reportCreatedAt);
+                            // const title = `${userName} ${reportName}_Miles_Report`;
+                            const title = reportName;
 
                             const data = {
                                 id: innerData[0].reportID,

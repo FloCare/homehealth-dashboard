@@ -1,3 +1,5 @@
+import moment from 'moment/moment';
+
 const ParseGooglePlacesAPIResponse = (details) => {
 
     let formattedAddress = details[0].formatted_address;
@@ -145,4 +147,11 @@ const parseIsoDateToString = (iso, include_seconds=true) => {
     return formattedDate;
 };
 
-export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize, getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject, parseIsoDateToString};
+const getReportName = (isoDate) => {
+    console.log('isoDate received is:', isoDate);
+    const reportDate = moment(moment(isoDate, moment.ISO_8601), 'x').format('MMMM Do YYYY');
+    const reportName = `${reportDate}_Miles_Report`;
+    return reportName;
+};
+
+export {ParseGooglePlacesAPIResponse, parseMobileNumber, capitalize, getDateFromDateTimeObject, getTomorrowDateFromDateTimeObject, parseIsoDateToString, getReportName};
