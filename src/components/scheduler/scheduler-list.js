@@ -24,9 +24,6 @@ const VISIT_DATA_API_URL = `${BASE_URL}/phi/v1.0/get-visits-for-org/`;
 
 const styles = theme => ({
     root: {
-        ...theme.mixins.gutters(),
-        paddingTop: theme.spacing.unit * 1,
-        paddingBottom: theme.spacing.unit * 1,
     },
     rootLevelStyle: {
         borderLeft: 'ridge',
@@ -37,7 +34,7 @@ const styles = theme => ({
 
     },
     disciplineBkgColor: {
-        backgroundColor: '#F6F6F6'
+        backgroundColor: '#c4c4c4'
     },
     disciplineLabelStyle: {
         lineHeight: '30px',
@@ -63,15 +60,19 @@ const styles = theme => ({
     paperStyle: {
         marginTop: '3vh',
         float: 'left',
-        width: '10vw'
+        width: '8vw'
     },
     paperStyle1: {
+        marginBottom: '0px',
         width: '90vw'
     },
     paperStyle2: {
         float: 'left',
         marginLeft: '2.5vw',
-        marginRight: '3.5vw',
+        marginRight: '2.5vw',
+        borderLeft: '1px solid grey',
+        paddingLeft: '20px',
+        height: '10vh',
     },
     daysOfWeekStyle1: {
         marginLeft: '7vw',
@@ -83,6 +84,10 @@ const styles = theme => ({
     },
     stripStyle: {
         textAlign: 'center'
+    },
+    padding: {
+        paddingTop: '0px',
+        paddingBottom: '0px'
     },
 });
 
@@ -371,6 +376,7 @@ class SchedulerList extends Component {
                                     sticky: classes.disciplineBkgColor,
                                     root: classes.disciplineLabelStyle
                                 }} component="div">{value.role}s</ListSubheader>}
+                                classes={{padding: classes.padding}}
                             />
                                 {(this.state.userRoleDetailsMap[value.role]).map(user => (
                                     <div>
