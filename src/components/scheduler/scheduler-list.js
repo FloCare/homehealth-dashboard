@@ -68,11 +68,11 @@ const styles = theme => ({
     },
     paperStyle2: {
         float: 'left',
-        marginLeft: '2.5vw',
-        marginRight: '2.5vw',
+
         borderLeft: '1px solid grey',
         paddingLeft: '20px',
         height: '10vh',
+        width: '9.5vw'
     },
     daysOfWeekStyle1: {
         marginLeft: '7vw',
@@ -135,7 +135,6 @@ class SchedulerList extends Component {
         var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
             return moment(i, 'e').endOf('week').isoWeekday(i).format('MMM M/D');
         });
-        console.log(defaultWeekdays)
         var year = moment().year();
         this.setState({startOfWeek : startOfWeek,
                         endOfWeek: endOfWeek,
@@ -148,7 +147,7 @@ class SchedulerList extends Component {
         var day = startOfWeek;
         //TODO handle the returned promise
         var userData = this.fetchUsersData();
-        // var visitData = this.fetchVisitData();
+        var visitData = this.fetchVisitData();
         // var patientData = this.fetchPatientData();
     }
 
@@ -206,7 +205,6 @@ class SchedulerList extends Component {
                 userCheckedMap[users[i].id] = true;
             }
             userCheckedMap["All Staff"] = true;
-            console.log(disciplines)
             this.setState({
                 users: [...this.state.users, ...list],
                 disciplines: [...this.state.disciplines, ...disciplines],
@@ -222,7 +220,6 @@ class SchedulerList extends Component {
 
     async fetchVisitData(date) {
         const {checkedMap} = this.state;
-        var isCheckedMapEmpty = this.isEmpty(checkedMap);
         var formattedDate = date;
         if(date === undefined) {
             formattedDate = getDateFromDateTimeObject();
@@ -239,76 +236,28 @@ class SchedulerList extends Component {
             else return [];
         }).then((resp) => {
             var tempVisitsMap = {};
-            var tempFilteredVisitsMap = {};
-            var tempDuplicateVisitsMap = {};
-            var dupVisitsMap = {};
-            var tempSingleVisitsMap = {};
-            var tempMarkersMap = {};
 
             for(var i=0; i<resp.length; i++) {
-                if(isCheckedMapEmpty === true || checkedMap[resp[i].userID] === true) {
-                    var plannedStartTime = resp[i].plannedStartTime;
-                    var s = new Date(plannedStartTime);
-                    var nowUtc = new Date( s.getTime());
-                    var hh = nowUtc.getHours() < 10 ? '0' +
-                        nowUtc.getHours() : nowUtc.getHours();
-                    var mi = nowUtc.getMinutes() < 10 ? '0' +
-                        nowUtc.getMinutes() : nowUtc.getMinutes();
-                    if(plannedStartTime === null) {
-                        hh = '00';
-                        mi = '00';
-                    }
-                    var res = resp[i];
-                    var lat = res.episode.patient.address.latitude;
-                    var lng = res.episode.patient.address.longitude;
-                    if(tempSingleVisitsMap[res.episode.patient.address.latitude] === undefined) {
-                        tempSingleVisitsMap[res.episode.patient.address.latitude] = res.episode.patient.address.longitude;
-                        tempDuplicateVisitsMap[lat.toString()+lng.toString()] = res.userID+ ":" + hh+"-"+mi + ":" + res.isDone;
-                    }
-                    else {
-                        var userID = tempDuplicateVisitsMap[lat.toString()+lng.toString()];
-                        var finalUserId = userID + ":" + res.userID+ ":" + hh+"-"+mi+ ":" + res.isDone;
-                        tempDuplicateVisitsMap[lat.toString()+lng.toString()] = finalUserId;
-                        tempMarkersMap[res.episode.patient.address.latitude] = false;
-                        dupVisitsMap[lat.toString()+lng.toString()] = finalUserId;
-                    }
+                var plannedStartTime = resp[i].plannedStartTime;
+                var s = new Date(plannedStartTime);
+                var nowUtc = new Date( s.getTime());
+                var hh = nowUtc.getHours() < 10 ? '0' +
+                    nowUtc.getHours() : nowUtc.getHours();
+                var mi = nowUtc.getMinutes() < 10 ? '0' +
+                    nowUtc.getMinutes() : nowUtc.getMinutes();
+                if(plannedStartTime === null) {
+                    hh = '00';
+                    mi = '00';
                 }
-
-            }
-
-            for(var i=0; i<resp.length; i++) {
-                if(isCheckedMapEmpty === true || checkedMap[resp[i].userID] === true) {
-                    var plannedStartTime = resp[i].plannedStartTime;
-                    var s = new Date(plannedStartTime);
-                    var nowUtc = new Date( s.getTime());
-                    var hh = nowUtc.getHours() < 10 ? '0' +
-                        nowUtc.getHours() : nowUtc.getHours();
-                    var mi = nowUtc.getMinutes() < 10 ? '0' +
-                        nowUtc.getMinutes() : nowUtc.getMinutes();
-                    if(plannedStartTime === null) {
-                        hh = '00';
-                        mi = '00';
-                    }
-                    tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
-                    tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
-                        lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
-                        latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
-                        isDone: resp[i].isDone});
-
-                    tempFilteredVisitsMap[resp[i].userID] = tempFilteredVisitsMap[resp[i].userID] || [];
-                    tempFilteredVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
-                        lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
-                        latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
-                        isDone: resp[i].isDone});
-                }
-
+                var row = resp[i].episode.patient.name + '  ' + hh+':'+mi;
+                tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
+                tempVisitsMap[resp[i].userID].push({'31-10-2018': row});
+                tempVisitsMap[resp[i].userID].push({'30-10-2018': row});
+                tempVisitsMap[resp[i].userID].push({'01-11-2018': row});
 
             }
             this.setState({
-                visitsMap: tempVisitsMap,
-                filteredVisitsMap: tempFilteredVisitsMap,
-                duplicateVisitMap : dupVisitsMap,
-                markersMap : tempMarkersMap
+                visitsMap: tempVisitsMap
             });
             return resp;
         });
@@ -361,7 +310,8 @@ class SchedulerList extends Component {
 
     render() {
         const { classes } = this.props;
-        console.log(this.state.disciplines)
+        const { visitsMap } = this.state
+        console.log(visitsMap)
         return(
             <div className={classes.rootLevelStyle}>
                 {this.renderDateStrip()}
@@ -381,6 +331,8 @@ class SchedulerList extends Component {
                                 {(this.state.userRoleDetailsMap[value.role]).map(user => (
                                     <div>
                                         <VisitListRow name={user.name}
+                                                      id={user.id}
+                                                      visits={visitsMap}
                                                       classes={classes}/>
                                         <Divider />
                                     </div>
