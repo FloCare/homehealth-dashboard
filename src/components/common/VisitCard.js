@@ -1,7 +1,12 @@
 import React from 'react'
 import Button from '@material-ui/core/Button';
+import SimpleDialogWrapped from '../common/SimpleDialog'
 
 export default class VisitCard extends React.Component{
+
+    state = {
+        open: false,
+    };
 
     renderInputField(visitKeys) {
         if(visitKeys.size > 2) {
@@ -13,20 +18,37 @@ export default class VisitCard extends React.Component{
         }
     }
 
+    handleClickOpen = () => {
+        this.setState({
+            open: true,
+        });
+    };
+
+    handleClose = value => {
+        this.setState({ open: false });
+    };
+
     render(){
-        const { date, classes, id, visits } = this.props;
+        const { date, staff, classes, id, visits } = this.props;
         var visitMapKeys = Object.keys(visits);
         var visitSize = visitMapKeys.length;
         var count = 0;
         var visitCard = [];
         for (var key in visits) {
             count++;
-            if(count > 2) {
-                visitCard.push(<Button size="small" onClick={() => {
-
-                }}>
-                    {visitSize - 2} More..
-                </Button>);
+            if(count > 3) {
+                visitCard.push(<div>
+                    <Button size="small" onClick={this.handleClickOpen}>
+                        {visitSize - 3} More..
+                    </Button>
+                    <SimpleDialogWrapped
+                        date={date}
+                        staff={staff}
+                        visits={visits}
+                        open={this.state.open}
+                        onClose={this.handleClose}
+                    />
+                </div>);
                 break;
             }
             else {

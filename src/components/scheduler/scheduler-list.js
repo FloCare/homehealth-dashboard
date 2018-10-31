@@ -24,12 +24,16 @@ const VISIT_DATA_API_URL = `${BASE_URL}/phi/v1.0/get-visits-for-org/`;
 
 const styles = theme => ({
     root: {
+        marginLeft: '10px',
+        marginRight: '10px',
+        marginTop: '10px',
+        marginBottom: '10px',
     },
     rootLevelStyle: {
         borderLeft: 'ridge',
         borderRight: 'ridge',
         marginTop: '0.1%',
-        width: '100%',
+        width: '95%',
         height: '100%',
 
     },
@@ -68,7 +72,6 @@ const styles = theme => ({
     },
     paperStyle2: {
         float: 'left',
-
         borderLeft: '1px solid grey',
         paddingLeft: '20px',
         height: '10vh',
@@ -91,17 +94,6 @@ const styles = theme => ({
     },
 });
 
-const VisitCard = (props) => {
-    const { classes } = props;
-    return (
-        <div className={classes.paperStyle}>
-
-            <p><font size="3">J.Patrick   P.Crawford</font></p>
-            <p><font size="3">P.Crawford   P.Jules</font></p>
-        </div>
-    );
-
-};
 
 class SchedulerList extends Component {
 
@@ -311,7 +303,6 @@ class SchedulerList extends Component {
     render() {
         const { classes } = this.props;
         const { visitsMap } = this.state
-        console.log(visitsMap)
         return(
             <div className={classes.rootLevelStyle}>
                 {this.renderDateStrip()}

@@ -24,6 +24,7 @@ export default class VisitListRow extends React.Component{
 
                         })
                         return (<VisitCard date={value}
+                                           staff={name}
                                            id={id}
                                            visits={userVisits}
                                            classes={classes}
