@@ -40,13 +40,14 @@ class SimpleDialog extends React.Component {
         var visitCard = [];
         for (var key in visits) {
             if(visits[key] != undefined) {
+                var res = visits[key].split("$");
                 visitCard.push(<div>
                     <List
                         component="nav"
                         dense={false}
                         subheader={<ListSubheader classes={{
                             root: classes.disciplineLabelStyle
-                        }} component="div">✓ {visits[key]}</ListSubheader>}
+                        }} component="div"><font color="#2196f3">✓</font> {res[0]} {res[1]}</ListSubheader>}
                         classes={{padding: classes.padding}}
                     />
                 </div>);

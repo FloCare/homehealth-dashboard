@@ -70,10 +70,18 @@ const styles = theme => ({
         marginBottom: '0px',
         width: '90vw'
     },
+    paperStyle3: {
+        width: '70%',
+        float: 'left'
+    },
+    paperStyle4: {
+        width: '30%',
+        float: 'left'
+    },
     paperStyle2: {
         float: 'left',
         borderLeft: '1px solid grey',
-        paddingLeft: '20px',
+        paddingLeft: '1%',
         height: '10vh',
         width: '9.5vw'
     },
@@ -107,6 +115,7 @@ class SchedulerList extends Component {
         userIDNameMap: {},
         disciplines:[],
         daysOfWeek: [],
+        daysOfWeekFormatted: [],
         userRoleDetailsMap: {},
         visitsMap: {},
         filteredVisitsMap: {},
@@ -126,12 +135,16 @@ class SchedulerList extends Component {
         var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
             return moment(i, 'e').endOf('week').isoWeekday(i).format('MMM M/D');
         });
+        var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
+            return moment(i, 'e').endOf('week').isoWeekday(i).format('DD-MM-YYYY');
+        });
         var year = moment().year();
         this.setState({startOfWeek : startOfWeek,
                         endOfWeek: endOfWeek,
                         year: year,
                         today: moment().toDate(),
-                        daysOfWeek: defaultWeekdays})
+                        daysOfWeek: defaultWeekdays,
+                        daysOfWeekFormatted: defaultWeekdaysFormatted})
 
 
         var days = [];
@@ -209,49 +222,52 @@ class SchedulerList extends Component {
     }
 
 
-    async fetchVisitData(date) {
-        const {checkedMap} = this.state;
-        var formattedDate = date;
-        if(date === undefined) {
-            formattedDate = getDateFromDateTimeObject();
-        }
-        const request = new Request(VISIT_DATA_API_URL+formattedDate+'/', {
-            headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
-            }),
-        })
-        const res = await fetch(request).then((resp) => {
-            if(resp.status === 200) {
-                return resp.json();
-            }
-            // TODO
-            else return [];
-        }).then((resp) => {
-            var tempVisitsMap = {};
-
-            for(var i=0; i<resp.length; i++) {
-                var plannedStartTime = resp[i].plannedStartTime;
-                var s = new Date(plannedStartTime);
-                var nowUtc = new Date( s.getTime());
-                var hh = nowUtc.getHours() < 10 ? '0' +
-                    nowUtc.getHours() : nowUtc.getHours();
-                var mi = nowUtc.getMinutes() < 10 ? '0' +
-                    nowUtc.getMinutes() : nowUtc.getMinutes();
-                if(plannedStartTime === null) {
-                    hh = '00';
-                    mi = '00';
-                }
-                var row = resp[i].episode.patient.name + '  ' + hh+':'+mi;
-                tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
-                tempVisitsMap[resp[i].userID].push({'31-10-2018': row});
-                tempVisitsMap[resp[i].userID].push({'30-10-2018': row});
-                tempVisitsMap[resp[i].userID].push({'01-11-2018': row});
-
-            }
-            this.setState({
-                visitsMap: tempVisitsMap
-            });
-            return resp;
+    async fetchVisitData() {
+        var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
+            return moment(i, 'e').endOf('week').isoWeekday(i).format('YYYY-MM-DD');
         });
+        var tempVisitsMap = {};
+
+        for (var key in defaultWeekdaysFormatted) {
+            var date = defaultWeekdaysFormatted[key];
+            var formattedDate = moment(date).format('DD-MM-YYYY');
+            const request = new Request(VISIT_DATA_API_URL+date+'/', {
+                headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
+                }),
+            })
+            const res = await fetch(request).then((resp) => {
+                if(resp.status === 200) {
+                    return resp.json();
+                }
+                // TODO
+                else return [];
+            }).then((resp) => {
+
+                for(var i=0; i<resp.length; i++) {
+                    var plannedStartTime = resp[i].plannedStartTime;
+                    var s = new Date(plannedStartTime);
+                    var nowUtc = new Date( s.getTime());
+                    var hh = nowUtc.getHours() < 10 ? '0' +
+                        nowUtc.getHours() : nowUtc.getHours();
+                    var mi = nowUtc.getMinutes() < 10 ? '0' +
+                        nowUtc.getMinutes() : nowUtc.getMinutes();
+                    if(plannedStartTime === null) {
+                        hh = '--';
+                        mi = '--';
+                    }
+                    var row = resp[i].episode.patient.name + '$' + hh+':'+mi;
+                    var insert = [];
+                    insert[formattedDate] = row;
+                    tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
+                    tempVisitsMap[resp[i].userID].push(insert);
+
+                }
+            });
+        }
+        this.setState({
+            visitsMap: tempVisitsMap
+        });
+
     }
 
     renderDateStrip() {
@@ -263,10 +279,18 @@ class SchedulerList extends Component {
                         var start = moment(today).subtract(1, 'week').startOf('week').format("MMM D");
                         var end = moment(today).subtract(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).year();
+                        var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
+                            return moment(today).subtract(1, 'week').endOf('week').isoWeekday(i).format('MMM M/D');
+                        });
+                        var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
+                            return moment(today).subtract(1, 'week').endOf('week').isoWeekday(i).format('DD-MM-YYYY');
+                        });
                         this.setState({today : moment(today).subtract(1, 'week').toDate(),
                                         startOfWeek: start,
                                         endOfWeek: end,
-                                        year: year})
+                                        year: year,
+                                        daysOfWeek: defaultWeekdays,
+                                        daysOfWeekFormatted: defaultWeekdaysFormatted})
 
                     }}>
                 <ChevronLeft />
@@ -276,10 +300,18 @@ class SchedulerList extends Component {
                         var start = moment(today).add(1, 'week').startOf('week').format("MMM D");
                         var end = moment(today).add(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).format("YYYY");
+                        var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
+                            return moment(today).add(1, 'week').endOf('week').isoWeekday(i).format('MMM M/D');
+                        });
+                        var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
+                            return moment(today).add(1, 'week').endOf('week').isoWeekday(i).format('DD-MM-YYYY');
+                        });
                         this.setState({today : moment(today).add(1, 'week').toDate(),
                             startOfWeek: start,
                             endOfWeek: end,
-                            year: year})
+                            year: year,
+                            daysOfWeek: defaultWeekdays,
+                            daysOfWeekFormatted: defaultWeekdaysFormatted})
                     }}>
                 <ChevronRight />
             </Button>
@@ -301,7 +333,7 @@ class SchedulerList extends Component {
 
     render() {
         const { classes } = this.props;
-        const { visitsMap } = this.state
+        const { visitsMap, daysOfWeekFormatted } = this.state
         return(
             <div className={classes.rootLevelStyle}>
                 {this.renderDateStrip()}
@@ -321,6 +353,7 @@ class SchedulerList extends Component {
                                 {(this.state.userRoleDetailsMap[value.role]).map(user => (
                                     <div>
                                         <VisitListRow name={user.name}
+                                                      daysOfWeek={daysOfWeekFormatted}
                                                       id={user.id}
                                                       visits={visitsMap}
                                                       classes={classes}/>

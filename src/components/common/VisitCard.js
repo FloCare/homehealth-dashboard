@@ -36,10 +36,10 @@ export default class VisitCard extends React.Component{
         var visitCard = [];
         for (var key in visits) {
             count++;
-            if(count > 3) {
+            if(count > 2) {
                 visitCard.push(<div>
                     <Button size="small" onClick={this.handleClickOpen}>
-                        {visitSize - 3} More..
+                        {visitSize - 2} More..
                     </Button>
                     <SimpleDialogWrapped
                         date={date}
@@ -53,8 +53,15 @@ export default class VisitCard extends React.Component{
             }
             else {
                 if(visits[key] != undefined) {
+                    var res = visits[key].split("$");
                     visitCard.push(<div>
-                        <font size="2">✓ {visits[key]}</font>
+                        <div className={classes.paperStyle3}>
+                            <font size="2" color="#2196f3">✓ </font>
+                            <font size="2">{res[0]}</font>
+                        </div>
+                        <div className={classes.paperStyle4}>
+                            <font size="2">{res[1]}</font>
+                        </div>
                     </div>);
                 }
             }
