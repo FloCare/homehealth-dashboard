@@ -117,7 +117,6 @@ class SchedulerList extends Component {
 
     componentWillMount() {
 
-        const {today} = this.state;
         //var startOfWeek = moment().startOf('week').format("ddd M/D");
         var startOfWeek = moment().startOf('week').format("MMM D");
         var weekStart = moment().startOf('week').format("MMM M/D");
@@ -264,7 +263,7 @@ class SchedulerList extends Component {
                         var start = moment(today).subtract(1, 'week').startOf('week').format("MMM D");
                         var end = moment(today).subtract(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).year();
-                        this.setState({today : start.valueOf(),
+                        this.setState({today : moment(today).subtract(1, 'week').toDate(),
                                         startOfWeek: start,
                                         endOfWeek: end,
                                         year: year})
@@ -277,7 +276,7 @@ class SchedulerList extends Component {
                         var start = moment(today).add(1, 'week').startOf('week').format("MMM D");
                         var end = moment(today).add(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).format("YYYY");
-                        this.setState({today : start.valueOf(),
+                        this.setState({today : moment(today).add(1, 'week').toDate(),
                             startOfWeek: start,
                             endOfWeek: end,
                             year: year})
