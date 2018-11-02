@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment/moment';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,6 +17,11 @@ const styles = {
         marginBottom: '10px',
         textAlign : 'center'
     },
+    root1: {
+        marginTop: '10px',
+        marginBottom: '2px',
+        textAlign : 'center'
+    },
     disciplineLabelStyle: {
         lineHeight: '20px',
         fontSize: 12
@@ -30,6 +36,7 @@ class SimpleDialog extends React.Component {
 
     render() {
         const { classes, onClose, visits, date, staff, ...other } = this.props;
+        var currDate = moment(date, 'DD-MM-YYYY').format('MMM M/D');
         var visitCard = [];
         for (var key in visits) {
             if(visits[key] != undefined) {
@@ -52,9 +59,9 @@ class SimpleDialog extends React.Component {
         return (
             <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
                 <div>
-                    <div className={classes.root}>{date}</div>
-                    <div className={classes.root}>{staff}</div>
-                    <div> ----------------------------</div>
+                    <div className={classes.root}>{currDate}</div>
+                    <div className={classes.root1}>{staff}</div>
+                    <div> ------------------------------</div>
                     {visitCard}
                 </div>
             </Dialog>
