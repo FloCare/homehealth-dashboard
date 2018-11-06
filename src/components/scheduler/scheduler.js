@@ -324,6 +324,9 @@ class Scheduler extends Component {
                         mi = '00';
                     }
                     var res = resp[i];
+                    if(res.episode === null){
+                        continue;
+                    }
                     var lat = res.episode.patient.address.latitude;
                     var lng = res.episode.patient.address.longitude;
                     if(tempSingleVisitsMap[res.episode.patient.address.latitude] === undefined) {
@@ -353,6 +356,9 @@ class Scheduler extends Component {
                     if(plannedStartTime === null) {
                         hh = '00';
                         mi = '00';
+                    }
+                    if (resp[i].episode === null){
+                        continue;
                     }
                     tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
                     tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
