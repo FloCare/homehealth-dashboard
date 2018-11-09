@@ -297,7 +297,7 @@ class SchedulerList extends Component {
                         hh = '--';
                         mi = '--';
                     }
-                    var row = resp[i].episode.patient.name + '$' + hh+':'+mi;
+                    var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
                     var insert = [];
                     insert[formattedDate] = row;
                     tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
