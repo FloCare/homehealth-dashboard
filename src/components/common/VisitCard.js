@@ -54,15 +54,29 @@ export default class VisitCard extends React.Component{
             else {
                 if(visits[key] != undefined) {
                     var res = visits[key].split("$");
-                    visitCard.push(<div>
-                        <div className={classes.paperStyle3}>
-                            <font size="2" color="#2196f3">✓ </font>
-                            <font size="2">{res[0]}</font>
-                        </div>
-                        <div className={classes.paperStyle4}>
-                            <font size="2">{res[1]}</font>
-                        </div>
-                    </div>);
+                    var patientDetails = res[0].split("%");
+                    if(patientDetails[0] === 'true') {
+                        visitCard.push(<div>
+                            <div className={classes.paperStyle3}>
+                                <font size="2" color="#2196f3">✓ </font>
+                                <font size="2">{res[0].substring(res[0].indexOf('%') + 1)}</font>
+                            </div>
+                            <div className={classes.paperStyle4}>
+                                <font size="2">{res[1]}</font>
+                            </div>
+                        </div>);
+                    }
+                    else {
+                        visitCard.push(<div>
+                            <div className={classes.paperStyle3}>
+                                <font size="2" color="white">✓ </font>
+                                <font size="2">{res[0].substring(res[0].indexOf('%') + 1)}</font>
+                            </div>
+                            <div className={classes.paperStyle4}>
+                                <font size="2">{res[1]}</font>
+                            </div>
+                        </div>);
+                    }
                 }
             }
         }

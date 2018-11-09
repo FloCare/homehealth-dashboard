@@ -41,16 +41,31 @@ class SimpleDialog extends React.Component {
         for (var key in visits) {
             if(visits[key] != undefined) {
                 var res = visits[key].split("$");
-                visitCard.push(<div>
-                    <List
-                        component="nav"
-                        dense={false}
-                        subheader={<ListSubheader classes={{
-                            root: classes.disciplineLabelStyle
-                        }} component="div"><font color="#2196f3">✓</font> {res[0]} {res[1]}</ListSubheader>}
-                        classes={{padding: classes.padding}}
-                    />
-                </div>);
+                var patientDetails = res[0].split("%");
+                if(patientDetails[0] === 'true') {
+                    visitCard.push(<div>
+                        <List
+                            component="nav"
+                            dense={false}
+                            subheader={<ListSubheader classes={{
+                                root: classes.disciplineLabelStyle
+                            }} component="div"><font color="#2196f3">✓</font> {res[0].substring(res[0].indexOf('%') + 1)} {res[1]}</ListSubheader>}
+                            classes={{padding: classes.padding}}
+                        />
+                    </div>);
+                }
+                else {
+                    visitCard.push(<div>
+                        <List
+                            component="nav"
+                            dense={false}
+                            subheader={<ListSubheader classes={{
+                                root: classes.disciplineLabelStyle
+                            }} component="div"><font color="white">✓</font> {res[0].substring(res[0].indexOf('%') + 1)} {res[1]}</ListSubheader>}
+                            classes={{padding: classes.padding}}
+                        />
+                    </div>);
+                }
                 // visitCard.push(<div className={classes.root}>
                 //     <font size="2">✓ {visits[key]}</font>
                 // </div>);
