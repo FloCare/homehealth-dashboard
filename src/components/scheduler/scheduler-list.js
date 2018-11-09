@@ -14,7 +14,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import {stringify} from 'query-string';
-import {getDateFromDateTimeObject} from '../../utils/parsingUtils';
 import {BASE_URL} from '../../utils/constants';
 import VisitListRow from "../common/VisitListRow";
 
@@ -126,12 +125,8 @@ class SchedulerList extends Component {
 
     componentWillMount() {
 
-        //var startOfWeek = moment().startOf('week').format("ddd M/D");
         var startOfWeek = moment().startOf('week').format("MMM D");
-        var weekStart = moment().startOf('week').format("MMM M/D");
-        //var endOfWeek = moment().endOf('week').format("ddd M/D");
         var endOfWeek = moment().endOf('week').format("MMM D");
-        var weekEnd = moment().endOf('week').format("MMM M/D");
         var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
             return moment(i, 'e').endOf('week').isoWeekday(i).format('MMM M/D');
         });
@@ -152,7 +147,6 @@ class SchedulerList extends Component {
         //TODO handle the returned promise
         var userData = this.fetchUsersData();
         var visitData = this.fetchVisitData();
-        // var patientData = this.fetchPatientData();
     }
 
     async fetchPatientData() {
@@ -270,12 +264,60 @@ class SchedulerList extends Component {
 
     }
 
+    async updateVisitData() {
+
+        const {today} = this.state;
+        var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
+            return moment(today).endOf('week').isoWeekday(i).format('YYYY-MM-DD');
+        });
+        var tempVisitsMap = {};
+        for (var key in defaultWeekdaysFormatted) {
+            var date = defaultWeekdaysFormatted[key];
+            var formattedDate = moment(date).format('DD-MM-YYYY');
+            const request = new Request(VISIT_DATA_API_URL+date+'/', {
+                headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
+                }),
+            })
+            const res = await fetch(request).then((resp) => {
+                if(resp.status === 200) {
+                    return resp.json();
+                }
+                // TODO
+                else return [];
+            }).then((resp) => {
+
+                for(var i=0; i<resp.length; i++) {
+                    var plannedStartTime = resp[i].plannedStartTime;
+                    var s = new Date(plannedStartTime);
+                    var nowUtc = new Date( s.getTime());
+                    var hh = nowUtc.getHours() < 10 ? '0' +
+                        nowUtc.getHours() : nowUtc.getHours();
+                    var mi = nowUtc.getMinutes() < 10 ? '0' +
+                        nowUtc.getMinutes() : nowUtc.getMinutes();
+                    if(plannedStartTime === null) {
+                        hh = '--';
+                        mi = '--';
+                    }
+                    var row = resp[i].episode.patient.name + '$' + hh+':'+mi;
+                    var insert = [];
+                    insert[formattedDate] = row;
+                    tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
+                    tempVisitsMap[resp[i].userID].push(insert);
+
+                }
+            });
+        }
+        this.setState({
+            visitsMap: tempVisitsMap
+        });
+    }
+
     renderDateStrip() {
         const {startOfWeek, endOfWeek, year, today} = this.state;
         const { classes } = this.props;
 
         return (<div className={classes.stripStyle}>
-            <Button color="#fff" onClick={() => {
+            <Button color="#fff" onClick={async() => {
                         var start = moment(today).subtract(1, 'week').startOf('week').format("MMM D");
                         var end = moment(today).subtract(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).year();
@@ -285,18 +327,19 @@ class SchedulerList extends Component {
                         var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
                             return moment(today).subtract(1, 'week').endOf('week').isoWeekday(i).format('DD-MM-YYYY');
                         });
-                        this.setState({today : moment(today).subtract(1, 'week').toDate(),
+                        await this.setState({today : moment(today).subtract(1, 'week').toDate(),
                                         startOfWeek: start,
                                         endOfWeek: end,
                                         year: year,
                                         daysOfWeek: defaultWeekdays,
                                         daysOfWeekFormatted: defaultWeekdaysFormatted})
+                        this.updateVisitData();
 
                     }}>
                 <ChevronLeft />
             </Button>
             <font size="3" color="black">{startOfWeek} - {endOfWeek}, {year}</font>
-            <Button color="#fff" onClick={() => {
+            <Button color="#fff" onClick={async() => {
                         var start = moment(today).add(1, 'week').startOf('week').format("MMM D");
                         var end = moment(today).add(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).format("YYYY");
@@ -306,12 +349,13 @@ class SchedulerList extends Component {
                         var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
                             return moment(today).add(1, 'week').endOf('week').isoWeekday(i).format('DD-MM-YYYY');
                         });
-                        this.setState({today : moment(today).add(1, 'week').toDate(),
+                        await this.setState({today : moment(today).add(1, 'week').toDate(),
                             startOfWeek: start,
                             endOfWeek: end,
                             year: year,
                             daysOfWeek: defaultWeekdays,
                             daysOfWeekFormatted: defaultWeekdaysFormatted})
+                        this.updateVisitData();
                     }}>
                 <ChevronRight />
             </Button>
