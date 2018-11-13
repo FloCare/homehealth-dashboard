@@ -86,6 +86,7 @@ class SearchBar extends React.Component {
           <div>
           <TextField
           required={true}
+          inputProps={{autoComplete: 'auto-complete-off'}}
           id="required"
           value={this.state.streetAddress}
           placeholder="Street Address"
