@@ -103,7 +103,8 @@ const styles = theme => ({
     },
     stripStyle: {
         marginLeft: '30vw',
-        paddingBottom: '2vh'
+        paddingBottom: '2vh',
+        whiteSpace: 'noWrap'
     },
     padding: {
         paddingTop: '0px',
@@ -247,44 +248,44 @@ class SchedulerList extends Component {
             return moment(i, 'e').endOf('week').isoWeekday(i).format('YYYY-MM-DD');
         });
         var tempVisitsMap = {};
-
-        for (var key in defaultWeekdaysFormatted) {
-            var date = defaultWeekdaysFormatted[key];
-            var formattedDate = moment(date).format('DD-MM-YYYY');
-            const request = new Request(VISIT_DATA_API_URL+date+'/', {
-                headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
-                }),
-            })
-            const res = await fetch(request).then((resp) => {
-                if(resp.status === 200) {
-                    return resp.json();
+        var startDate = defaultWeekdaysFormatted[0];
+        var endDate = defaultWeekdaysFormatted[defaultWeekdaysFormatted.length - 1];
+        const request = new Request(VISIT_DATA_API_URL+'?start=' + startDate + '&end=' + endDate, {
+            headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
+            }),
+        })
+        const res = await fetch(request).then((resp) => {
+            if(resp.status === 200) {
+                return resp.json();
+            }
+            // TODO
+            else return [];
+        }).then((resp) => {
+            for(var i=0; i<resp.length; i++) {
+                var plannedStartTime = resp[i].plannedStartTime;
+                var midnightEpoch = resp[i].midnightEpoch;
+                var formattedDate = moment.unix(midnightEpoch/1000).format('DD-MM-YYYY');
+                var date = new Date(plannedStartTime);
+                var nowUtc = new Date( date.getTime());
+                var hh = nowUtc.getHours() < 10 ? '0' +
+                    nowUtc.getHours() : nowUtc.getHours();
+                var mi = nowUtc.getMinutes() < 10 ? '0' +
+                    nowUtc.getMinutes() : nowUtc.getMinutes();
+                if(plannedStartTime === null) {
+                    hh = '--';
+                    mi = '--';
                 }
-                // TODO
-                else return [];
-            }).then((resp) => {
-                for(var i=0; i<resp.length; i++) {
-                    var plannedStartTime = resp[i].plannedStartTime;
-                    var s = new Date(plannedStartTime);
-                    var nowUtc = new Date( s.getTime());
-                    var hh = nowUtc.getHours() < 10 ? '0' +
-                        nowUtc.getHours() : nowUtc.getHours();
-                    var mi = nowUtc.getMinutes() < 10 ? '0' +
-                        nowUtc.getMinutes() : nowUtc.getMinutes();
-                    if(plannedStartTime === null) {
-                        hh = '--';
-                        mi = '--';
-                    }
-                    if(resp[i].episode == null)
-                        continue;
-                    var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
-                    var insert = [];
-                    insert[formattedDate] = row;
-                    tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
-                    tempVisitsMap[resp[i].userID].push(insert);
+                if(resp[i].episode == null)
+                    continue;
+                var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
+                var insert = [];
+                insert[formattedDate] = row;
+                tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
+                tempVisitsMap[resp[i].userID].push(insert);
 
-                }
-            });
-        }
+            }
+        });
+
         this.setState({
             visitsMap: tempVisitsMap
         });
@@ -298,44 +299,44 @@ class SchedulerList extends Component {
             return moment(today).endOf('week').isoWeekday(i).format('YYYY-MM-DD');
         });
         var tempVisitsMap = {};
-        for (var key in defaultWeekdaysFormatted) {
-            var date = defaultWeekdaysFormatted[key];
-            var formattedDate = moment(date).format('DD-MM-YYYY');
-            const request = new Request(VISIT_DATA_API_URL+date+'/', {
-                headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
-                }),
-            })
-            const res = await fetch(request).then((resp) => {
-                if(resp.status === 200) {
-                    return resp.json();
-                }
-                // TODO
-                else return [];
-            }).then((resp) => {
+        var startDate = defaultWeekdaysFormatted[0];
+        var endDate = defaultWeekdaysFormatted[defaultWeekdaysFormatted.length - 1];
+        const request = new Request(VISIT_DATA_API_URL+'?start=' + startDate + '&end=' + endDate, {
+            headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
+            }),
+        })
+        const res = await fetch(request).then((resp) => {
+            if(resp.status === 200) {
+                return resp.json();
+            }
+            // TODO
+            else return [];
+        }).then((resp) => {
 
-                for(var i=0; i<resp.length; i++) {
-                    var plannedStartTime = resp[i].plannedStartTime;
-                    var s = new Date(plannedStartTime);
-                    var nowUtc = new Date( s.getTime());
-                    var hh = nowUtc.getHours() < 10 ? '0' +
-                        nowUtc.getHours() : nowUtc.getHours();
-                    var mi = nowUtc.getMinutes() < 10 ? '0' +
-                        nowUtc.getMinutes() : nowUtc.getMinutes();
-                    if(plannedStartTime === null) {
-                        hh = '--';
-                        mi = '--';
-                    }
-                    if(resp[i].episode == null)
-                        continue;
-                    var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
-                    var insert = [];
-                    insert[formattedDate] = row;
-                    tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
-                    tempVisitsMap[resp[i].userID].push(insert);
-
+            for(var i=0; i<resp.length; i++) {
+                var plannedStartTime = resp[i].plannedStartTime;
+                var midnightEpoch = resp[i].midnightEpoch;
+                var formattedDate = moment.unix(midnightEpoch/1000).format('DD-MM-YYYY');
+                var date = new Date(plannedStartTime);
+                var nowUtc = new Date( date.getTime());
+                var hh = nowUtc.getHours() < 10 ? '0' +
+                    nowUtc.getHours() : nowUtc.getHours();
+                var mi = nowUtc.getMinutes() < 10 ? '0' +
+                    nowUtc.getMinutes() : nowUtc.getMinutes();
+                if(plannedStartTime === null) {
+                    hh = '--';
+                    mi = '--';
                 }
-            });
-        }
+                if(resp[i].episode == null)
+                    continue;
+                var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
+                var insert = [];
+                insert[formattedDate] = row;
+                tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
+                tempVisitsMap[resp[i].userID].push(insert);
+
+            }
+        });
         this.setState({
             visitsMap: tempVisitsMap
         });

@@ -292,7 +292,7 @@ class Scheduler extends Component {
         if(date === undefined) {
             formattedDate = getDateFromDateTimeObject();
         }
-        const request = new Request(VISIT_DATA_API_URL+formattedDate+'/', {
+        const request = new Request(VISIT_DATA_API_URL+'?start='+ formattedDate + '&end=' + formattedDate, {
             headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
             }),
         })
@@ -324,6 +324,8 @@ class Scheduler extends Component {
                         mi = '00';
                     }
                     var res = resp[i];
+                    if(res.episode == null)
+                        continue;
                     var lat = res.episode.patient.address.latitude;
                     var lng = res.episode.patient.address.longitude;
                     if(tempSingleVisitsMap[res.episode.patient.address.latitude] === undefined) {
@@ -354,6 +356,8 @@ class Scheduler extends Component {
                         hh = '00';
                         mi = '00';
                     }
+                    if(resp[i].episode == null)
+                        continue;
                     tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
                     tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
                         lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,

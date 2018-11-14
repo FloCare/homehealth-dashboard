@@ -66,27 +66,15 @@ class AppMenu extends React.Component {
                 if (resource.name === 'phi'){
                     label = MENU_ITEM_PHI;
                     icon = <PatientIcon />;
-                    return (
-                        <MenuItemLink key={resource.name} to={`/${resource.name}`} primaryText={label} onClick={onMenuClick} leftIcon={icon} />
-                    );
                 } else if (resource.name === 'users'){
                     label = MENU_ITEM_USERS;
                     icon = <UserIcon />;
-                    return (
-                        <MenuItemLink key={resource.name} to={`/${resource.name}`} primaryText={label} onClick={onMenuClick} leftIcon={icon} />
-                    );
                 } else if (resource.name === 'stops'){
                     label = MENU_ITEM_STOPS;
                     icon = <PlaceIcon />;
-                    return (
-                        <MenuItemLink key={resource.name} to={`/${resource.name}`} primaryText={label} onClick={onMenuClick} leftIcon={icon} />
-                    );
                 } else if (resource.name === 'physicians'){
                     label = resource.name.charAt(0).toUpperCase() + resource.name.slice(1);
                     icon = <UserIcon />;
-                    return (
-                        <MenuItemLink key={resource.name} to={`/${resource.name}`} primaryText={label} onClick={onMenuClick} leftIcon={icon} />
-                    );
                 } else if (resource.name === 'scheduler'){
                     label = MENU_ITEM_SCHEDULER;
                     icon = <SchedulerIcon />;
@@ -130,6 +118,9 @@ class AppMenu extends React.Component {
                     </div>);
 
                 }
+                return (
+                    <MenuItemLink key={resource.name} to={`/${resource.name}`} primaryText={label} onClick={onMenuClick} leftIcon={icon} />
+                );
             })}
             <Responsive
                 small={logout}

@@ -8,16 +8,6 @@ export default class VisitCard extends React.Component{
         open: false,
     };
 
-    renderInputField(visitKeys) {
-        if(visitKeys.size > 2) {
-            return (                <Button size="small" onClick={() => {
-
-            }}>
-                More
-            </Button>);
-        }
-    }
-
     handleClickOpen = () => {
         this.setState({
             open: true,
@@ -86,9 +76,7 @@ export default class VisitCard extends React.Component{
 
         return (
             <div className={classes.paperStyle2}>
-
                 {visitCard}
-
             </div>
         );
     }
