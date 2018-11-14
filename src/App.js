@@ -49,7 +49,7 @@ const App = () => (
                   options={{label: 'Scheduler'}}
                   list={Scheduler}
         />
-        <Resource name="List"
+        <Resource name="list"
                   options={{label: 'List'}}
                   list={SchedulerList}
         />

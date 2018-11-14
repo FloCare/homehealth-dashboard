@@ -32,7 +32,7 @@ const styles = theme => ({
         borderLeft: 'ridge',
         borderRight: 'ridge',
         marginTop: '0.1%',
-        width: '95%',
+        width: '84vw',
         height: '100%',
 
     },
@@ -71,7 +71,8 @@ const styles = theme => ({
     },
     paperStyle3: {
         width: '70%',
-        float: 'left'
+        float: 'left',
+        paddingRight: '0.001vw',
     },
     paperStyle4: {
         width: '30%',
@@ -85,20 +86,33 @@ const styles = theme => ({
         width: '9.5vw'
     },
     daysOfWeekStyle1: {
-        marginLeft: '7vw',
+        width: '100%',
+        marginLeft: '8vw',
+        whiteSpace: 'noWrap'
     },
     daysOfWeekStyle: {
         position: 'relative',
         display: 'inline',
-        marginLeft: '6.5vw',
+        marginLeft: '6vw',
     },
     stripStyle: {
-        textAlign: 'center'
+        textAlign: 'center',
     },
     padding: {
         paddingTop: '0px',
         paddingBottom: '0px'
     },
+    visitRowColorStyle: {
+        backgroundColor: '#E0E0E0'
+    },
+    visitRowColorStyle1: {
+        backgroundColor: '##E8E8E8'
+    },
+    buttonStyle: {
+        '&:hover': {
+            backgroundColor: 'transparent',
+        },
+    }
 });
 
 
@@ -248,6 +262,8 @@ class SchedulerList extends Component {
                         hh = '--';
                         mi = '--';
                     }
+                    if(resp[i].episode == null)
+                        continue;
                     var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
                     var insert = [];
                     insert[formattedDate] = row;
@@ -297,6 +313,8 @@ class SchedulerList extends Component {
                         hh = '--';
                         mi = '--';
                     }
+                    if(resp[i].episode == null)
+                        continue;
                     var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
                     var insert = [];
                     insert[formattedDate] = row;
@@ -334,7 +352,9 @@ class SchedulerList extends Component {
                                         daysOfWeekFormatted: defaultWeekdaysFormatted})
                         this.updateVisitData();
 
-                    }}>
+                    }} classes={{
+                root: classes.buttonStyle
+            }}>
                 <ChevronLeft />
             </Button>
             <font size="3" color="black">{startOfWeek} - {endOfWeek}, {year}</font>
@@ -355,7 +375,9 @@ class SchedulerList extends Component {
                             daysOfWeek: defaultWeekdays,
                             daysOfWeekFormatted: defaultWeekdaysFormatted})
                         this.updateVisitData();
-                    }}>
+                    }} classes={{
+                root: classes.buttonStyle
+            }}>
                 <ChevronRight />
             </Button>
         </div>);
@@ -376,7 +398,8 @@ class SchedulerList extends Component {
 
     render() {
         const { classes } = this.props;
-        const { visitsMap, daysOfWeekFormatted } = this.state
+        const { visitsMap, daysOfWeekFormatted } = this.state;
+        var flag = 0;
         return(
             <div className={classes.rootLevelStyle}>
                 {this.renderDateStrip()}
@@ -393,16 +416,30 @@ class SchedulerList extends Component {
                                 }} component="div">{value.role}s</ListSubheader>}
                                 classes={{padding: classes.padding}}
                             />
-                                {(this.state.userRoleDetailsMap[value.role]).map(user => (
-                                    <div>
-                                        <VisitListRow name={user.name}
-                                                      daysOfWeek={daysOfWeekFormatted}
-                                                      id={user.id}
-                                                      visits={visitsMap}
-                                                      classes={classes}/>
-                                        <Divider />
-                                    </div>
-                                ))}
+                                {(this.state.userRoleDetailsMap[value.role]).map(user => {
+                                    if(flag === 0) {
+                                        flag = 1;
+                                        return (<div className={classes.visitRowColorStyle}>
+                                            <VisitListRow name={user.name}
+                                                          daysOfWeek={daysOfWeekFormatted}
+                                                          id={user.id}
+                                                          visits={visitsMap}
+                                                          classes={classes}/>
+                                            <Divider/>
+                                        </div>);
+                                    }
+                                    else {
+                                        flag = 0;
+                                        return (<div className={classes.visitRowColorStyle1}>
+                                            <VisitListRow name={user.name}
+                                                          daysOfWeek={daysOfWeekFormatted}
+                                                          id={user.id}
+                                                          visits={visitsMap}
+                                                          classes={classes}/>
+                                            <Divider/>
+                                        </div>);
+                                    }
+                                })}
 
                         </div>)
                 })}

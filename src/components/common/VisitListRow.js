@@ -4,10 +4,12 @@ import VisitCard from './VisitCard'
 export default class VisitListRow extends React.Component{
     render(){
         const { name, classes, id, visits, daysOfWeek } = this.props;
+        const colors = ['#5b8a89', '#50a3b2', '#3987c3', '#dc5723', '#00695c', '#536bff', '#8f70f6'];
+        var randomColor = Math.floor(Math.random() * 7) + 1;
         return (
             <div className={classes.staffStyle}>
                 <div className={classes.paperStyle}>
-                    <font size="2">{name}</font>
+                    <font size="2" color={colors[randomColor]}>{name}</font>
                 </div>
                 <div className={classes.paperStyle1}>
                     {(daysOfWeek).map(value => {
