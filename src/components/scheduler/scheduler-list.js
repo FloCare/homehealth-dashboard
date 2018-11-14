@@ -95,8 +95,15 @@ const styles = theme => ({
         display: 'inline',
         marginLeft: '6vw',
     },
+    refreshStyle: {
+        position: 'relative',
+        display: 'inline',
+        marginLeft: '20vw',
+        whiteSpace: 'noWrap'
+    },
     stripStyle: {
-        textAlign: 'center',
+        marginLeft: '30vw',
+        paddingBottom: '2vh'
     },
     padding: {
         paddingTop: '0px',
@@ -105,7 +112,15 @@ const styles = theme => ({
     visitRowColorStyle: {
         backgroundColor: '#F0F0F0'
     },
+    refreshButtonStyle: {
+        textTransform: 'none',
+        fontSize: 16,
+        '&:hover': {
+            backgroundColor: 'transparent',
+        },
+    },
     buttonStyle: {
+        textTransform: 'none',
         '&:hover': {
             backgroundColor: 'transparent',
         },
@@ -326,6 +341,10 @@ class SchedulerList extends Component {
         });
     }
 
+    handleRefreshClick = () => {
+        this.updateVisitData();
+    };
+
     renderDateStrip() {
         const {startOfWeek, endOfWeek, year, today} = this.state;
         const { classes } = this.props;
@@ -377,6 +396,13 @@ class SchedulerList extends Component {
             }}>
                 <ChevronRight />
             </Button>
+            <div className={classes.refreshStyle}>
+            <Button size="small" classes={{
+                root: classes.refreshButtonStyle
+            }} onClick={this.handleRefreshClick}>
+                Refresh
+            </Button>
+            </div>
         </div>);
     }
 
