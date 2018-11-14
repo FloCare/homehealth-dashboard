@@ -103,10 +103,7 @@ const styles = theme => ({
         paddingBottom: '0px'
     },
     visitRowColorStyle: {
-        backgroundColor: '#E0E0E0'
-    },
-    visitRowColorStyle1: {
-        backgroundColor: '##E8E8E8'
+        backgroundColor: '#F0F0F0'
     },
     buttonStyle: {
         '&:hover': {
@@ -405,6 +402,8 @@ class SchedulerList extends Component {
                 {this.renderDateStrip()}
                 {this.renderDays()}
                 {(this.state.disciplines).map(value => {
+                    const colors = ['#5b8a89', '#50a3b2', '#3987c3', '#dc5723', '#00695c', '#536bff', '#8f70f6'];
+                    var randomColor = Math.floor(Math.random() * 7) + 1;
                     if(value.role != 'Admin')
                         return (<div>
                             <List
@@ -419,7 +418,7 @@ class SchedulerList extends Component {
                                 {(this.state.userRoleDetailsMap[value.role]).map(user => {
                                     if(flag === 0) {
                                         flag = 1;
-                                        return (<div className={classes.visitRowColorStyle}>
+                                        return (<div>
                                             <VisitListRow name={user.name}
                                                           daysOfWeek={daysOfWeekFormatted}
                                                           id={user.id}
@@ -430,7 +429,7 @@ class SchedulerList extends Component {
                                     }
                                     else {
                                         flag = 0;
-                                        return (<div className={classes.visitRowColorStyle1}>
+                                        return (<div className={classes.visitRowColorStyle}>
                                             <VisitListRow name={user.name}
                                                           daysOfWeek={daysOfWeekFormatted}
                                                           id={user.id}
