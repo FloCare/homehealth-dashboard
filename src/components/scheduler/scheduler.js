@@ -62,6 +62,14 @@ var visitMarkerLabel3x = {
     labelOrigin: new window.google.maps.Point(80,11)
 };
 
+var stopsMarkerLabel1x = {
+    url: Images.stopsMarkerLabel,
+    scaledSize: new window.google.maps.Size(110, 28),
+    origin: new window.google.maps.Point(0, 0),
+    anchor: new window.google.maps.Point(32,65),
+    labelOrigin: new window.google.maps.Point(55,11)
+};
+
 var patientIconLabel = new window.google.maps.MarkerImage(
     Images.patientIconLabel,
     null, /* size is determined at runtime */
@@ -162,6 +170,9 @@ const styles = theme => ({
     dense: {
         fontSize: 14,
         paddingLeft: 0.1
+    },
+    placeTextStyle: {
+        textAlign: 'center'
     },
 });
 
@@ -292,7 +303,7 @@ class Scheduler extends Component {
         if(date === undefined) {
             formattedDate = getDateFromDateTimeObject();
         }
-        const request = new Request(VISIT_DATA_API_URL+'?start='+ formattedDate + '&end=' + formattedDate, {
+        const request = new Request(VISIT_DATA_API_URL+formattedDate+'/', {
             headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
             }),
         })
@@ -324,20 +335,35 @@ class Scheduler extends Component {
                         mi = '00';
                     }
                     var res = resp[i];
-                    if(res.episode == null)
-                        continue;
-                    var lat = res.episode.patient.address.latitude;
-                    var lng = res.episode.patient.address.longitude;
-                    if(tempSingleVisitsMap[res.episode.patient.address.latitude] === undefined) {
-                        tempSingleVisitsMap[res.episode.patient.address.latitude] = res.episode.patient.address.longitude;
-                        tempDuplicateVisitsMap[lat.toString()+lng.toString()] = res.userID+ ":" + hh+"-"+mi + ":" + res.isDone;
+                    if(res.episode === null){
+                        var lat = res.place.address.latitude;
+                        var lng = res.place.address.longitude;
+                        if(tempSingleVisitsMap[lat] === undefined) {
+                            tempSingleVisitsMap[lat] = lng;
+                            tempDuplicateVisitsMap[lat.toString()+lng.toString()] = res.userID+ ":" + hh+"-"+mi + ":" + res.isDone;
+                        }
+                        else {
+                            var userID = tempDuplicateVisitsMap[lat.toString()+lng.toString()];
+                            var finalUserId = userID + ":" + res.userID+ ":" + hh+"-"+mi+ ":" + res.isDone;
+                            tempDuplicateVisitsMap[lat.toString()+lng.toString()] = finalUserId;
+                            tempMarkersMap[lat] = false;
+                            dupVisitsMap[lat.toString()+lng.toString()] = finalUserId;
+                        }
                     }
                     else {
-                        var userID = tempDuplicateVisitsMap[lat.toString()+lng.toString()];
-                        var finalUserId = userID + ":" + res.userID+ ":" + hh+"-"+mi+ ":" + res.isDone;
-                        tempDuplicateVisitsMap[lat.toString()+lng.toString()] = finalUserId;
-                        tempMarkersMap[res.episode.patient.address.latitude] = false;
-                        dupVisitsMap[lat.toString()+lng.toString()] = finalUserId;
+                        var lat = res.episode.patient.address.latitude;
+                        var lng = res.episode.patient.address.longitude;
+                        if(tempSingleVisitsMap[res.episode.patient.address.latitude] === undefined) {
+                            tempSingleVisitsMap[res.episode.patient.address.latitude] = res.episode.patient.address.longitude;
+                            tempDuplicateVisitsMap[lat.toString()+lng.toString()] = res.userID+ ":" + hh+"-"+mi + ":" + res.isDone;
+                        }
+                        else {
+                            var userID = tempDuplicateVisitsMap[lat.toString()+lng.toString()];
+                            var finalUserId = userID + ":" + res.userID+ ":" + hh+"-"+mi+ ":" + res.isDone;
+                            tempDuplicateVisitsMap[lat.toString()+lng.toString()] = finalUserId;
+                            tempMarkersMap[res.episode.patient.address.latitude] = false;
+                            dupVisitsMap[lat.toString()+lng.toString()] = finalUserId;
+                        }
                     }
                 }
 
@@ -356,22 +382,35 @@ class Scheduler extends Component {
                         hh = '00';
                         mi = '00';
                     }
-                    if(resp[i].episode == null)
-                        continue;
                     tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
-                    tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
-                        lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
-                        latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
-                        isDone: resp[i].isDone});
-
                     tempFilteredVisitsMap[resp[i].userID] = tempFilteredVisitsMap[resp[i].userID] || [];
-                    tempFilteredVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
-                        lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
-                        latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
-                        isDone: resp[i].isDone});
+                    if (resp[i].episode === null){
+                        var lat = resp[i].place.address.latitude;
+                        var lng = resp[i].place.address.longitude;
+                        var placeName = resp[i].place.name;
+
+                        tempVisitsMap[resp[i].userID].push({name: placeName, firstName: placeName,
+                            lastName: placeName, userID: resp[i].userID, visitTime: hh+':'+mi,
+                            latitude: lat, longitude: lng,
+                            isDone: resp[i].isDone, isPlace: true});
+
+                        tempFilteredVisitsMap[resp[i].userID].push({name: placeName, firstName: placeName,
+                            lastName: placeName, userID: resp[i].userID, visitTime: hh+':'+mi,
+                            latitude: lat, longitude: lng,
+                            isDone: resp[i].isDone, isPlace: true});
+                    }
+                    else {
+                        tempVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
+                            lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
+                            latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
+                            isDone: resp[i].isDone, isPlace: false});
+
+                        tempFilteredVisitsMap[resp[i].userID].push({name: resp[i].episode.patient.name, firstName: resp[i].episode.patient.firstName,
+                            lastName: resp[i].episode.patient.lastName, userID: resp[i].userID, visitTime: hh+':'+mi,
+                            latitude: resp[i].episode.patient.address.latitude, longitude: resp[i].episode.patient.address.longitude,
+                            isDone: resp[i].isDone, isPlace: false});
+                    }
                 }
-
-
             }
             this.setState({
                 visitsMap: tempVisitsMap,
@@ -382,7 +421,6 @@ class Scheduler extends Component {
             return resp;
         });
     }
-
 
     async fetchUsersData() {
         const request = new Request(USER_DETAILS_API_URL, {
@@ -711,18 +749,10 @@ class Scheduler extends Component {
     // TODO re-visit this logic
     reorderMarkerLabel(final) {
         var label = '';
-        if(final.length === 3) {
-            this.swapArrayElements(final, 1, 2);
-        }
-
-        if(final.length === 6) {
-            this.swapArrayElements(final, 1, 2);
-            this.swapArrayElements(final, 4, 5);
-        }
-        else if(final.length === 9) {
-            this.swapArrayElements(final, 1, 2);
-            this.swapArrayElements(final, 4, 5);
-            this.swapArrayElements(final, 7, 8);
+        var j=0;
+        for(var i=0; i<final.length; i+=3) {
+            this.swapArrayElements(final, 3*j + 1, 3*j + 2);
+            j++;
         }
         for(var i=0 ; i<final.length ; i++) {
             if((final[i] === '| ' && i === 0) || final[i] === undefined)
@@ -810,6 +840,9 @@ class Scheduler extends Component {
                         for (var j = 0; j < filteredVisitsMap[value].length; j++) {
                             var lat = filteredVisitsMap[value][j].latitude;
                             var long = filteredVisitsMap[value][j].longitude;
+                            var isPlace = filteredVisitsMap[value][j].isPlace;
+                            var placeName = filteredVisitsMap[value][j].name;
+                            var lineSeparator = "-".repeat(placeName.length * 2);
                             var key = lat.toString()+long.toString();
                             if(duplicateVisitMap[key] != undefined) {
                                 var strSplit = duplicateVisitMap[key].split(':');
@@ -839,34 +872,74 @@ class Scheduler extends Component {
                                     k++;
                                 }
                                 var markerLabel = this.reorderMarkerLabel(final);
-                                markers.push(<Marker
-                                    position={{
-                                        lat: lat,
-                                        lng: long
-                                    }}
-                                    key={value}
-                                    label={{
-                                        text: markerLabel,
-                                        color: "white",
-                                        fontSize: "10px",
-                                        textAlign: "left"
-                                    }}
-                                    icon={ count === 1 ? visitMarkerLabel1x : (count % 2 === 0 ? visitMarkerLabel2x : visitMarkerLabel3x)}
-                                    onClick={() => this.handleMarkerClick(value)}
-                                    // onClick={(e) => {
-                                    //     console.log(e);
-                                    //     markersMap[key] = true;
-                                    //     this.setState({ isOpen: markersMap })
-                                    // }}
+                                var visitsSize = markerLabel.split('|');
+                                if(isPlace) {
+                                    markers.push(<Marker
+                                        position={{
+                                            lat: lat,
+                                            lng: long
+                                        }}
+                                        key={value}
+                                        //show only the first staff visit time for stops
+                                        label={{
+                                            //text: visitsSize[0] + '|  ' + (visitsSize.length - 1) + ' More...',
+                                            text: visitsSize[0] + ((visitsSize.length > 1) ? ('|  ' + (visitsSize.length - 1) + ' More...') : ''),
+                                            color: "white",
+                                            fontSize: "10px",
+                                            textAlign: "left"
+                                        }}
+                                        icon={ stopsMarkerLabel1x}
+                                        onClick={() => this.handleMarkerClick(value)}
+                                        // onClick={(e) => {
+                                        //     console.log(e);
+                                        //     markersMap[key] = true;
+                                        //     this.setState({ isOpen: markersMap })
+                                        // }}
 
-                                >
-                                    {
-                                        (this.state.position === value) &&
-                                        <InfoWindow>
-                                            <span>{filteredVisitsMap[value][j].name}</span>
-                                        </InfoWindow>
-                                    }
-                                </Marker>);
+                                    >
+                                        {
+                                            (this.state.position === value) &&
+                                            <InfoWindow>
+                                                <div className={classes.placeTextStyle}>
+                                                    <div>{filteredVisitsMap[value][j].name}</div>
+                                                    <hr/>
+                                                    <div>{markerLabel}</div>
+                                                </div>
+                                            </InfoWindow>
+                                        }
+                                    </Marker>);
+                                }
+                                else {
+                                    markers.push(<Marker
+                                        position={{
+                                            lat: lat,
+                                            lng: long
+                                        }}
+                                        key={value}
+                                        label={{
+                                            text: markerLabel,
+                                            color: "white",
+                                            fontSize: "10px",
+                                            textAlign: "left"
+                                        }}
+                                        icon={ count === 1 ? visitMarkerLabel1x : (count % 2 === 0 ? visitMarkerLabel2x : visitMarkerLabel3x)}
+                                        onClick={() => this.handleMarkerClick(value)}
+                                        // onClick={(e) => {
+                                        //     console.log(e);
+                                        //     markersMap[key] = true;
+                                        //     this.setState({ isOpen: markersMap })
+                                        // }}
+
+                                    >
+                                        {
+                                            (this.state.position === value) &&
+                                            <InfoWindow>
+                                                <span>{filteredVisitsMap[value][j].name}</span>
+                                            </InfoWindow>
+                                        }
+                                    </Marker>);
+                                }
+
                             } else {
                                 var visitTime = filteredVisitsMap[value][j].visitTime;
                                 if(visitTime.includes('00:00')) {

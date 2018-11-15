@@ -152,7 +152,10 @@ class EditForm extends Component {
         const {startUndoable} = this.props;
 
         data.updatedFields = this.state.updatedFields;
-
+        //TODO Convert all empty strings to null
+        if (data.apartmentNo === '') {
+            data.apartmentNo = null;
+        }
         startUndoable(
             crudUpdate(
                 this.props.resource,
