@@ -413,7 +413,7 @@ class SchedulerList extends Component {
         return (<div className={classes.daysOfWeekStyle1}>
             {(this.state.daysOfWeek).map(value => (
                 <div className={classes.daysOfWeekStyle}>
-                    <font size="3" color="black">{value}</font>
+                    <font size="2" color="black">{value}</font>
                 </div>
 
             ))}

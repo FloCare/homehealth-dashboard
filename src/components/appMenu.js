@@ -41,6 +41,8 @@ const styles = {
     },
     listItemNestedStyle: {
         paddingLeft: '1vw',
+        paddingTop: '1.5vw',
+        paddingBottom: '1.5vw',
     },
 };
 
