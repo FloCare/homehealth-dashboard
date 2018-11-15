@@ -62,6 +62,14 @@ var visitMarkerLabel3x = {
     labelOrigin: new window.google.maps.Point(80,11)
 };
 
+var stopsMarkerLabel1x = {
+    url: Images.stopsMarkerLabel,
+    scaledSize: new window.google.maps.Size(110, 28),
+    origin: new window.google.maps.Point(0, 0),
+    anchor: new window.google.maps.Point(32,65),
+    labelOrigin: new window.google.maps.Point(55,11)
+};
+
 var patientIconLabel = new window.google.maps.MarkerImage(
     Images.patientIconLabel,
     null, /* size is determined at runtime */
@@ -881,7 +889,7 @@ class Scheduler extends Component {
                                             fontSize: "10px",
                                             textAlign: "left"
                                         }}
-                                        icon={ visitMarkerLabel2x}
+                                        icon={ stopsMarkerLabel1x}
                                         onClick={() => this.handleMarkerClick(value)}
                                         // onClick={(e) => {
                                         //     console.log(e);
@@ -895,7 +903,7 @@ class Scheduler extends Component {
                                             <InfoWindow>
                                                 <div className={classes.placeTextStyle}>
                                                     <div>{filteredVisitsMap[value][j].name}</div>
-                                                    <div>{lineSeparator}</div>
+                                                    <hr/>
                                                     <div>{markerLabel}</div>
                                                 </div>
                                             </InfoWindow>
