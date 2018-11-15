@@ -39,7 +39,7 @@ class SimpleDialog extends React.Component {
 
     render() {
         const { classes, onClose, visits, date, staff, ...other } = this.props;
-        var currDate = moment(date, 'DD-MM-YYYY').format('MMM M/D');
+        var currDate = moment(date, 'DD-MM-YYYY').format('ddd M/D');
         var visitCard = [];
         for (var key in visits) {
             if(visits[key] != undefined) {
@@ -72,9 +72,7 @@ class SimpleDialog extends React.Component {
                 <div>
                     <div className={classes.root}>{currDate}</div>
                     <div className={classes.root1}>{staff}</div>
-                    <div className={classes.lineSeparatorStyle}>
-                        ------------------------------
-                    </div>
+                    <hr/>
                     {visitCard}
                 </div>
             </Dialog>
