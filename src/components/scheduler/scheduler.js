@@ -422,7 +422,6 @@ class Scheduler extends Component {
         });
     }
 
-
     async fetchUsersData() {
         const request = new Request(USER_DETAILS_API_URL, {
             headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')

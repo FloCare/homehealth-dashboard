@@ -12,6 +12,7 @@ import UserCreate from './components/user/UserCreate';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
 import Scheduler from './components/scheduler/scheduler';
+import SchedulerList from './components/scheduler/scheduler-list';
 import {ViewReports} from './components/reports/ViewReports';
 import ShowReport from './components/reports/ShowReport';
 import appLayout from './components/appLayout';
@@ -27,7 +28,7 @@ require('../node_modules/material-components-web/dist/material-components-web.mi
 // });
 
 var organizationName = localStorage.getItem('organizationName') ? localStorage.getItem('organizationName') : 'FloCare Admin Dashboard';
-
+// Todo : Temporary place for scheduler list , will be refactored
 const App = () => (
     <Admin
         title={organizationName}
@@ -44,9 +45,13 @@ const App = () => (
                   edit={PhysicianEdit}
                   list={PhysicianList}
                    />
-        <Resource name="scheduler"
+        <Resource name="scheduler-map"
                   options={{label: 'Scheduler'}}
                   list={Scheduler}
+        />
+        <Resource name="scheduler-list"
+                  options={{label: 'List'}}
+                  list={SchedulerList}
         />
         <Resource name={RESOURCE_REPORTS} options={{label: 'Reports'}} list={ViewReports} show={ShowReport} />
     </Admin>
