@@ -77,7 +77,7 @@ class AppMenu extends React.Component {
                 } else if (resource.name === 'physicians'){
                     label = resource.name.charAt(0).toUpperCase() + resource.name.slice(1);
                     icon = <UserIcon />;
-                } else if (resource.name === 'scheduler'){
+                } else if (resource.name === 'scheduler-map'){
                     label = MENU_ITEM_SCHEDULER;
                     icon = <SchedulerIcon />;
                     return (<div>
@@ -98,8 +98,8 @@ class AppMenu extends React.Component {
                         <Collapse in={this.state.open} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding>
                                 <MenuItemLink
-                                    key="scheduler"
-                                    to="/scheduler"
+                                    key="schedulerMap"
+                                    to="/scheduler-map"
                                     primaryText="Map"
                                     onClick={onMenuClick}
                                     classes={{
@@ -107,8 +107,8 @@ class AppMenu extends React.Component {
                                     }}
                                 />
                                 <MenuItemLink
-                                    key="list"
-                                    to="/list"
+                                    key="schedulerList"
+                                    to="/scheduler-list"
                                     primaryText="List"
                                     onClick={onMenuClick}
                                     classes={{

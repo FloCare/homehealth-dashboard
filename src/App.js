@@ -45,11 +45,11 @@ const App = () => (
                   edit={PhysicianEdit}
                   list={PhysicianList}
                    />
-        <Resource name="scheduler"
+        <Resource name="scheduler-map"
                   options={{label: 'Scheduler'}}
                   list={Scheduler}
         />
-        <Resource name="list"
+        <Resource name="scheduler-list"
                   options={{label: 'List'}}
                   list={SchedulerList}
         />
