@@ -155,7 +155,7 @@ class SchedulerList extends Component {
         var startOfWeek = moment().startOf('week').format("MMM D");
         var endOfWeek = moment().endOf('week').format("MMM D");
         var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
-            return moment(i, 'e').endOf('week').isoWeekday(i).format('MMM M/D');
+            return moment(i, 'e').endOf('week').isoWeekday(i).format('ddd M/D');
         });
         var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
             return moment(i, 'e').endOf('week').isoWeekday(i).format('DD-MM-YYYY');
@@ -356,7 +356,7 @@ class SchedulerList extends Component {
                         var end = moment(today).subtract(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).year();
                         var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
-                            return moment(today).subtract(1, 'week').endOf('week').isoWeekday(i).format('MMM M/D');
+                            return moment(today).subtract(1, 'week').endOf('week').isoWeekday(i).format('ddd M/D');
                         });
                         var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
                             return moment(today).subtract(1, 'week').endOf('week').isoWeekday(i).format('DD-MM-YYYY');
@@ -380,7 +380,7 @@ class SchedulerList extends Component {
                         var end = moment(today).add(1, 'week').endOf('week').format("MMM D");
                         var year = moment(today).format("YYYY");
                         var defaultWeekdays = Array.apply(null, Array(7)).map(function (_, i) {
-                            return moment(today).add(1, 'week').endOf('week').isoWeekday(i).format('MMM M/D');
+                            return moment(today).add(1, 'week').endOf('week').isoWeekday(i).format('ddd M/D');
                         });
                         var defaultWeekdaysFormatted = Array.apply(null, Array(7)).map(function (_, i) {
                             return moment(today).add(1, 'week').endOf('week').isoWeekday(i).format('DD-MM-YYYY');

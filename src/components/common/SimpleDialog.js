@@ -26,6 +26,9 @@ const styles = {
         lineHeight: '20px',
         fontSize: 12
     },
+    lineSeparatorStyle: {
+        textAlign: 'center'
+    },
 };
 
 class SimpleDialog extends React.Component {
@@ -69,7 +72,9 @@ class SimpleDialog extends React.Component {
                 <div>
                     <div className={classes.root}>{currDate}</div>
                     <div className={classes.root1}>{staff}</div>
-                    <div> ------------------------------</div>
+                    <div className={classes.lineSeparatorStyle}>
+                        ------------------------------
+                    </div>
                     {visitCard}
                 </div>
             </Dialog>
