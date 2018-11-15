@@ -86,7 +86,6 @@ const styles = theme => ({
         width: '9.5vw'
     },
     daysOfWeekStyle1: {
-        width: '100%',
         marginLeft: '8vw',
         whiteSpace: 'noWrap'
     },

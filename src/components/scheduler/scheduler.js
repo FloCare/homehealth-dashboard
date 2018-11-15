@@ -64,6 +64,14 @@ var visitMarkerLabel3x = {
 
 var stopsMarkerLabel1x = {
     url: Images.stopsMarkerLabel,
+    scaledSize: new window.google.maps.Size(65, 28),
+    origin: new window.google.maps.Point(0, 0),
+    anchor: new window.google.maps.Point(32,65),
+    labelOrigin: new window.google.maps.Point(35,11)
+};
+
+var stopsMarkerLabel2x = {
+    url: Images.stopsMarkerLabel,
     scaledSize: new window.google.maps.Size(110, 28),
     origin: new window.google.maps.Point(0, 0),
     anchor: new window.google.maps.Point(32,65),
@@ -303,7 +311,7 @@ class Scheduler extends Component {
         if(date === undefined) {
             formattedDate = getDateFromDateTimeObject();
         }
-        const request = new Request(VISIT_DATA_API_URL+formattedDate+'/', {
+        const request = new Request(VISIT_DATA_API_URL+'?start='+ formattedDate + '&end=' + formattedDate, {
             headers: new Headers({ 'Authorization': 'Token '+ localStorage.getItem('access_token')
             }),
         })
@@ -888,14 +896,8 @@ class Scheduler extends Component {
                                             fontSize: "10px",
                                             textAlign: "left"
                                         }}
-                                        icon={ stopsMarkerLabel1x}
+                                        icon={ stopsMarkerLabel2x}
                                         onClick={() => this.handleMarkerClick(value)}
-                                        // onClick={(e) => {
-                                        //     console.log(e);
-                                        //     markersMap[key] = true;
-                                        //     this.setState({ isOpen: markersMap })
-                                        // }}
-
                                     >
                                         {
                                             (this.state.position === value) &&
@@ -924,12 +926,6 @@ class Scheduler extends Component {
                                         }}
                                         icon={ count === 1 ? visitMarkerLabel1x : (count % 2 === 0 ? visitMarkerLabel2x : visitMarkerLabel3x)}
                                         onClick={() => this.handleMarkerClick(value)}
-                                        // onClick={(e) => {
-                                        //     console.log(e);
-                                        //     markersMap[key] = true;
-                                        //     this.setState({ isOpen: markersMap })
-                                        // }}
-
                                     >
                                         {
                                             (this.state.position === value) &&
@@ -961,12 +957,6 @@ class Scheduler extends Component {
                                         }}
                                         icon={visitMarkerLabel1x}
                                         onClick={() => this.handleMarkerClick(value)}
-                                        // onClick={(e) => {
-                                        //     console.log(e);
-                                        //     markersMap[key] = true;
-                                        //     this.setState({ isOpen: markersMap })
-                                        // }}
-
                                     >
                                         {
                                             (this.state.position === value) &&
@@ -990,14 +980,8 @@ class Scheduler extends Component {
                                             fontSize: "10px",
                                             textAlign: "left"
                                         }}
-                                        icon={visitMarkerLabel1x}
+                                        icon={isPlace ? stopsMarkerLabel1x : visitMarkerLabel1x}
                                         onClick={() => this.handleMarkerClick(value)}
-                                        // onClick={(e) => {
-                                        //     console.log(e);
-                                        //     markersMap[key] = true;
-                                        //     this.setState({ isOpen: markersMap })
-                                        // }}
-
                                     >
                                         {
                                             (this.state.position === value) &&
