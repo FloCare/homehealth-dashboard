@@ -49,10 +49,13 @@ export default class VisitCard extends React.Component{
                     var patientDetails = res[0].split("%");
                     var patDet = patientDetails[1].split(" ");
                     if(patientDetails[0] === 'true') {
+                        // Show only the first six characters of the last name
                         visitCard.push(<div>
                             <div className={classes.paperStyle3}>
                                 <font size="2" color="#2196f3">✓ </font>
-                                <font size="2">{patDet[0].charAt(0) + '.' + patDet[1]}</font>
+                                <font size="2">
+                                    {patDet[1].charAt(0) + '.' + (patDet[0].length > 6 ? (patDet[0].substring(0, 5) + '..'): patDet[0])}
+                                </font>
                             </div>
                             <div className={classes.paperStyle4}>
                                 <font size="2">{res[1]}</font>
@@ -60,10 +63,13 @@ export default class VisitCard extends React.Component{
                         </div>);
                     }
                     else {
+                        // Show only the first six characters of the last name
                         visitCard.push(<div>
                             <div className={classes.paperStyle3}>
                                 <font size="2" color="#C00000">☓ </font>
-                                <font size="2">{patDet[0].charAt(0) + '.' + patDet[1]}</font>
+                                <font size="2">
+                                    {patDet[1].charAt(0) + '.' + (patDet[0].length > 6 ? (patDet[0].substring(0, 5) + '..'): patDet[0])}
+                                </font>
                             </div>
                             <div className={classes.paperStyle4}>
                                 <font size="2">{res[1]}</font>
