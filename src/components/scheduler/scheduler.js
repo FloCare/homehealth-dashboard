@@ -117,6 +117,13 @@ const styles = theme => ({
     disciplineBkgColor: {
         backgroundColor: '#F6F6F6'
     },
+    checkBoxColor: {
+        color: '#64CCC9',
+        '&$checked': {
+            color: '#64CCC9',
+        },
+    },
+    checked: {},
     disciplineLabelStyle: {
         lineHeight: '30px',
         fontSize: 12
@@ -1024,8 +1031,14 @@ class Scheduler extends Component {
                     >
                         <FormControlLabel classes={{
                             root: classes.radioMarginStyle
-                        }} value="today" control={<Radio color="primary" />} label="Today" />
-                        <FormControlLabel value="tomorrow" control={<Radio color="primary" />} label="Tomorrow" />
+                        }} value="today" control={<Radio classes={{
+                            root: classes.checkBoxColor,
+                            checked: classes.checked,
+                        }}/>} label="Today" />
+                        <FormControlLabel value="tomorrow" control={<Radio classes={{
+                            root: classes.checkBoxColor,
+                            checked: classes.checked,
+                        }} />} label="Tomorrow" />
                     </RadioGroup>
                     </div>
                     {/*<FormLabel component="legend">Date:</FormLabel>*/}
@@ -1100,7 +1113,10 @@ class Scheduler extends Component {
                                         checked={this.state.checkedMap['All Staff'] === true}
                                         tabIndex={-1}
                                         disableRipple
-                                        color="primary"
+                                        classes={{
+                                            root: classes.checkBoxColor,
+                                            checked: classes.checked,
+                                        }}
                                     />
                                     <ListItemText classes={{
                                         primary: classes.dense
@@ -1131,7 +1147,10 @@ class Scheduler extends Component {
                                                         checked={this.state.checkedMap[user.id] === true}
                                                         tabIndex={-1}
                                                         disableRipple
-                                                        color="primary"
+                                                        classes={{
+                                                            root: classes.checkBoxColor,
+                                                            checked: classes.checked,
+                                                        }}
                                                     />
                                                     <ListItemText classes={{
                                                         primary: classes.dense

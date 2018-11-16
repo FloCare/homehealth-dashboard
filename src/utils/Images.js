@@ -1,7 +1,7 @@
 export const Images = {
     patientIconLabel: require('../resources/patientIcon.png'),
-    visitMarkerLabel: require('../resources/visitmarker.png'),
-    stopsMarkerLabel: require('../resources/stopsmarker.png'),
+    visitMarkerLabel: require('../resources/visitmarkernew.png'),
+    stopsMarkerLabel: require('../resources/stopsmarkernew.png'),
 };
 
 

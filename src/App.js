@@ -16,6 +16,7 @@ import SchedulerList from './components/scheduler/scheduler-list';
 import {ViewReports} from './components/reports/ViewReports';
 import ShowReport from './components/reports/ShowReport';
 import appLayout from './components/appLayout';
+import { createMuiTheme } from '@material-ui/core/styles';
 import {RESOURCE_PHI, RESOURCE_USERS, RESOURCE_PHYSICIANS, RESOURCE_REPORTS, RESOURCE_STOPS} from './utils/constants';
 
 require('../node_modules/material-components-web/dist/material-components-web.min.css')
@@ -27,10 +28,21 @@ require('../node_modules/material-components-web/dist/material-components-web.mi
 //   },
 // });
 
+const myTheme = createMuiTheme({
+    overrides: {
+        MuiAppBar: {
+            colorSecondary: { // Name of the rule
+                backgroundColor : '#64CCC9'
+            },
+        }
+    },
+});
+
 var organizationName = localStorage.getItem('organizationName') ? localStorage.getItem('organizationName') : 'FloCare Admin Dashboard';
 // Todo : Temporary place for scheduler list , will be refactored
 const App = () => (
     <Admin
+        theme={myTheme}
         title={organizationName}
         authProvider={authProvider}
         dataProvider={dataProvider}
