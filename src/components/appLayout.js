@@ -1,7 +1,7 @@
 import {Layout} from 'react-admin';
-import appMenu from './appMenu';
+import AppMenu from './appMenu';
 import React from 'react';
 
-const appLayout = (props) => <Layout {...props} menu={appMenu} />;
+const appLayout = (props) => <Layout {...props} menu={AppMenu} />;
 
 export default appLayout;
