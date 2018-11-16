@@ -19,7 +19,13 @@ const styles = {
     inlineBlock: {display: 'inline-flex', marginRight: '2rem'},
     inlineBlock1: {width: '200%'},
     inlineElementStyle: {marginLeft: 20, width: '9.5%'},
-    inlineElementStyle1: {width: '9.5%'}
+    inlineElementStyle1: {width: '9.5%'},
+    button: {
+        // This is JSS syntax to target a deeper element using css selector, here the svg icon for this button
+        '& svg': { color: '#64CCC9' },
+        color: '#64CCC9',
+        backgroundColor: 'transparent'
+    },
 }
 
 const validateEmail = (email) => {
@@ -104,11 +110,12 @@ class UserEdit extends React.Component {
         const UserEditToolbar = props => (
             <Toolbar {...props}>
                 <SaveButton
+                    className={classes.button}
                     hidden={true}
                     disabled={this.state.saveDisabled}
                 />
             </Toolbar>
-        )
+        );
 
         let userData = {}
         if(this.state.gen_clicked) {

@@ -1,6 +1,8 @@
 import React from 'react';
-import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm, TextInput, EditButton, SelectInput, BooleanInput , BooleanField, CardActions,
-    ListButton, RefreshButton, FunctionField} from 'react-admin';
+import { List, Datagrid, EmailField, TextField, Create, Edit, SimpleForm,
+    TextInput, EditButton, SelectInput, BooleanInput , BooleanField, CardActions,
+    ListButton, RefreshButton, CreateButton, FunctionField,
+    SaveButton, Toolbar} from 'react-admin';
 import withStyles from '@material-ui/core/styles/withStyles';
 import UserEdit from './UserEdit';
 import {Link} from 'react-router-dom';
@@ -86,7 +88,13 @@ const validateUserEdit = (values) => {
 const styles = {
     inlineBlock: { display: 'inline-flex', marginRight: '15rem' },
     block: { display: 'inline-block', marginRight: '1rem' },
-    textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'}
+    textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'},
+    button: {
+        // This is JSS syntax to target a deeper element using css selector, here the svg icon for this button
+        '& svg': { color: '#64CCC9' },
+        color: '#64CCC9',
+        backgroundColor: 'transparent'
+    },
 };
 
 const StaffEditActions = ({ basePath, data, resource }) => (
@@ -103,8 +111,15 @@ const renderReportLink = (record) => {
     );
 };
 
-export const UserList = (props) => (
-    <List title="Staff" {...props} pagination={<UserPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
+const UserActions = withStyles(styles)(({bulkActions, basePath, classes}) => (
+    <CardActions>
+        <CreateButton basePath={basePath} className={classes.button}/>
+        <RefreshButton className={classes.button}/>
+    </CardActions>
+));
+
+export const UserList = withStyles(styles)(({ classes, ...props }) => (
+    <List title="Staff" {...props} actions={<UserActions />} pagination={<UserPagination />} bulkActions={false} sort={{ order: 'ASC' }}>
         <Datagrid>
             <TextField label="First Name" source="first_name" />
             <TextField label="Last Name" source="last_name" />
@@ -112,10 +127,28 @@ export const UserList = (props) => (
             <EmailField label="email" source="email" sortable={false}/>
             <FunctionField label="View Reports" render={renderReportLink} />
             <TextField label="Phone Number" source="contact_no" sortable={false}/>
-            <EditButton />
+            <EditButton className={classes.button}/>
         </Datagrid>
     </List>
-);
+));
+
+const UserCreateToolbar = withStyles(styles)(({ classes, ...props }) => (
+    <Toolbar {...props}>
+        <SaveButton
+            className={classes.button}
+            label="Save"
+            redirect="show"
+            submitOnEnter={true}
+        />
+    </Toolbar>
+));
+
+const UserEditActions = withStyles(styles)(({ basePath, data, classes }) => (
+    <CardActions>
+        <ListButton className={classes.button} basePath={basePath} record={data} />
+        <RefreshButton className={classes.button}/>
+    </CardActions>
+));
 
 export const UserCreate = withStyles(styles)(({ classes, ...props }) => (
     <Create title="Add Staff" {...props}>
@@ -135,8 +168,8 @@ export const UserCreate = withStyles(styles)(({ classes, ...props }) => (
 
 export const StaffEdit = withStyles(styles)(({ classes, ...props }) => {
     return (
-        <Edit title="Edit Staff" {...props} actions={<StaffEditActions />}>
-            <UserEdit {...props} />
+        <Edit title="Edit Staff" {...props} actions={<UserEditActions />}>
+            <UserEdit {...props} toolbar={<UserEditActions/>}/>
         </Edit>
     );
 });

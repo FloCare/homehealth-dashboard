@@ -1,5 +1,6 @@
 import React from 'react'
-import {Create, DisabledInput, SimpleForm, TextInput, SaveButton, Toolbar, SelectInput, BooleanInput } from 'react-admin'
+import {Create, DisabledInput, SimpleForm, TextInput, SaveButton,
+    Toolbar, SelectInput, BooleanInput, CardActions, ListButton } from 'react-admin'
 import { withStyles } from '@material-ui/core/styles';
 import {startUndoable as startUndoableAction} from 'ra-core';
 import ReactGA from 'react-ga';
@@ -21,6 +22,12 @@ const styles = {
     inlineBlock1: {width: '200%'},
     inlineElementStyle: {marginLeft: 20, width: '9.5%'},
     inlineElementStyle1: {width: '9.5%'},
+    button: {
+        // This is JSS syntax to target a deeper element using css selector, here the svg icon for this button
+        '& svg': { color: '#64CCC9' },
+        color: '#64CCC9',
+        backgroundColor: 'transparent'
+    },
 }
 
 const validateEmail = (email) => {
@@ -111,11 +118,17 @@ class UserCreate extends React.Component {
       const UserCreateToolbar = props => (
         <Toolbar {...props}>
           <SaveButton
-            hidden={true}
-            disabled={this.state.saveDisabled}
+                className={classes.button}
+                hidden={true}
+                disabled={this.state.saveDisabled}
           />
         </Toolbar>
-      )
+      );
+      const UserCreateActions = withStyles(styles)(({ basePath, data, classes }) => (
+          <CardActions>
+              <ListButton className={classes.button} basePath={basePath} record={data} />
+          </CardActions>
+      ));
 
       let userData = {}
       userData = {
@@ -128,7 +141,7 @@ class UserCreate extends React.Component {
         password: this.state.password,
       }
       return (
-          <Create {...props} record={userData} title="Add Staff">
+          <Create {...props} record={userData} title="Add Staff" actions={<UserCreateActions />}>
             <SimpleForm toolbar={<UserCreateToolbar/>} redirect="list" validate={validateUserCreation}>
                 <TextInput label="First Name" source="first_name" onChange={this.onChange} formClassName={classes.inlineBlock}/>
                 <TextInput label="Last Name" source="last_name" onChange={this.onChange} formClassName={classes.inlineBlock}/>

@@ -119,6 +119,12 @@ const styles = theme => ({
             backgroundColor: 'transparent',
         },
     },
+    button: {
+        // This is JSS syntax to target a deeper element using css selector, here the svg icon for this button
+        '& svg': { color: '#64CCC9' },
+        color: '#64CCC9',
+        backgroundColor: 'transparent'
+    },
     buttonStyle: {
         textTransform: 'none',
         '&:hover': {
@@ -400,7 +406,9 @@ class SchedulerList extends Component {
                 <ChevronRight />
             </Button>
             <div className={classes.refreshStyle}>
-            <Button size="small" color="#64CCC9" classes={{
+            <Button size="small" color="#64CCC9"
+                    className={classes.button}
+                    classes={{
                 root: classes.refreshButtonStyle
             }} onClick={this.handleRefreshClick}>
                 <Refresh className={classes.extendedIcon}/>

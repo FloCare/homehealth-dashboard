@@ -1,8 +1,9 @@
 import React from 'react'
 import {Edit, DisabledInput, ReferenceArrayInput, SimpleForm, SelectArrayInput,
     ChipField, ArrayInput, SimpleFormIterator, TextInput, CardActions,
-    ListButton, RefreshButton
-} from 'react-admin'
+    ListButton, RefreshButton, Toolbar, SaveButton
+} from 'react-admin';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 const Heading = props => {
   const {text} = props
@@ -33,25 +34,41 @@ const validatePhysicianCreation = (values) => {
 
 const styles = {
   inlineBlock: { display: 'inline-flex', alignItems: 'center' },
-  inlineElementStyle: { marginRight: 20 }
+  inlineElementStyle: { marginRight: 20 },
+    button: {
+        // This is JSS syntax to target a deeper element using css selector, here the svg icon for this button
+        '& svg': { color: '#64CCC9' },
+        color: '#64CCC9',
+        backgroundColor: 'transparent'
+    },
 }
 
 export class PhysicianEdit extends React.Component {
   render () {
     const props = {...this.props}
-      const PhysicianEditActions = ({ basePath, data, resource }) => (
+      const PhysicianEditActions = withStyles(styles)(({ basePath, classes, resource }) => (
           <CardActions>
-              <ListButton basePath={basePath} />
-              <RefreshButton />
+              <ListButton className={classes.button} basePath={basePath} />
+              <RefreshButton className={classes.button}/>
           </CardActions>
-      );
+      ));
+      const PhysicianEditToolbar = withStyles(styles)(({ classes, ...props }) => (
+          <Toolbar {...props}>
+              <SaveButton
+                  className={classes.button}
+                  label="Save"
+                  redirect="show"
+                  submitOnEnter={true}
+              />
+          </Toolbar>
+      ));
     return (
       <Edit
         {...props}
         title="Edit Physician"
         actions={<PhysicianEditActions />}
       >
-        <SimpleForm validate={validatePhysicianCreation}>
+        <SimpleForm validate={validatePhysicianCreation} toolbar={<PhysicianEditToolbar/>}>
           <div style={styles.inlineBlock}>
             <DisabledInput source="npi" label="NPI Id" style={styles.inlineElementStyle}/>
           </div>

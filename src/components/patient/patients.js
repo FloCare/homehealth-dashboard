@@ -1,24 +1,25 @@
 import React from 'react';
-import {List, Datagrid, TextField, EditButton, DeleteButton} from 'react-admin';
+import {List, Datagrid, TextField, EditButton, DeleteButton, CardActions, CreateButton, RefreshButton} from 'react-admin';
 import {
     Create, Edit, SimpleForm, TextInput, SelectArrayInput, ReferenceArrayInput,
     LongTextInput, TabbedForm, FormTab, DisabledInput, ReferenceArrayField,
-    SingleFieldList, ChipField, ReferenceInput, SelectInput, AutocompleteInput, Pagination, Filter
+    SingleFieldList, ChipField, ReferenceInput, SelectInput, AutocompleteInput, Pagination, Filter,
+    SaveButton, Toolbar, ListButton
 } from 'react-admin';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import { DateInput } from 'react-admin-date-inputs';
-import SearchBar from '../SearchBar';
-import {Field} from 'redux-form';
 import withStyles from '@material-ui/core/styles/withStyles';
 import CreateForm from './PatientCreate';
 import EditForm from './PatientEdit';
-import ReactGA from 'react-ga';
 
-// import {FetchUsers} from './connectionUtils';
-// import LocationSearchInput from './LocationSearchInput';
-// import SearchBar from './SearchBar';
-// import { Field } from 'redux-form';
-
+const styles = {
+    inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
+    textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'},
+    button: {
+        // This is JSS syntax to target a deeper element using css selector, here the svg icon for this button
+        '& svg': { color: '#64CCC9' },
+        color: '#64CCC9',
+        backgroundColor: 'transparent'
+    },
+};
 
 const PatientPagination = () => {
     return (
@@ -34,9 +35,16 @@ const PatientFilter = (props) => (
 
 const PostPagination = props => <Pagination rowsPerPageOptions={[10, 25, 50, 100]} {...props} />
 
-export const PatientList = (props) => (
+const PatientActions = withStyles(styles)(({bulkActions, basePath, classes}) => (
+    <CardActions>
+        <CreateButton basePath={basePath} className={classes.button}/>
+        <RefreshButton className={classes.button}/>
+    </CardActions>
+));
+
+export const PatientList = withStyles(styles)(({ classes, ...props }) => (
     props.options.label = 'Patients',
-    <List {...props} title="List of patients" pagination={<PostPagination />}
+    <List {...props} title="List of patients" actions={<PatientActions />} pagination={<PostPagination />}
           bulkActions={false}
           sort={{ order: 'ASC' }}
           perPage={10}
@@ -50,10 +58,10 @@ export const PatientList = (props) => (
                             <ChipField source="displayname" />
                         </SingleFieldList>
                     </ReferenceArrayField>
-            <EditButton />
+            <EditButton className={classes.button}/>
         </Datagrid>
     </List>
-);
+));
 
 // const PatientTitle = ({ record }) => {
 //     return <span>Patient {record ? `"${record.title}"` : ''}</span>;
@@ -116,11 +124,6 @@ const Info = props => {
     );
 };
 
-const styles = {
-    inlineBlock: { display: 'inline-flex', marginRight: '1rem' },
-    textStyle: { fontSize: 34, color: 'black', fontWeight: 'bold'}
-};
-
 // const PatientEditActions = ({ basePath, data, resource }) => (
 //     <CardActions>
 //         <ShowButton basePath={basePath} record={data} />
@@ -132,18 +135,35 @@ const styles = {
 //     </CardActions>
 // );
 
+const PatientEditActions = withStyles(styles)(({ basePath, data, classes }) => (
+    <CardActions>
+        <ListButton className={classes.button} basePath={basePath} record={data} />
+    </CardActions>
+));
+
+const PatientCreateToolbar = withStyles(styles)(({ classes, ...props }) => (
+    <Toolbar {...props}>
+        <SaveButton
+            className={classes.button}
+            label="Save"
+            redirect="show"
+            submitOnEnter={true}
+        />
+    </Toolbar>
+));
+
 
 export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
     return (
-        <Edit title="Edit Patient" {...props}>
-            <EditForm {...props} />
+        <Edit title="Edit Patient" actions={<PatientEditActions />} {...props}>
+            <EditForm {...props} toolbar={<PatientCreateToolbar/>}/>
         </Edit>
     );
 });
 
 
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
-    <Create {...props} title="Add Patient">
-        <CreateForm {...props} />
+    <Create {...props} title="Add Patient" actions={<PatientEditActions />}>
+        <CreateForm {...props} toolbar={<PatientCreateToolbar/>}/>
     </Create>
 ));

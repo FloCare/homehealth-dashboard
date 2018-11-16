@@ -1,8 +1,10 @@
 import React from 'react'
-import {Create, DisabledInput, SimpleForm, TextInput, SaveButton, Toolbar } from 'react-admin'
+import {Create, DisabledInput, SimpleForm, TextInput,
+    SaveButton, Toolbar, CardActions, ListButton } from 'react-admin'
 import Loadable from 'react-loading-overlay'
 import SimpleButton from '../common/Button'
 import {HttpStatus} from '../../utils/HttpStatusConstants'
+import withStyles from '@material-ui/core/styles/withStyles';
 import {SimpleDialog} from 'rmwc/Dialog'
 import {parseMobileNumber, capitalize} from '../../utils/parsingUtils'
 import ReactGA from 'react-ga';
@@ -38,7 +40,13 @@ const validatePhysicianCreation = (values) => {
 
 const styles = {
   inlineBlock: { display: 'inline-flex', alignItems: 'center' },
-  inlineElementStyle: { marginRight: 20 }
+  inlineElementStyle: { marginRight: 20 },
+    button: {
+        // This is JSS syntax to target a deeper element using css selector, here the svg icon for this button
+        '& svg': { color: '#64CCC9' },
+        color: '#64CCC9',
+        backgroundColor: 'transparent'
+    },
 }
 
 export default class PhysicianCreate extends React.Component {
@@ -117,14 +125,20 @@ export default class PhysicianCreate extends React.Component {
 
   render () {
     const props = {...this.props}
-    const PhysicianCreateToolbar = props => (
+    const PhysicianCreateToolbar = withStyles(styles)(({ classes, ...props }) => (
       <Toolbar {...props}>
         <SaveButton
-          hidden={true}
-          disabled={this.state.saveDisabled}
+            className={classes.button}
+            hidden={true}
+            disabled={this.state.saveDisabled}
         />
       </Toolbar>
-    )
+    ));
+      const PhysicianCreateActions = withStyles(styles)(({ basePath, data, classes }) => (
+          <CardActions>
+              <ListButton className={classes.button} basePath={basePath} record={data} />
+          </CardActions>
+      ));
 
     const fetchedNPIData = this.state.fetchedNPIData
     let physicianData = {}
@@ -151,7 +165,7 @@ export default class PhysicianCreate extends React.Component {
           acceptLabel={'OK'}
           cancelLabel={null}
         />
-        <Create {...props} record={physicianData} title="Add Physician">
+        <Create {...props} record={physicianData} title="Add Physician" actions={<PhysicianCreateActions/>}>
           <SimpleForm toolbar={<PhysicianCreateToolbar/>} validate={validatePhysicianCreation} redirect="list">
 
             <div style={styles.inlineBlock}>
