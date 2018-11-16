@@ -133,8 +133,7 @@ const styles = theme => ({
         listStyleType: 'none',
     },
     rootLevelStyle: {
-        borderLeft: 'ridge',
-        borderBottom: 'ridge',
+        boxShadow: '5px 5px 15px rgba(0,0,0,0.4)',
         marginTop: '0.1%',
         width: '100%',
         height: '100%',

@@ -9,6 +9,7 @@ import {
 import { withStyles } from '@material-ui/core/styles';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
+import Refresh from '@material-ui/icons/Refresh';
 import Button from '@material-ui/core/Button';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -29,8 +30,7 @@ const styles = theme => ({
         marginBottom: '10px',
     },
     rootLevelStyle: {
-        borderLeft: 'ridge',
-        borderRight: 'ridge',
+        boxShadow: '5px 5px 15px rgba(0,0,0,0.4)',
         marginTop: '0.1%',
         width: '84vw',
         height: '100%',
@@ -97,7 +97,7 @@ const styles = theme => ({
     refreshStyle: {
         position: 'relative',
         display: 'inline',
-        marginLeft: '20vw',
+        marginLeft: '15vw',
         whiteSpace: 'noWrap'
     },
     stripStyle: {
@@ -124,7 +124,10 @@ const styles = theme => ({
         '&:hover': {
             backgroundColor: 'transparent',
         },
-    }
+    },
+    extendedIcon: {
+        marginRight: '1vw',
+    },
 });
 
 
@@ -400,6 +403,7 @@ class SchedulerList extends Component {
             <Button size="small" classes={{
                 root: classes.refreshButtonStyle
             }} onClick={this.handleRefreshClick}>
+                <Refresh className={classes.extendedIcon}/>
                 Refresh
             </Button>
             </div>
