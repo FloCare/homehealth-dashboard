@@ -37,7 +37,7 @@ const styles = theme => ({
 
     },
     disciplineBkgColor: {
-        backgroundColor: '#c4c4c4'
+        backgroundColor: '#60BEBC'
     },
     disciplineLabelStyle: {
         lineHeight: '30px',
@@ -400,7 +400,7 @@ class SchedulerList extends Component {
                 <ChevronRight />
             </Button>
             <div className={classes.refreshStyle}>
-            <Button size="small" classes={{
+            <Button size="small" color="#64CCC9" classes={{
                 root: classes.refreshButtonStyle
             }} onClick={this.handleRefreshClick}>
                 <Refresh className={classes.extendedIcon}/>
