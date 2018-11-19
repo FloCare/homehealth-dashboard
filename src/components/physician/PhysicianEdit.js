@@ -57,7 +57,7 @@ export class PhysicianEdit extends React.Component {
               <SaveButton
                   className={classes.button}
                   label="Save"
-                  redirect="show"
+                  redirect="list"
                   submitOnEnter={true}
               />
           </Toolbar>

@@ -51,7 +51,7 @@ const PlaceCreateToolbar = withStyles(styles)(({ classes, ...props }) => (
         <SaveButton
             className={classes.button}
             label="Save"
-            redirect="show"
+            redirect="list"
             submitOnEnter={true}
         />
     </Toolbar>
