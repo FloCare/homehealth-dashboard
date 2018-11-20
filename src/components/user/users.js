@@ -95,6 +95,7 @@ const styles = {
         color: '#64CCC9',
         backgroundColor: 'transparent'
     },
+    emailFieldStyle: { color: '#64CCC9' },
 };
 
 const StaffEditActions = ({ basePath, data, resource }) => (
@@ -107,7 +108,7 @@ const StaffEditActions = ({ basePath, data, resource }) => (
 // Todo: Figure out a better way to do this
 const renderReportLink = (record) => {
     return (
-        <Link to={`/reports?userID=${record.id}`}>View Reports</Link>
+        <Link to={`/reports?userID=${record.id}`} style={{ color: '#64CCC9' }}>View Reports</Link>
     );
 };
 
@@ -124,7 +125,7 @@ export const UserList = withStyles(styles)(({ classes, ...props }) => (
             <TextField label="First Name" source="first_name" />
             <TextField label="Last Name" source="last_name" />
             <TextField label="Role" source="user_role" sortable={false}/>
-            <EmailField label="email" source="email" sortable={false}/>
+            <EmailField label="email" source="email" sortable={false} className={classes.emailFieldStyle}/>
             <FunctionField label="View Reports" render={renderReportLink} />
             <TextField label="Phone Number" source="contact_no" sortable={false}/>
             <EditButton className={classes.button}/>
