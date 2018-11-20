@@ -33,7 +33,7 @@ const styles = theme => ({
         overflowY: 'auto',
     },
     headerRow: {
-        color: '#2196f3',
+        color: '#64CCC9',
         fontSize: 16
     },
     cellRow: {
