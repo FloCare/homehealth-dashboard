@@ -125,7 +125,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                 case 'stops':
                     return { url: `${API_URL}/phi/v1.0/places/${params.id}/`, options };
                 case 'users':
-                    return { url: `${API_URL}/users/v1.0/staff/${params.id}/`, options };
+                    return { url: `${API_URL}/users/v1.0/get-staff-for-id/${params.id}/`, options };
                 case 'reports':
                     return {url: `${API_URL}/phi/v1.0/reports/${params.id}/`, options};
                 default:
@@ -315,7 +315,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         };
                     }
                     return{
-                        url: `${API_URL}/users/v1.0/staff/${params.id}/`,
+                        url: `${API_URL}/users/v1.0/udpate-staff-for-id/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
                 }
@@ -402,7 +402,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         action: 'staff_created'
                     });
                     return {
-                        url: `${API_URL}/users/v1.0/staff/?format=json`,
+                        url: `${API_URL}/users/v1.0/create-staff/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(userRequest) },
                     };
                 case 'stops':
@@ -470,7 +470,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
             switch(resource) {
                 case 'users':
                     return {
-                        url: `${API_URL}/${resource}/v1.0/staff/${params.id}/`,
+                        url: `${API_URL}/${resource}/v1.0/delete-staff-for-id/${params.id}/`,
                         options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
                     };
                 case 'physicians':
