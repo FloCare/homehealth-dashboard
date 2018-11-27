@@ -135,9 +135,10 @@ const Info = props => {
 //     </CardActions>
 // );
 
-const PatientEditActions = withStyles(styles)(({ basePath, data, classes }) => (
+const PatientEditActions = withStyles(styles)(({ basePath, data, classes, resource }) => (
     <CardActions>
         <ListButton className={classes.button} basePath={basePath} record={data} />
+        <DeleteButton basePath={basePath} record={data} resource={resource} />
     </CardActions>
 ));
 

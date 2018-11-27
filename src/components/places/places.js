@@ -64,11 +64,10 @@ const PlaceCreateActions = withStyles(styles)(({ basePath, data, classes }) => (
 ));
 
 
-const PlaceEditActions = withStyles(styles)(({ basePath, classes, resource }) => (
+const PlaceEditActions = withStyles(styles)(({ basePath, data, classes, resource }) => (
     <CardActions>
         <ListButton className={classes.button} basePath={basePath} />
-        <DeleteButton className={classes.button}/>
-        <RefreshButton className={classes.button}/>
+        <DeleteButton basePath={basePath} record={data} resource={resource} />
     </CardActions>
 ));
 
