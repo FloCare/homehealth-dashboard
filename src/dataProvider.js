@@ -121,9 +121,9 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     });
                     return { url: `${API_URL}/${resource}/v1.0/patients/${params.id}/`, options };
                 case 'physicians':
-                    return { url: `${API_URL}/phi/v1.0/physicians/${params.id}/`, options };
+                    return { url: `${API_URL}/phi/v1.0/get-physician-for-id/${params.id}/`, options };
                 case 'stops':
-                    return { url: `${API_URL}/phi/v1.0/places/${params.id}/`, options };
+                    return { url: `${API_URL}/phi/v1.0/get-place-for-id/${params.id}/`, options };
                 case 'users':
                     return { url: `${API_URL}/users/v1.0/get-staff-for-id/${params.id}/`, options };
                 case 'reports':
@@ -240,15 +240,17 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     };
                 case 'physicians':
                     const updateBody = {
-                            npi : params.data.npi,
-                            firstName : params.data.firstName,
-                            lastName : params.data.lastName,
-                            phone1 : params.data.phone1,
-                            phone2 : params.data.phone2 === '' ? null : params.data.phone2,
-                            fax : params.data.fax,
-                        };
+                        physician: {
+                            npi: params.data.npi,
+                            firstName: params.data.firstName,
+                            lastName: params.data.lastName,
+                            phone1: params.data.phone1,
+                            phone2: params.data.phone2 === '' ? null : params.data.phone2,
+                            fax: params.data.fax,
+                        }
+                    };
                     return{
-                        url: `${API_URL}/phi/v1.0/physicians/${params.id}/`,
+                        url: `${API_URL}/phi/v1.0/update-physician/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(updateBody), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     };
                 case 'stops':
@@ -272,9 +274,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     body.name = params.data.name;
                     body.contactNumber = params.data.contactNumber === '' ? null : params.data.contactNumber;
                     const stopsUpdateBody = {
-                        name: params.data.name,
-                        contactNumber: params.data.contactNumber,
-                        address: params.data.address
+                        place: {
+                            name: params.data.name,
+                            contactNumber: params.data.contactNumber === '' ? null : params.data.contactNumber,
+                            address: params.data.address
+                        }
                     }
                     localStorage.removeItem('postalCode');
                     localStorage.removeItem('cityName');
@@ -284,8 +288,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('longitude');
                     localStorage.removeItem('streetAddress');
                     return{
-                        url: `${API_URL}/phi/v1.0/places/${params.data.id}/`,
-                        options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
+                        url: `${API_URL}/phi/v1.0/update-place/${params.data.id}/`,
+                        options: { method: 'PUT', body: JSON.stringify(stopsUpdateBody), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     }
                 case 'users':
                     var userData = undefined;
@@ -422,9 +426,11 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         "longitude": localStorage.getItem('longitude')
                     };
                     const placeRequest = {
-                        name : params.data.name,
-                        contactNumber : params.data.contactNumber,
-                        address: params.data.address
+                        place: {
+                            name: params.data.name,
+                            contactNumber: params.data.contactNumber,
+                            address: params.data.address
+                        }
                     };
                     ReactGA.event({
                         category: 'PlaceCreated',
@@ -438,7 +444,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                     localStorage.removeItem('longitude');
                     localStorage.removeItem('streetAddress');
                     return {
-                        url: `${API_URL}/phi/v1.0/places/?format=json`,
+                        url: `${API_URL}/phi/v1.0/create-place/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(placeRequest) },
                     };
 
@@ -457,7 +463,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                       action: 'physician_created'
                     });
                     return {
-                        url: `${API_URL}/phi/v1.0/physicians/?format=json`,
+                        url: `${API_URL}/phi/v1.0/create-physician/?format=json`,
                         options: { method: 'POST', headers: new Headers({Authorization: 'Token '+ accessToken}), body: JSON.stringify(request) },
                     };
                 default:
@@ -481,7 +487,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 
                 case 'stops':
                     return {
-                        url: `${API_URL}/phi/v1.0/places/${params.id}/`,
+                        url: `${API_URL}/phi/v1.0/delete-place-for-id/${params.id}/`,
                         options: { method: 'DELETE', headers: new Headers({Authorization: 'Token '+ accessToken}) },
                     };
                 case 'phi':
@@ -511,6 +517,8 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
 const convertHTTPResponseToDataProvider = (response, type, resource, params) => {
     console.log('Converting API Response to Data Provider:', type, params);
     const {json, headers} = response;
+    console.log(json)
+    console.log(type)
     switch (type) {
 
         case GET_LIST:
@@ -843,7 +851,8 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             }
 
         default:
-            return {data: json};
+            console.log('inside')
+            return {data: json ? json : {}};
     }
 };
 
