@@ -319,7 +319,7 @@ const convertDataProviderRequestToHTTP = (type, resource, params) => {
                         };
                     }
                     return{
-                        url: `${API_URL}/users/v1.0/udpate-staff-for-id/${params.id}/`,
+                        url: `${API_URL}/users/v1.0/update-staff-for-id/${params.id}/`,
                         options: { method: 'PUT', body: JSON.stringify(userData), headers: new Headers({Authorization: 'Token '+ accessToken})},
                     // options: { method: 'PUT', body: JSON.stringify(body), headers: new Headers({Authorization: 'Token '+ accessToken})},
                 }
@@ -851,7 +851,6 @@ const convertHTTPResponseToDataProvider = (response, type, resource, params) => 
             }
 
         default:
-            console.log('inside')
             return {data: json ? json : {}};
     }
 };
