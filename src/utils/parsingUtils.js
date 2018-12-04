@@ -80,38 +80,12 @@ const capitalize = (string) => {
 
 // Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
 const getDateFromDateTimeObject = () => {
-    var formattedDate = new Date();
-    var dd = formattedDate.getDate();
-    var mm = formattedDate.getMonth()+1; //January is 0!
-    var yyyy = formattedDate.getFullYear();
-
-    if(dd<10) {
-        dd = '0'+dd
-    }
-
-    if(mm<10) {
-        mm = '0'+mm
-    }
-    formattedDate = yyyy+'-'+mm+'-'+dd;
-    return formattedDate;
+    return currentDate = moment().format('YYYY-MM-DD');
 }
 
 // Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
 const getTomorrowDateFromDateTimeObject = () => {
-    var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
-    var dd = currentDate.getDate()
-    var mm = currentDate.getMonth() + 1
-    var yyyy = currentDate.getFullYear()
-
-    if(dd<10) {
-        dd = '0'+dd
-    }
-
-    if(mm<10) {
-        mm = '0'+mm
-    }
-    currentDate = yyyy+'-'+mm+'-'+dd;
-    return currentDate;
+    return moment().add(1, 'days').format('YYYY-MM-DD');
 }
 
 const parseIsoDateToString = (iso, include_seconds=true) => {
