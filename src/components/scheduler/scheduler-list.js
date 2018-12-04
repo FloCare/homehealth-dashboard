@@ -272,20 +272,11 @@ class SchedulerList extends Component {
             for(var i=0; i<resp.length; i++) {
                 var plannedStartTime = resp[i].plannedStartTime;
                 var midnightEpoch = resp[i].midnightEpoch;
-                var formattedDate = moment.unix(midnightEpoch/1000).format('DD-MM-YYYY');
-                var date = new Date(plannedStartTime);
-                var nowUtc = new Date( date.getTime());
-                var hh = nowUtc.getHours() < 10 ? '0' +
-                    nowUtc.getHours() : nowUtc.getHours();
-                var mi = nowUtc.getMinutes() < 10 ? '0' +
-                    nowUtc.getMinutes() : nowUtc.getMinutes();
-                if(plannedStartTime === null) {
-                    hh = '--';
-                    mi = '--';
-                }
+                var formattedDate = moment(parseInt(midnightEpoch)).subtract(moment().utcOffset(), 'minutes').format('DD-MM-YYYY')
                 if(resp[i].episode == null)
                     continue;
-                var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
+                var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' +
+                    (plannedStartTime === null ? '--:--' : moment.utc(plannedStartTime).local().format("HH:mm"));
                 var insert = [];
                 insert[formattedDate] = row;
                 tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
@@ -324,20 +315,11 @@ class SchedulerList extends Component {
             for(var i=0; i<resp.length; i++) {
                 var plannedStartTime = resp[i].plannedStartTime;
                 var midnightEpoch = resp[i].midnightEpoch;
-                var formattedDate = moment.unix(midnightEpoch/1000).format('DD-MM-YYYY');
-                var date = new Date(plannedStartTime);
-                var nowUtc = new Date( date.getTime());
-                var hh = nowUtc.getHours() < 10 ? '0' +
-                    nowUtc.getHours() : nowUtc.getHours();
-                var mi = nowUtc.getMinutes() < 10 ? '0' +
-                    nowUtc.getMinutes() : nowUtc.getMinutes();
-                if(plannedStartTime === null) {
-                    hh = '--';
-                    mi = '--';
-                }
+                var formattedDate = moment(parseInt(midnightEpoch)).subtract(moment().utcOffset(), 'minutes').format('DD-MM-YYYY')
                 if(resp[i].episode == null)
                     continue;
-                var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' + hh+':'+mi;
+                var row = resp[i].isDone + '%' + resp[i].episode.patient.name + '$' +
+                    (plannedStartTime === null ? '--:--' : moment.utc(plannedStartTime).local().format("HH:mm"));
                 var insert = [];
                 insert[formattedDate] = row;
                 tempVisitsMap[resp[i].userID] = tempVisitsMap[resp[i].userID] || [];
