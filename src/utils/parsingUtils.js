@@ -80,7 +80,7 @@ const capitalize = (string) => {
 
 // Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
 const getDateFromDateTimeObject = () => {
-    return currentDate = moment().format('YYYY-MM-DD');
+    return moment().format('YYYY-MM-DD');
 }
 
 // Return the date in yyyy-mm-dd format given the datetime. Use DateFormatter
