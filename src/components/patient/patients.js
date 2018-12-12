@@ -142,6 +142,12 @@ const PatientEditActions = withStyles(styles)(({ basePath, data, classes, resour
     </CardActions>
 ));
 
+const PatientCreateActions = withStyles(styles)(({ basePath, data, classes }) => (
+    <CardActions>
+        <ListButton className={classes.button} basePath={basePath} record={data} />
+    </CardActions>
+));
+
 const PatientCreateToolbar = withStyles(styles)(({ classes, ...props }) => (
     <Toolbar {...props}>
         <SaveButton
@@ -164,7 +170,7 @@ export const PatientEdit = withStyles(styles)(({ classes, ...props }) => {
 
 
 export const PatientCreate = withStyles(styles)(({ classes, ...props }) => (
-    <Create {...props} title="Add Patient" actions={<PatientEditActions />}>
+    <Create {...props} title="Add Patient" actions={<PatientCreateActions />}>
         <CreateForm {...props} toolbar={<PatientCreateToolbar/>}/>
     </Create>
 ));
